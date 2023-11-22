@@ -6,7 +6,9 @@ import (
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
 	"errors"
+
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -43,7 +45,7 @@ func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 	c.Set("Access", admin.AccessToken)
 	c.Set("Refresh", admin.RefreshToken)
 
-	successResp := response.ClientResponse(http.StatusOK, "logined successfully", admin, err.Error())
+	successResp := response.ClientResponse(http.StatusOK, "logined successfully", admin, nil)
 	c.JSON(http.StatusOK, successResp)
 
 }
@@ -74,4 +76,55 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 		c.AbortWithError(500, errors.New("error in creating new accesstoken"))
 	}
 	c.JSON(200, newAccessToken)
+}
+
+func (ad *AdminHandler) BlockUser(c *gin.Context) {
+	id := c.Query("id")
+	err := ad.adminUseCase.BlockUser(id)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "user could not be blocked", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+
+	succesResp := response.ClientResponse(http.StatusOK, "Successfully blocked the user", nil, nil)
+	c.JSON(http.StatusOK, succesResp)
+
+}
+func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
+
+	id := c.Query("id")
+	err := ad.adminUseCase.UnBlockUser(id)
+
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "user could not be unblocked", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully unblocked the user", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (ad *AdminHandler) GetUsers(c *gin.Context) {
+
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	users, err := ad.adminUseCase.GetUsers(page)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the users", users, nil)
+	c.JSON(http.StatusOK, successRes)
+
 }

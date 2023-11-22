@@ -22,7 +22,7 @@ type Address struct {
 type UserDetailsResponse struct {
 	Id    int    `json:"id"`
 	Name  string `json:"name"`
-	Email string `json:"email"`
+	Email string `json:"email" validate:"email"`
 	Phone string `json:"phone"`
 }
 
@@ -47,8 +47,7 @@ type UserSignInResponse struct {
 type UserDetailsAtAdmin struct {
 	Id      int    `json:"id"`
 	Name    string `json:"name"`
-	Email   string `json:"email"`
+	Email   string `json:"email" validate:"email"`
 	Phone   string `json:"phone"`
 	Blocked bool   `json:"blocked"`
 }
-

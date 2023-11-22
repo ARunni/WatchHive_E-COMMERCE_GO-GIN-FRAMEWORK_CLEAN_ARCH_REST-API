@@ -6,6 +6,7 @@ import (
 	interfaces "WatchHive/pkg/repository/interface"
 	usecase "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
+	"errors"
 
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
@@ -30,7 +31,6 @@ func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.Toc
 		return domain.TockenAdmin{}, err
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(adminCompareDetails.Password), []byte(adminDetails.Password))
-
 	if err != nil {
 		return domain.TockenAdmin{}, err
 	}
@@ -48,5 +48,59 @@ func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.Toc
 		AccessToken:  access,
 		RefreshToken: refresh,
 	}, nil
+
+}
+
+func (ad *adminUseCase) BlockUser(id string) error {
+
+	user, err := ad.adminRepository.GetUserByID(id)
+	if err != nil {
+		return err
+	}
+
+	if user.Blocked {
+		return errors.New("already blocked")
+	} else {
+		user.Blocked = true
+	}
+
+	err = ad.adminRepository.UpdateBlockUserByID(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (ad *adminUseCase) UnBlockUser(id string) error {
+
+	user, err := ad.adminRepository.GetUserByID(id)
+	if err != nil {
+		return err
+	}
+
+	if user.Blocked {
+		user.Blocked = false
+	} else {
+		return errors.New("already unblocked")
+	}
+
+	err = ad.adminRepository.UpdateBlockUserByID(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+func (ad *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
+
+	userDetails, err := ad.adminRepository.GetUsers(page)
+	if err != nil {
+		return []models.UserDetailsAtAdmin{}, err
+	}
+
+	return userDetails, nil
 
 }

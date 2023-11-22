@@ -44,7 +44,7 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	user.Password = hashedPassword
 	userData, err := u.userRepo.UserSignup(user)
 	if err != nil {
-		return models.TokenUsers{}, errors.New("could not add the user")
+		return models.TokenUsers{}, err
 	}
 	tokenString, err := u.helper.GenerateTokenClients(userData)
 	if err != nil {
@@ -74,7 +74,12 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 	}
 	user_details, err := u.userRepo.FindUserByEmail(user)
 	if err != nil {
-		return models.TokenUsers{}, errors.New("password is in correct")
+		return models.TokenUsers{}, errors.New("password is incorrect")
+	}
+	err = u.helper.CompareHashAndPassword(user_details.Password, user.Password)
+
+	if err != nil {
+		return models.TokenUsers{}, errors.New("password incorrect")
 	}
 
 	var userDetails models.UserDetailsResponse

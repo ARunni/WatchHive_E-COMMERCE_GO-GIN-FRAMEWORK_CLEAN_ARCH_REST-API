@@ -28,13 +28,15 @@ func (c *userDatabase) CheckUserAvilability(email string) bool {
 }
 
 func (c *userDatabase) UserSignup(user models.UserDetails) (models.UserDetailsResponse, error) {
-
 	var UserDetails models.UserDetailsResponse
-	err := c.DB.Raw("insert into users (name,email,password,phone) values (?,?,?,?)returning id, name, email, phone", user.Name, user.Email, user.Password, user.Phone).Scan(&UserDetails).Error
 
-	if err != nil {
-		return models.UserDetailsResponse{}, err
+	result := c.DB.Raw("INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?) RETURNING id, name, email, phone",
+		user.Name, user.Email, user.Password, user.Phone).Scan(&UserDetails)
+
+	if result.Error != nil {
+		return UserDetails, result.Error
 	}
+
 	return UserDetails, nil
 }
 
