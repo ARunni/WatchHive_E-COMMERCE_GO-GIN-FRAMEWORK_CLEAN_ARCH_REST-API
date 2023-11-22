@@ -23,14 +23,17 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 		repository.NewUserRepository,
 		repository.NewAdminRepository,
 		repository.NewOtpRepository,
+		repository.NewCategoryRepository,
 
 		usecase.NewUserUseCase,
 		usecase.NewAdminUseCase,
 		usecase.NewOtpUseCase,
+		usecase.NewCategoryUseCase,
 
 		handler.NewUserHandler,
 		handler.NewAdminHandler,
 		handler.NewOtpHandler,
+		handler.NewCategoryHandler,
 
 		helper.NewHelper,
 
