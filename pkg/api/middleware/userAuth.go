@@ -6,7 +6,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func UserAUthMiddleware(c *gin.Context) {
@@ -20,10 +21,12 @@ func UserAUthMiddleware(c *gin.Context) {
 
 	token, err := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
 
-		return []byte("comebyewatch"), nil
+		return []byte("watchhive@123"), nil
 
 	})
+	fmt.Println("kkkk", token)
 	if err != nil || !token.Valid {
+		fmt.Println("tttttttttttttt", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization Token"})
 		c.Abort()
 		return
@@ -34,8 +37,6 @@ func UserAUthMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
-
-	fmt.Println("claims", claims)
 
 	role, ok := claims["role"].(string)
 	if !ok || role != "client" {

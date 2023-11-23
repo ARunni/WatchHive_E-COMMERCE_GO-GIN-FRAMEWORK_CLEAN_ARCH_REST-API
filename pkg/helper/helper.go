@@ -5,6 +5,7 @@ import (
 	interfaces "WatchHive/pkg/helper/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -123,6 +124,7 @@ func (h *helper) TwilioSetup(username string, password string) {
 }
 
 func (h *helper) TwilioSendOTP(phone string, serviceID string) (string, error) {
+	fmt.Println("ghhkkk", phone)
 	to := "+91" + phone
 	params := &twilioApi.CreateVerificationParams{}
 	params.SetTo(to)

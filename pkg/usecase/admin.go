@@ -39,14 +39,14 @@ func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.Toc
 	if err != nil {
 		return domain.TockenAdmin{}, err
 	}
-	access, refresh, err := ad.helper.GenerateTokenAdmin(adminDetailsResponse)
+	access, _, err := ad.helper.GenerateTokenAdmin(adminDetailsResponse)
 	if err != nil {
 		return domain.TockenAdmin{}, err
 	}
 	return domain.TockenAdmin{
-		Admin:        adminDetailsResponse,
-		AccessToken:  access,
-		RefreshToken: refresh,
+		Admin:       adminDetailsResponse,
+		AccessToken: access,
+		// RefreshToken: refresh,
 	}, nil
 
 }

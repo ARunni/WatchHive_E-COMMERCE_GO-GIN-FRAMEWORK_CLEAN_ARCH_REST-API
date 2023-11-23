@@ -5,7 +5,7 @@ type Users struct {
 	Name     string `json:"name"`
 	Email    string `json:"email" validate:"email"`
 	Password string `json:"password" validate:"min=8,max=20"`
-	Phone    string `json:"phone"`
+	Phone    string `json:"phone" validate:"e164"`
 	Blocked  bool   `json:"blocked" gorm:"default:false"`
 	IsAdmin  bool   `json:"is_admin" gorm:"default:false"`
 }
@@ -19,7 +19,6 @@ type Address struct {
 	Street    string `json:"street" validate:"required"`
 	City      string `json:"city" validate:"required"`
 	State     string `json:"state" validate:"required"`
-	Phone     string `json:"phone" gorm:"phone"`
-	Pin       string `json:"pin" validate:"required"`
-	// Default   bool   `json:"default" gorm:"default:false"`
+	Phone     string `json:"phone" gorm:"phone,unique"`
+	Pin       int    `json:"pin" validate:"required"`
 }

@@ -43,7 +43,7 @@ func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 	}
 
 	c.Set("Access", admin.AccessToken)
-	c.Set("Refresh", admin.RefreshToken)
+	// c.Set("Refresh", admin.RefreshToken)
 
 	successResp := response.ClientResponse(http.StatusOK, "logined successfully", admin, nil)
 	c.JSON(http.StatusOK, successResp)

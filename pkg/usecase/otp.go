@@ -38,7 +38,7 @@ func (ot *otpUseCase) SendOTP(phone string) error {
 	_, err := ot.helper.TwilioSendOTP(phone, ot.cfg.SERVICESID)
 
 	if err != nil {
-		return errors.New("error occured while generating OTP")
+		return err
 	}
 	return nil
 

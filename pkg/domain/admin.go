@@ -12,5 +12,5 @@ type Admin struct {
 type TockenAdmin struct {
 	Admin        models.AdminDetailsResponse
 	AccessToken  string
-	RefreshToken string
+	// RefreshToken string
 }

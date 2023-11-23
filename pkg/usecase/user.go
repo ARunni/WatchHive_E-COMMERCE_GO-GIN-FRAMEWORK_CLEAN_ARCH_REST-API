@@ -5,6 +5,7 @@ import (
 	helper_interface "WatchHive/pkg/helper/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"regexp"
 
 	interfaces "WatchHive/pkg/repository/interface"
 	services "WatchHive/pkg/usecase/interface"
@@ -28,6 +29,15 @@ var InternalError = "Internal Server Error"
 var ErrorHashingPassword = "Error In Hashing Password"
 
 func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
+	
+	phoneNumber := user.Phone
+	pattern := `^\d{10}$`
+	regex := regexp.MustCompile(pattern)
+	value := regex.MatchString(phoneNumber)
+
+	if !value {
+		return models.TokenUsers{}, errors.New("invalid phone number")
+	}
 
 	userExist := u.userRepo.CheckUserAvilability(user.Email)
 	if userExist {
