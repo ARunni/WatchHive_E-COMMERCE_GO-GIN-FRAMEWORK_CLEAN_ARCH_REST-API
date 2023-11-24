@@ -41,8 +41,15 @@ func (i *inventoryRepository) AddInventory(inventory models.AddInventories) (mod
 	if err != nil {
 		return models.InventoryResponse{}, err
 	}
-
+// getting inserted product detailsS
 	var inventoryResponse models.InventoryResponse
+
+	query = "SELECT id,category_id,product_name,color,stock,price FROM inventories where  product_name = ? AND category_id = ?"
+	errr := i.DB.Raw(query, inventory.ProductName, inventory.CategoryID).Scan(&inventoryResponse).Error
+
+	if errr != nil {
+		return inventoryResponse, errors.New("error checking Product details")
+	}
 
 	return inventoryResponse, nil
 }
