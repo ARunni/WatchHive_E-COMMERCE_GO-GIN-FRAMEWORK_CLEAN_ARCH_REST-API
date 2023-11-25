@@ -2,6 +2,7 @@ package routes
 
 import (
 	"WatchHive/pkg/api/handler"
+	"WatchHive/pkg/api/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,6 +14,11 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 	engine.POST("/otplogin", otpHandler.SendOTP)
 	engine.POST("/verifyotp", otpHandler.VerifyOTP)
-
 	engine.GET("", productHandler.ListProducts)
+
+	engine.Use(middleware.UserAuthMiddleware)
+	{
+
+	}
+
 }

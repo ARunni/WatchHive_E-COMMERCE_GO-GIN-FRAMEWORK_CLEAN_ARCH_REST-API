@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"WatchHive/pkg/config"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -12,9 +13,9 @@ func AdminAuthMiddleware(c *gin.Context) {
 	accessToken := c.Request.Header.Get("Authorization")
 
 	accessToken = strings.TrimPrefix(accessToken, "Bearer ")
-
+	cfg, _ := config.LoadConfig()
 	_, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte("accesssecret"), nil
+		return []byte(cfg.AdminAccessKey), nil
 	})
 
 	if err != nil {

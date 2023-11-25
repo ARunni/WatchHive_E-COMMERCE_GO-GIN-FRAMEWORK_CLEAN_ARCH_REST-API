@@ -22,9 +22,9 @@ func NewProductUseCase(repo rep.ProductRepository, h helper.Helper) interfaces.P
 
 }
 
-func (i *productUseCase) AddProduct(inventory models.AddProducts) (models.ProductResponse, error) {
+func (i *productUseCase) AddProduct(product models.AddProducts) (models.ProductResponse, error) {
 
-	ProductResponse, err := i.repository.AddProduct(inventory)
+	ProductResponse, err := i.repository.AddProduct(product)
 	if err != nil {
 		return models.ProductResponse{}, err
 	}
@@ -67,7 +67,7 @@ func (i productUseCase) UpdateProduct(pid int, stock int) (models.ProductRespons
 	}
 
 	if !result {
-		return models.ProductResponse{}, errors.New("there is no inventory as you mentioned")
+		return models.ProductResponse{}, errors.New("there is no product as you mentioned")
 	}
 
 	newcat, err := i.repository.UpdateProduct(pid, stock)

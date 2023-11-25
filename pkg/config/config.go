@@ -6,18 +6,25 @@ import (
 )
 
 type Config struct {
-	DBHost     string `mapstructure:"DB_HOST"`
-	DBName     string `mapstructure:"DB_NAME"`
-	DBUser     string `mapstructure:"DB_USER"`
-	DBPort     string `mapstructure:"DB_PORT"`
-	DBPassword string `mapstructure:"DB_PASSWORD"`
-	AUTHTOKEN  string `mapstructure:"DB_AUTHTOKEN"`
-	ACCOUNTSID string `mapstructure:"DB_ACCOUNTSID"`
-	SERVICESID string `mapstructure:"DB_SERVICESID"`
+	DBHost          string `mapstructure:"DB_HOST"`
+	DBName          string `mapstructure:"DB_NAME"`
+	DBUser          string `mapstructure:"DB_USER"`
+	DBPort          string `mapstructure:"DB_PORT"`
+	DBPassword      string `mapstructure:"DB_PASSWORD"`
+	AUTHTOKEN       string `mapstructure:"DB_AUTHTOKEN"`
+	ACCOUNTSID      string `mapstructure:"DB_ACCOUNTSID"`
+	SERVICESID      string `mapstructure:"DB_SERVICESID"`
+	AdminAccessKey  string `mapstructure:"AdminAccessKey"`
+	AdminRefreshKey string `mapstructure:"AdminRefreshKey"`
+	UserAccessKey   string `mapstructure:"UserAccessKey"`
+	UserRefreshKey  string `mapstructure:"UserRefreshKey"`
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "DB_AUTHTOKEN", "DB_ACCOUNTSID", "DB_SERVICESID",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD",
+	"DB_AUTHTOKEN", "DB_ACCOUNTSID", "DB_SERVICESID",
+	"AdminAccessKey", "AdminRefreshKey",
+	"UserAccessKey", "UserRefreshKey",
 }
 
 func LoadConfig() (Config, error) {

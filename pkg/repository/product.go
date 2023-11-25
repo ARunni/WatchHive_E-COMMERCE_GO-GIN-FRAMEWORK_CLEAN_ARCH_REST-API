@@ -34,7 +34,7 @@ func (i *productRepository) AddProduct(product models.AddProducts) (models.Produ
 	}
 
 	query := `
-        INSERT INTO inventories (category_id, product_name, color, stock, price)
+        INSERT INTO products (category_id, product_name, color, stock, price)
         VALUES (?, ?, ?, ?, ?);
     `
 	err := i.DB.Exec(query, product.CategoryID, product.ProductName, product.Color, product.Stock, product.Price).Error
@@ -44,7 +44,7 @@ func (i *productRepository) AddProduct(product models.AddProducts) (models.Produ
 	// getting inserted product detailsS
 	var productResponse models.ProductResponse
 
-	query = "SELECT id,category_id,product_name,color,stock,price FROM inventories where  product_name = ? AND category_id = ?"
+	query = "SELECT id,category_id,product_name,color,stock,price FROM products where  product_name = ? AND category_id = ?"
 	errr := i.DB.Raw(query, product.ProductName, product.CategoryID).Scan(&productResponse).Error
 
 	if errr != nil {
@@ -58,7 +58,7 @@ func (prod *productRepository) ListProducts(pageList, offset int) ([]models.Prod
 
 	var product_list []models.ProductUserResponse
 
-	query := "SELECT i.id,i.category_id,c.category,i.product_name,i.color,i.price FROM inventories i INNER JOIN categories c ON i.category_id = c.id LIMIT $1 OFFSET $2"
+	query := "SELECT i.id,i.category_id,c.category,i.product_name,i.color,i.price FROM products i INNER JOIN categories c ON i.category_id = c.id LIMIT $1 OFFSET $2"
 	err := prod.DB.Raw(query, pageList, offset).Scan(&product_list).Error
 
 	if err != nil {
@@ -72,7 +72,7 @@ func (db *productRepository) EditProduct(product domain.Product, id int) (domain
 
 	var modProduct domain.Product
 
-	query := "UPDATE inventories SET category_id = ?, product_name = ?, color = ?, stock = ?, price = ? WHERE id = ?"
+	query := "UPDATE products SET category_id = ?, product_name = ?, color = ?, stock = ?, price = ? WHERE id = ?"
 
 	if err := db.DB.Exec(query, product.CategoryID, product.ProductName, product.Color, product.Stock, product.Price, id).Error; err != nil {
 		return domain.Product{}, err
@@ -90,7 +90,7 @@ func (i *productRepository) DeleteProduct(productID string) error {
 		return errors.New("converting into integet is not happened")
 	}
 
-	result := i.DB.Exec("DELETE FROM inventories WHERE id = ?", id)
+	result := i.DB.Exec("DELETE FROM products WHERE id = ?", id)
 
 	if result.RowsAffected < 1 {
 		return errors.New("no records with that ID exist")
@@ -101,7 +101,7 @@ func (i *productRepository) DeleteProduct(productID string) error {
 
 func (i *productRepository) CheckProduct(pid int) (bool, error) {
 	var k int
-	err := i.DB.Raw("SELECT COUNT(*) FROM inventories WHERE id=?", pid).Scan(&k).Error
+	err := i.DB.Raw("SELECT COUNT(*) FROM products WHERE id=?", pid).Scan(&k).Error
 	if err != nil {
 		return false, err
 	}
@@ -121,14 +121,14 @@ func (i *productRepository) UpdateProduct(pid int, stock int) (models.ProductRes
 	}
 
 	// Update the
-	if err := i.DB.Exec("UPDATE inventories SET stock = stock + $1 WHERE id= $2", stock, pid).Error; err != nil {
+	if err := i.DB.Exec("UPDATE products SET stock = stock + $1 WHERE id= $2", stock, pid).Error; err != nil {
 		return models.ProductResponse{}, err
 	}
 
 	// Retrieve the update
 	var newdetails models.ProductResponse
 	var newstock int
-	if err := i.DB.Raw("SELECT stock FROM inventories WHERE id=?", pid).Scan(&newstock).Error; err != nil {
+	if err := i.DB.Raw("SELECT stock FROM products WHERE id=?", pid).Scan(&newstock).Error; err != nil {
 		return models.ProductResponse{}, err
 	}
 	newdetails.ProductID = pid

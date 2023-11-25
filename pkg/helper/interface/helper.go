@@ -1,6 +1,8 @@
 package interfaces
 
-import "WatchHive/pkg/utils/models"
+import (
+	"WatchHive/pkg/utils/models"
+)
 
 type Helper interface {
 	GenerateTokenAdmin(admin models.AdminDetailsResponse) (string, string, error)

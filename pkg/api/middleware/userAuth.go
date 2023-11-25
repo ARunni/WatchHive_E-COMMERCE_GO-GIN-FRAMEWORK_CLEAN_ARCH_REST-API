@@ -1,38 +1,39 @@
 package middleware
 
 import (
-	"fmt"
+	"WatchHive/pkg/config"
+	"log"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt"
 )
 
-func UserAUthMiddleware(c *gin.Context) {
-	tokenstring := c.GetHeader("Authorization")
-	if tokenstring == "" {
+func UserAuthMiddleware(c *gin.Context) {
+	tokenString := c.GetHeader("Authorization")
+	if tokenString == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Missing authorization token"})
 		c.Abort()
 		return
 	}
-	tokenstring = strings.TrimPrefix(tokenstring, "Bearer")
 
-	token, err := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
+	cfg, _ := config.LoadConfig()
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-		return []byte("watchhive@123"), nil
-
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(cfg.UserAccessKey), nil
 	})
-	fmt.Println("kkkk", token)
+
 	if err != nil || !token.Valid {
-		fmt.Println("tttttttttttttt", err)
+		log.Println("Token error:", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization Token"})
 		c.Abort()
 		return
 	}
+
 	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok || !token.Valid {
+	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized access"})
 		c.Abort()
 		return
@@ -40,16 +41,18 @@ func UserAUthMiddleware(c *gin.Context) {
 
 	role, ok := claims["role"].(string)
 	if !ok || role != "client" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Unauthorized access "})
+		c.JSON(http.StatusForbidden, gin.H{"error": "Unauthorized access"})
 		c.Abort()
 		return
 	}
+
 	id, ok := claims["id"].(float64)
 	if !ok || id == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"error": "error in retrieving id"})
+		c.JSON(http.StatusForbidden, gin.H{"error": "Error retrieving ID"})
 		c.Abort()
 		return
 	}
+
 	c.Set("role", role)
 	c.Set("id", int(id))
 

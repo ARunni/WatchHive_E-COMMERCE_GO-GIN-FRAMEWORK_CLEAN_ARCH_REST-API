@@ -53,14 +53,14 @@ func (helper *helper) GenerateTokenAdmin(admin models.AdminDetailsResponse) (str
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
-
+	cfg, _ := config.LoadConfig()
 	accesToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accesTokenClaims)
-	accessTokenString, err := accesToken.SignedString([]byte("accesssecret"))
+	accessTokenString, err := accesToken.SignedString([]byte(cfg.AdminAccessKey))
 	if err != nil {
 		return "", "", err
 	}
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims)
-	refreshTokenString, err := refreshToken.SignedString([]byte("refreshsecret"))
+	refreshTokenString, err := refreshToken.SignedString([]byte(cfg.AdminRefreshKey))
 	if err != nil {
 		return "", "", err
 	}
@@ -78,9 +78,9 @@ func (h *helper) GenerateTokenClients(user models.UserDetailsResponse) (string, 
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
-
+	cfg, _ := config.LoadConfig()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte("watchhive@123"))
+	tokenString, err := token.SignedString([]byte(cfg.UserAccessKey))
 
 	if err != nil {
 		return "", err

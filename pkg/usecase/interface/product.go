@@ -6,7 +6,7 @@ import (
 )
 
 type ProductUseCase interface {
-	AddProduct(inventory models.AddProducts) (models.ProductResponse, error)
+	AddProduct(product models.AddProducts) (models.ProductResponse, error)
 	ListProducts(int, int) ([]models.ProductUserResponse, error)
 	EditProduct(domain.Product, int) (domain.Product, error)
 	DeleteProduct(id string) error
