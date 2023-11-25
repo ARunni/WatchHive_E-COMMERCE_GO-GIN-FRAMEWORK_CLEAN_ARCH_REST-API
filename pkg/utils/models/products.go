@@ -1,6 +1,6 @@
 package models
 
-type InventoryResponse struct {
+type ProductResponse struct {
 	ProductID   int    `json:"id"`
 	CategoryID  int    `json:"category_id"`
 	ProductName string `json:"productname"`
@@ -9,12 +9,12 @@ type InventoryResponse struct {
 	Price       int    `json:"price"`
 }
 
-type InventoryUpdate struct {
+type ProductUpdate struct {
 	Productid int `json:"product_id"`
 	Stock     int `json:"stock"`
 }
 
-type Inventory struct {
+type Product struct {
 	ID          uint   `json:"id"`
 	CategoryID  int    `json:"category_id"`
 	ProductName string `json:"productname"`
@@ -23,7 +23,7 @@ type Inventory struct {
 	Price       int    `json:"price"`
 }
 
-type AddInventories struct {
+type AddProducts struct {
 	ID          uint    `json:"id"`
 	CategoryID  int     `json:"category_id"`
 	ProductName string  `json:"product_name"`
@@ -32,14 +32,14 @@ type AddInventories struct {
 	Price       float64 `json:"price"`
 }
 
-type EditInventoryDetials struct {
+type EditProductDetials struct {
 	Name       string  `json:"name"`
 	Price      float64 `json:"price"`
 	CategoryID int     `json:"category_id"`
 	Color      string  `json:"color"`
 }
 
-type InventoryUserResponse struct {
+type ProductUserResponse struct {
 	ID          uint   `json:"id"`
 	CategoryID  int    `json:"category_id"`
 	Category    string `json:"category"`

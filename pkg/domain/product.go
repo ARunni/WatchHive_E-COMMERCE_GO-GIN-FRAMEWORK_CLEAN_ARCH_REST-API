@@ -1,11 +1,11 @@
 package domain
 
-type InventoryUpdate struct {
+type ProductUpdate struct {
 	Productid int `json:"product_id"`
 	Stock     int `json:"stock"`
 }
 
-type Inventory struct {
+type Product struct {
 	ID          uint     `json:"id" gorm:"primaryKey"`
 	CategoryID  uint     `json:"category_id"`
 	Category    Category `json:"category" gorm:"foreignKey:CategoryID;constraint:OnDelete:CASCADE"`
