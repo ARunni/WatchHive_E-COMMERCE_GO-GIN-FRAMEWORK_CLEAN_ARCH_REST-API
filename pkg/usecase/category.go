@@ -5,6 +5,7 @@ import (
 	interfaces "WatchHive/pkg/repository/interface"
 	services "WatchHive/pkg/usecase/interface"
 	"errors"
+	"strconv"
 )
 
 type categoryUseCase struct {
@@ -18,6 +19,9 @@ func NewCategoryUseCase(repo interfaces.CategoryRepository) services.CategoryUse
 
 }
 func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Category, error) {
+	if category.Category == "" {
+		return domain.Category{}, errors.New("invalid category")
+	}
 
 	productResponse, err := Cat.repository.AddCategory(category)
 
@@ -30,6 +34,7 @@ func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Catego
 }
 
 func (Cat *categoryUseCase) GetCategories() ([]domain.Category, error) {
+
 	categories, err := Cat.repository.GetCategories()
 	if err != nil {
 		return []domain.Category{}, err
@@ -37,9 +42,13 @@ func (Cat *categoryUseCase) GetCategories() ([]domain.Category, error) {
 	return categories, nil
 }
 
-func (Cat *categoryUseCase) UpdateCategory(current string, new string) (domain.Category, error) {
+func (Cat *categoryUseCase) UpdateCategory(currentId int, new string) (domain.Category, error) {
 
-	result, err := Cat.repository.CheckCategory(current)
+	if currentId <= 0 {
+		return domain.Category{}, errors.New("invalid category id")
+	}
+
+	result, err := Cat.repository.CheckCategory(currentId)
 	if err != nil {
 		return domain.Category{}, err
 	}
@@ -48,7 +57,7 @@ func (Cat *categoryUseCase) UpdateCategory(current string, new string) (domain.C
 		return domain.Category{}, errors.New("there is no category as you mentioned")
 	}
 
-	newcat, err := Cat.repository.UpdateCategory(current, new)
+	newcat, err := Cat.repository.UpdateCategory(currentId, new)
 	if err != nil {
 		return domain.Category{}, err
 	}
@@ -57,6 +66,11 @@ func (Cat *categoryUseCase) UpdateCategory(current string, new string) (domain.C
 }
 
 func (Cat *categoryUseCase) DeleteCategory(categoryID string) error {
+	catId, catErr := strconv.Atoi(categoryID)
+
+	if catErr != nil || catId <= 0 {
+		return errors.New("invalid category id")
+	}
 
 	err := Cat.repository.DeleteCategory(categoryID)
 	if err != nil {

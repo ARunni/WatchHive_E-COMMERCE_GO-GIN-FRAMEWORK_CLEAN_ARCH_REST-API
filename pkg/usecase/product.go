@@ -7,6 +7,7 @@ import (
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"strconv"
 )
 
 type productUseCase struct {
@@ -23,6 +24,11 @@ func NewProductUseCase(repo rep.ProductRepository, h helper.Helper) interfaces.P
 }
 
 func (i *productUseCase) AddProduct(product models.AddProducts) (models.ProductResponse, error) {
+
+	if product.CategoryID < 0 || product.Price < 0 || product.Stock < 0 {
+		err := errors.New("enter valid values")
+		return models.ProductResponse{}, err
+	}
 
 	ProductResponse, err := i.repository.AddProduct(product)
 	if err != nil {
@@ -43,6 +49,12 @@ func (i *productUseCase) ListProducts(pageNo, pageList int) ([]models.ProductUse
 }
 
 func (usecase *productUseCase) EditProduct(product domain.Product, id int) (domain.Product, error) {
+
+	if product.ID == 0 || product.CategoryID == 0 || product.Price < 0 || product.Stock < 0 {
+		err := errors.New("enter valid values")
+		return domain.Product{}, err
+	}
+
 	modProduct, err := usecase.repository.EditProduct(product, id)
 	if err != nil {
 		return domain.Product{}, err
@@ -52,6 +64,13 @@ func (usecase *productUseCase) EditProduct(product domain.Product, id int) (doma
 
 func (usecase *productUseCase) DeleteProduct(productID string) error {
 
+	id, cErr := strconv.Atoi(productID)
+
+	if cErr != nil || id <= 0 {
+		return cErr
+
+	}
+
 	err := usecase.repository.DeleteProduct(productID)
 	if err != nil {
 		return err
@@ -60,6 +79,10 @@ func (usecase *productUseCase) DeleteProduct(productID string) error {
 }
 
 func (i productUseCase) UpdateProduct(pid int, stock int) (models.ProductResponse, error) {
+
+	if pid <= 0 || stock <= 0 {
+		return models.ProductResponse{}, errors.New("invalid product id or stock")
+	}
 
 	result, err := i.repository.CheckProduct(pid)
 	if err != nil {

@@ -6,6 +6,6 @@ type Category struct {
 }
 
 type SetNewName struct {
-	Current string `json:"current"`
-	New     string `json:"new"`
+	CurrentId int    `json:"current_id"`
+	New       string `json:"new"`
 }

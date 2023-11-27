@@ -7,6 +7,7 @@ import (
 	usecase "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"strconv"
 
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
@@ -53,6 +54,11 @@ func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.Toc
 
 func (ad *adminUseCase) BlockUser(id string) error {
 
+	iD, IdErr := strconv.Atoi(id)
+	if IdErr != nil || iD <= 0 {
+		return errors.New("invalid id")
+	}
+
 	user, err := ad.adminRepository.GetUserByID(id)
 	if err != nil {
 		return err
@@ -75,6 +81,11 @@ func (ad *adminUseCase) BlockUser(id string) error {
 
 func (ad *adminUseCase) UnBlockUser(id string) error {
 
+	iD, IdErr := strconv.Atoi(id)
+	if IdErr != nil || iD <= 0 {
+		return errors.New("invalid id")
+	}
+
 	user, err := ad.adminRepository.GetUserByID(id)
 	if err != nil {
 		return err
@@ -95,6 +106,9 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 
 }
 func (ad *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
+	if page < 0 {
+		return []models.UserDetailsAtAdmin{}, errors.New("page number cannot be negative")
+	}
 
 	userDetails, err := ad.adminRepository.GetUsers(page)
 	if err != nil {

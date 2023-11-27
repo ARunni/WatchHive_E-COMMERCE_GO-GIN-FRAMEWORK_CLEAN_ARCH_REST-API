@@ -39,9 +39,9 @@ func (cr *categoryRepository) GetCategories() ([]domain.Category, error) {
 	return Model, nil
 }
 
-func (cr *categoryRepository) CheckCategory(current string) (bool, error) {
+func (cr *categoryRepository) CheckCategory(currentId int) (bool, error) {
 	var i int
-	err := cr.DB.Raw("SELECT COUNT(*) FROM categories WHERE category=?", current).Scan(&i).Error
+	err := cr.DB.Raw("SELECT COUNT(*) FROM categories WHERE id =?", currentId).Scan(&i).Error
 	if err != nil {
 		return false, err
 	}
@@ -53,7 +53,7 @@ func (cr *categoryRepository) CheckCategory(current string) (bool, error) {
 	return true, err
 }
 
-func (cr *categoryRepository) UpdateCategory(current, new string) (domain.Category, error) {
+func (cr *categoryRepository) UpdateCategory(currentId int, new string) (domain.Category, error) {
 
 	// Check the database connection
 	if cr.DB == nil {
@@ -61,7 +61,7 @@ func (cr *categoryRepository) UpdateCategory(current, new string) (domain.Catego
 	}
 
 	// Update the category
-	if err := cr.DB.Exec("UPDATE categories SET category = $1 WHERE category = $2", new, current).Error; err != nil {
+	if err := cr.DB.Exec("UPDATE categories SET category = $1 WHERE id = $2", new, currentId).Error; err != nil {
 		return domain.Category{}, err
 	}
 

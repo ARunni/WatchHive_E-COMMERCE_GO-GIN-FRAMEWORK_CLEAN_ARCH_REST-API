@@ -7,6 +7,7 @@ import (
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"regexp"
 
 	"github.com/jinzhu/copier"
 )
@@ -28,6 +29,15 @@ func NewOtpUseCase(cfg config.Config, repo repo.OtpRepository, h helper.Helper) 
 
 func (ot *otpUseCase) SendOTP(phone string) error {
 
+	phoneNumber := phone
+	pattern := `^\d{10}$`
+	regex := regexp.MustCompile(pattern)
+	value := regex.MatchString(phoneNumber)
+
+	if !value {
+		return errors.New("invalid phone number")
+	}
+
 	ok := ot.otpRepository.FindUserByMobileNumber(phone)
 
 	if !ok {
@@ -45,6 +55,15 @@ func (ot *otpUseCase) SendOTP(phone string) error {
 }
 
 func (ot *otpUseCase) VerifyOTP(code models.VerifyData) (models.TokenUsers, error) {
+
+	phoneNumber := code.PhoneNumber
+	pattern := `^\d{10}$`
+	regex := regexp.MustCompile(pattern)
+	value := regex.MatchString(phoneNumber)
+
+	if !value {
+		return models.TokenUsers{}, errors.New("invalid phone number")
+	}
 
 	ot.helper.TwilioSetup(ot.cfg.ACCOUNTSID, ot.cfg.AUTHTOKEN)
 	err := ot.helper.TwilioVerifyOTP(ot.cfg.SERVICESID, code.Code, code.PhoneNumber)
