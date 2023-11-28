@@ -133,12 +133,29 @@ func (u *UserHandler) ShowUserDetails(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
-	UserResp, err := u.userUseCase.ShowUserDetails(userId)
+	userResp, err := u.userUseCase.ShowUserDetails(userId)
 	if err != nil {
 		errREsp := response.ClientResponse(http.StatusBadRequest, "Cannot get details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errREsp)
 		return
 	}
-	successResp := response.ClientResponse(http.StatusOK, "successfully got details", UserResp, nil)
+	successResp := response.ClientResponse(http.StatusOK, "successfully got details", userResp, nil)
+	c.JSON(http.StatusOK, successResp)
+}
+
+func (u *UserHandler) GetAllAddress(c *gin.Context) {
+	userIdstring, _ := c.Get("id")
+	userId, strErr := userIdstring.(int)
+	if !strErr {
+		errResp := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, strErr)
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	userRep, err := u.userUseCase.GetAllAddress(userId)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "cannot get Addresses", nil, err)
+		c.JSON(http.StatusBadRequest, errResp)
+	}
+	successResp := response.ClientResponse(http.StatusOK, "Successfully Got All Addresses", userRep, nil)
 	c.JSON(http.StatusOK, successResp)
 }

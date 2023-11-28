@@ -106,3 +106,13 @@ func (db *userDatabase) ShowUserDetails(userID int) (models.UsersProfileDetails,
 	return userDetails, nil
 
 }
+
+func (db *userDatabase) GetAllAddress(userID int) ([]models.AddressInfoResponse, error) {
+	qurey := "SELECT * from addresses where user_id = ?"
+	var address []models.AddressInfoResponse
+	result := db.DB.Raw(qurey, userID).Scan(&address)
+	if result.Error != nil {
+		return []models.AddressInfoResponse{}, result.Error
+	}
+	return address, nil
+}

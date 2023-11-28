@@ -11,4 +11,5 @@ type UserRepository interface {
 	CheckIfUserAddress(userID int) bool
 	CheckUserById(userID int) bool
 	ShowUserDetails(userID int)(models.UsersProfileDetails,error)
+	GetAllAddress(userID int) ([]models.AddressInfoResponse,error)
 }

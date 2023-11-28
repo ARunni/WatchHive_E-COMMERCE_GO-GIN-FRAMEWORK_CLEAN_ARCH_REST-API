@@ -147,3 +147,11 @@ func (u *userUseCase) ShowUserDetails(userID int) (models.UsersProfileDetails, e
 	}
 	return profile, nil
 }
+
+func (u *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, error) {
+	address, err := u.userRepo.GetAllAddress(userID)
+	if err != nil {
+		return []models.AddressInfoResponse{}, err
+	}
+	return address, nil
+}
