@@ -5,6 +5,7 @@ import (
 	interfaces "WatchHive/pkg/repository/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"fmt"
 	"strconv"
 
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ func NewProductRepository(DB *gorm.DB) interfaces.ProductRepository {
 	}
 }
 
-func (i *productRepository) AddProduct(product models.AddProducts) (models.ProductResponse, error) {
+func (i *productRepository) AddProduct(product models.AddProducts, url string) (models.ProductResponse, error) {
 
 	var count int64
 	i.DB.Model(&models.Product{}).Where("product_name = ? AND category_id = ?", product.ProductName, product.CategoryID).Count(&count)
@@ -41,6 +42,7 @@ func (i *productRepository) AddProduct(product models.AddProducts) (models.Produ
 	if err != nil {
 		return models.ProductResponse{}, err
 	}
+
 	// getting inserted product detailsS
 	var productResponse models.ProductResponse
 
@@ -50,7 +52,15 @@ func (i *productRepository) AddProduct(product models.AddProducts) (models.Produ
 	if errr != nil {
 		return productResponse, errors.New("error checking Product details")
 	}
+	//Adding url to image table
 
+	queryimage := "INSERT INTO product_images (product_id, url) VALUES (?, ?)"
+	fmt.Println("asdfghjkasdfghjk")
+	imgErr := i.DB.Exec(queryimage, productResponse.ID, url).Error
+	if err != nil {
+		fmt.Println("qwertyuiosdfghjk")
+		return models.ProductResponse{}, imgErr
+	}
 	return productResponse, nil
 }
 

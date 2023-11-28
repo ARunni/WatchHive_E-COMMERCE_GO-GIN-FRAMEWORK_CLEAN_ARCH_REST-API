@@ -1,14 +1,21 @@
 package helper
 
 import (
-	"WatchHive/pkg/config"
+	cfg "WatchHive/pkg/config"
 	interfaces "WatchHive/pkg/helper/interface"
 	"WatchHive/pkg/utils/models"
+
 	"errors"
 	"fmt"
+	"mime/multipart"
+
 	"regexp"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/golang-jwt/jwt"
 	"github.com/jinzhu/copier"
 	"github.com/twilio/twilio-go"
@@ -17,10 +24,10 @@ import (
 )
 
 type helper struct {
-	cfg config.Config
+	cfg cfg.Config
 }
 
-func NewHelper(config config.Config) interfaces.Helper {
+func NewHelper(config cfg.Config) interfaces.Helper {
 	return &helper{
 		cfg: config,
 	}
@@ -54,7 +61,7 @@ func (helper *helper) GenerateTokenAdmin(admin models.AdminDetailsResponse) (str
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
-	cfg, _ := config.LoadConfig()
+	cfg, _ := cfg.LoadConfig()
 	accesToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accesTokenClaims)
 	accessTokenString, err := accesToken.SignedString([]byte(cfg.AdminAccessKey))
 	if err != nil {
@@ -79,7 +86,7 @@ func (h *helper) GenerateTokenClients(user models.UserDetailsResponse) (string, 
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
-	cfg, _ := config.LoadConfig()
+	cfg, _ := cfg.LoadConfig()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(cfg.UserAccessKey))
 
@@ -171,4 +178,40 @@ func (h *helper) ValidatePin(pin string) bool {
 	match, _ := regexp.MatchString(`^\d{4}(\d{2})?$`, pin)
 	return match
 
+}
+func (h *helper) AddImageToAwsS3(file *multipart.FileHeader) (string, error) {
+
+	f, openErr := file.Open()
+	if openErr != nil {
+		return "", openErr
+	}
+	defer f.Close()
+
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String(h.cfg.AWSRegion),
+		Credentials: credentials.NewStaticCredentials(
+			h.cfg.AWSAccesskeyID,
+			h.cfg.AWSSecretaccesskey,
+			"",
+		),
+	})
+
+	if err != nil {
+		return "", err
+	}
+	uploader := s3manager.NewUploader(sess)
+	bucketName := "watch-hive"
+
+	_, err = uploader.Upload(&s3manager.UploadInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(file.Filename),
+		Body:   f,
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	url := fmt.Sprintf("https://%s.s3.amazonaws.com/%s", bucketName, file.Filename)
+	return url, nil
 }

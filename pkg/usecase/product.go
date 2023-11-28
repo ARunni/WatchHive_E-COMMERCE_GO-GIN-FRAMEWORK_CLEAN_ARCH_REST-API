@@ -7,6 +7,7 @@ import (
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"mime/multipart"
 	"strconv"
 )
 
@@ -23,14 +24,19 @@ func NewProductUseCase(repo rep.ProductRepository, h helper.Helper) interfaces.P
 
 }
 
-func (i *productUseCase) AddProduct(product models.AddProducts) (models.ProductResponse, error) {
+func (i *productUseCase) AddProduct(product models.AddProducts, file *multipart.FileHeader) (models.ProductResponse, error) {
 
 	if product.CategoryID < 0 || product.Price < 0 || product.Stock < 0 {
 		err := errors.New("enter valid values")
 		return models.ProductResponse{}, err
 	}
 
-	ProductResponse, err := i.repository.AddProduct(product)
+	url, err := i.helper.AddImageToAwsS3(file)
+	if err != nil {
+		return models.ProductResponse{}, err
+	}
+
+	ProductResponse, err := i.repository.AddProduct(product, url)
 	if err != nil {
 		return models.ProductResponse{}, err
 	}

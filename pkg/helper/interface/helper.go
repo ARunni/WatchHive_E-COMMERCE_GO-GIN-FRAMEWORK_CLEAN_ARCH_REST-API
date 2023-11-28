@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"WatchHive/pkg/utils/models"
+	"mime/multipart"
 )
 
 type Helper interface {
@@ -15,6 +16,8 @@ type Helper interface {
 	TwilioSendOTP(phone string, serviceID string) (string, error)
 	TwilioVerifyOTP(serviceID string, code string, phone string) error
 
-	ValidatePhoneNumber(phone string)bool
-	ValidatePin(pin string)bool
+	ValidatePhoneNumber(phone string) bool
+	ValidatePin(pin string) bool
+
+	AddImageToAwsS3(file *multipart.FileHeader) (string, error)
 }

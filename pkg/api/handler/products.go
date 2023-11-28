@@ -22,15 +22,28 @@ func NewProductHandler(usecase interfaces.ProductUseCase) *ProductHandler {
 }
 
 func (i *ProductHandler) AddProduct(c *gin.Context) {
-	var product models.AddProducts
+	var products models.AddProducts
 
-	if err := c.ShouldBindJSON(&product); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "form file error", nil, err.Error())
+	// if err := c.ShouldBindJSON(&product); err != nil {
+	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "form file error", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errorRes)
+	// 	return
+	// }
+
+	cat := c.PostForm("category_id")
+	products.CategoryID, _ = strconv.Atoi(cat)
+	products.ProductName = c.PostForm("product_name")
+	products.Color = c.PostForm("color")
+	products.Stock, _ = strconv.Atoi(c.PostForm("stock"))
+	products.Price, _ = strconv.ParseFloat(c.PostForm("price"), 64)
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "retrieving image from the Form error", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-
-	ProductResponse, err := i.ProductUseCase.AddProduct(product)
+	ProductResponse, err := i.ProductUseCase.AddProduct(products, file)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "Could not add the product", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
