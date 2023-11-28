@@ -5,7 +5,6 @@ import (
 	helper_interface "WatchHive/pkg/helper/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
-	"regexp"
 
 	interfaces "WatchHive/pkg/repository/interface"
 	services "WatchHive/pkg/usecase/interface"
@@ -29,13 +28,10 @@ var InternalError = "Internal Server Error"
 var ErrorHashingPassword = "Error In Hashing Password"
 
 func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
-	
-	phoneNumber := user.Phone
-	pattern := `^\d{10}$`
-	regex := regexp.MustCompile(pattern)
-	value := regex.MatchString(phoneNumber)
 
-	if !value {
+	phoneNumber := u.helper.ValidatePhoneNumber(user.Phone)
+
+	if !phoneNumber {
 		return models.TokenUsers{}, errors.New("invalid phone number")
 	}
 
@@ -107,4 +103,32 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 		Users: userDetails,
 		Token: tokenString,
 	}, nil
+}
+func (u *userUseCase) AddAddress(userID int, address models.AddressInfoResponse) (models.AddressInfoResponse, error) {
+
+	phone := u.helper.ValidatePhoneNumber(address.Phone)
+	if !phone {
+		return models.AddressInfoResponse{}, errors.New("invalid mobile number")
+	}
+
+	pin := u.helper.ValidatePin(address.Pin)
+	if !pin {
+		return models.AddressInfoResponse{}, errors.New("invalid pin number")
+	}
+
+	if userID <= 0 {
+		return models.AddressInfoResponse{}, errors.New("invalid user_id")
+	}
+
+	err := u.userRepo.CheckUserById(userID)
+	if !err {
+		return models.AddressInfoResponse{}, errors.New("user does not exist")
+	}
+
+	adrs, errResp := u.userRepo.AddAddress(userID, address)
+	if errResp != nil {
+		return models.AddressInfoResponse{}, errResp
+	}
+	return adrs, nil
+
 }

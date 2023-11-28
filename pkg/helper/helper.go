@@ -6,6 +6,7 @@ import (
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -154,5 +155,20 @@ func (h *helper) TwilioVerifyOTP(serviceID string, code string, phone string) er
 	}
 
 	return errors.New("failed to validate otp")
+
+}
+
+func (h *helper) ValidatePhoneNumber(phone string) bool {
+	phoneNumber := phone
+	pattern := `^\d{10}$`
+	regex := regexp.MustCompile(pattern)
+	value := regex.MatchString(phoneNumber)
+	return value
+}
+
+func (h *helper) ValidatePin(pin string) bool {
+
+	match, _ := regexp.MatchString(`^\d{4}(\d{2})?$`, pin)
+	return match
 
 }

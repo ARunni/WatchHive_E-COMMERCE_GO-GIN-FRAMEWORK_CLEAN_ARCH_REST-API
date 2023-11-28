@@ -4,6 +4,7 @@ import (
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -83,6 +84,43 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 		return
 	}
 	successResp := response.ClientResponse(http.StatusOK, "user sigend in successfully", user_details, nil)
+	c.JSON(http.StatusOK, successResp)
+
+}
+
+func (u *UserHandler) AddAddress(c *gin.Context) {
+	var address models.AddressInfoResponse
+
+	userIdstring, _ := c.Get("id")
+	userId, strErr := userIdstring.(int)
+	fmt.Println("id,.,.,..,.,..", userId)
+
+	if !strErr {
+		errResp := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, strErr)
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+
+	if err := c.BindJSON(&address); err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+
+	err := validator.New().Struct(address)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "constraints not satisfied", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	adrRep, err := u.userUseCase.AddAddress(userId, address)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "can not add address", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+
+	successResp := response.ClientResponse(http.StatusOK, "address added  successfully", adrRep, nil)
 	c.JSON(http.StatusOK, successResp)
 
 }

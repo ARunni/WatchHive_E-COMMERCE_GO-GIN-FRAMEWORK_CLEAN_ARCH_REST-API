@@ -44,10 +44,28 @@ type UserSignInResponse struct {
 	Password string `json:"password"`
 }
 
-type UserDetailsAtAdmin struct {
-	Id      int    `json:"id"`
-	Name    string `json:"name"`
-	Email   string `json:"email" validate:"email"`
-	Phone   string `json:"phone"`
-	Blocked bool   `json:"blocked"`
+type AddressInfoResponse struct {
+	Id        uint   `json:"id" gorm:"unique;not null"`
+	Name      string `json:"name" validate:"required"`
+	HouseName string `json:"house_name" validate:"required"`
+	Street    string `json:"street"`
+	City      string `json:"city"`
+	State     string `json:"state" validate:"required"`
+	Phone     string `json:"phone" gorm:"phone,unique"`
+	Pin       string `json:"pin" validate:"required"`
+}
+type AddressInfo struct {
+	Name      string `json:"name" validate:"required"`
+	HouseName string `json:"house_name" validate:"required"`
+	Street    string `json:"street"`
+	City      string `json:"city"`
+	State     string `json:"state" validate:"required"`
+	Pin       string `json:"pin" validate:"required"`
+}
+type UsersProfileDetails struct {
+	Firstname    string `json:"firstname" `
+	Lastname     string `json:"lastname" `
+	Email        string `json:"email" `
+	Phone        string `json:"phone" `
+	ReferralCode string `json:"referral_code"`
 }

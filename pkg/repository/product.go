@@ -131,7 +131,7 @@ func (i *productRepository) UpdateProduct(pid int, stock int) (models.ProductRes
 	if err := i.DB.Raw("SELECT stock FROM products WHERE id=?", pid).Scan(&newstock).Error; err != nil {
 		return models.ProductResponse{}, err
 	}
-	newdetails.ProductID = pid
+	newdetails.ID = pid
 	newdetails.Stock = newstock
 
 	return newdetails, nil

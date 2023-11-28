@@ -1,7 +1,7 @@
 package models
 
 type ProductResponse struct {
-	ProductID   int    `json:"id"`
+	ID          int    `json:"id"`
 	CategoryID  int    `json:"category_id"`
 	ProductName string `json:"productname"`
 	Color       string `json:"color"`
