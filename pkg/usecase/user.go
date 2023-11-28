@@ -132,3 +132,18 @@ func (u *userUseCase) AddAddress(userID int, address models.AddressInfoResponse)
 	return adrs, nil
 
 }
+
+func (u *userUseCase) ShowUserDetails(userID int) (models.UsersProfileDetails, error) {
+	// if userID <= 0 {
+	// 	return models.UsersProfileDetails{},errors.New("invalid userid error usecase")
+	// }
+	// err := u.userRepo.CheckUserById(userID)
+	// if !err {
+	// 	return models.UsersProfileDetails{},errors.New("user does not exist")
+	// }
+	profile, err := u.userRepo.ShowUserDetails(userID)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
+	}
+	return profile, nil
+}

@@ -63,9 +63,9 @@ type AddressInfo struct {
 	Pin       string `json:"pin" validate:"required"`
 }
 type UsersProfileDetails struct {
-	Firstname    string `json:"firstname" `
-	Lastname     string `json:"lastname" `
-	Email        string `json:"email" `
-	Phone        string `json:"phone" `
-	ReferralCode string `json:"referral_code"`
+	ID    uint   `json:"id" gorm:"unique;not null"`
+	Name  string `json:"name" `
+	Email string `json:"email" `
+	Phone string `json:"phone" `
+	// ReferralCode string `json:"referral_code"`
 }

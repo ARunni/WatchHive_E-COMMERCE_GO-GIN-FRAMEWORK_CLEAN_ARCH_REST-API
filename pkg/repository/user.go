@@ -86,13 +86,23 @@ func (db *userDatabase) CheckUserById(userID int) bool {
 
 func (db *userDatabase) AddAddress(userID int, address models.AddressInfoResponse) (models.AddressInfoResponse, error) {
 
-	fmt.Println("gvhjghjg", userID)
-
 	querry := "INSERT INTO addresses(user_id,name,house_name,street,city,state,phone,pin) VALUES (?,?,?,?,?,?,?,?)"
 	err := db.DB.Exec(querry, userID, address.Name, address.HouseName, address.Street, address.City, address.State, address.Phone, address.Pin).Error
 	if err != nil {
 		return models.AddressInfoResponse{}, errors.New("could not add address, db error")
 	}
 	return models.AddressInfoResponse{}, nil
+
+}
+
+func (db *userDatabase) ShowUserDetails(userID int) (models.UsersProfileDetails, error) {
+	var userDetails models.UsersProfileDetails
+	query := "SELECT id,name,email,phone from users where id = ?"
+
+	result := db.DB.Raw(query, userID).Scan(&userDetails)
+	if result.Error != nil {
+		return models.UsersProfileDetails{}, result.Error
+	}
+	return userDetails, nil
 
 }

@@ -124,3 +124,21 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 	c.JSON(http.StatusOK, successResp)
 
 }
+
+func (u *UserHandler) ShowUserDetails(c *gin.Context) {
+	userIdstring, _ := c.Get("id")
+	userId, strErr := userIdstring.(int)
+	if !strErr {
+		errResp := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, strErr)
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	UserResp, err := u.userUseCase.ShowUserDetails(userId)
+	if err != nil {
+		errREsp := response.ClientResponse(http.StatusBadRequest, "Cannot get details", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errREsp)
+		return
+	}
+	successResp := response.ClientResponse(http.StatusOK, "successfully got details", UserResp, nil)
+	c.JSON(http.StatusOK, successResp)
+}
