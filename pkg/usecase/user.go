@@ -155,3 +155,18 @@ func (u *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, e
 	}
 	return address, nil
 }
+
+func (u *userUseCase) EditProfile(user models.UsersProfileDetails) (models.UsersProfileDetails, error) {
+	if user.Name == "" {
+		return models.UsersProfileDetails{}, errors.New("name cannot be empty")
+	}
+	phErr := u.helper.ValidatePhoneNumber(user.Phone)
+	if !phErr {
+		return models.UsersProfileDetails{}, errors.New("invalid phone number")
+	}
+	details, err := u.userRepo.EditProfile(user)
+	if err != nil {
+		return models.UsersProfileDetails{}, err
+	}
+	return details, nil
+}

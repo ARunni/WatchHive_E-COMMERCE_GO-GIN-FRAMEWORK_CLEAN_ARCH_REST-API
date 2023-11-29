@@ -64,8 +64,16 @@ type AddressInfo struct {
 }
 type UsersProfileDetails struct {
 	ID    uint   `json:"id" gorm:"unique;not null"`
-	Name  string `json:"name" `
-	Email string `json:"email" `
+	Name  string `json:"name" gorm:"not null"`
+	Email string `json:"email" validate:"email" `
 	Phone string `json:"phone" `
 	// ReferralCode string `json:"referral_code"`
 }
+
+// type UsersProfileDetailsEdit struct {
+// 	ID    uint   `json:"id" gorm:"unique;not null"`
+// 	Name  string `json:"name" gorm:"not null"`
+// 	Email string `json:"email" validate:"email" `
+// 	Phone string `json:"phone" `
+// 	// ReferralCode string `json:"referral_code"`
+// }

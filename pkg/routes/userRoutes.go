@@ -23,6 +23,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			profile.POST("/address", userHandler.AddAddress)
 			profile.GET("", userHandler.ShowUserDetails)
 			profile.GET("/alladdress", userHandler.GetAllAddress)
+			profile.PUT("", userHandler.EditProfile)
 		}
 	}
 

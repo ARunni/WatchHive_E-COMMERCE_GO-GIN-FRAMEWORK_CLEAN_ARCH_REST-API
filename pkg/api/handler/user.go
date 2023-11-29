@@ -4,7 +4,6 @@ import (
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -93,7 +92,6 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 
 	userIdstring, _ := c.Get("id")
 	userId, strErr := userIdstring.(int)
-	fmt.Println("id,.,.,..,.,..", userId)
 
 	if !strErr {
 		errResp := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, strErr)
@@ -158,4 +156,36 @@ func (u *UserHandler) GetAllAddress(c *gin.Context) {
 	}
 	successResp := response.ClientResponse(http.StatusOK, "Successfully Got All Addresses", userRep, nil)
 	c.JSON(http.StatusOK, successResp)
+}
+
+func (u *UserHandler) EditProfile(c *gin.Context) {
+	var details models.UsersProfileDetails
+
+	userString, er := c.Get("id")
+	if !er {
+		errREsp := response.ClientResponse(http.StatusBadRequest, "Failed to get user id", nil, er)
+		c.JSON(http.StatusBadRequest, errREsp)
+		return
+	}
+	userid, ers := userString.(int)
+	if !ers {
+		errResp := response.ClientResponse(http.StatusBadRequest, "conversion error", nil, ers)
+		c.JSON(http.StatusBadRequest, errResp)
+	}
+	if err := c.BindJSON(&details); err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, err)
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	details.ID = uint(userid)
+
+	userResp, err := u.userUseCase.EditProfile(details)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot update profile", nil, err)
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+
+	succesResp := response.ClientResponse(http.StatusOK, "Suceessfully updated profile", userResp, nil)
+	c.JSON(http.StatusOK, succesResp)
 }

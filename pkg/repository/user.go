@@ -116,3 +116,13 @@ func (db *userDatabase) GetAllAddress(userID int) ([]models.AddressInfoResponse,
 	}
 	return address, nil
 }
+
+func (db *userDatabase) EditProfile(user models.UsersProfileDetails) (models.UsersProfileDetails, error) {
+	querry := "UPDATE  users SET name = ?, email = ?, phone = ? WHERE id = ?"
+	err := db.DB.Exec(querry, user.Name, user.Email, user.Phone, user.ID).Error
+	if err != nil {
+		return models.UsersProfileDetails{}, err
+	}
+
+	return user, nil
+}

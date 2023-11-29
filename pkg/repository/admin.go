@@ -54,7 +54,7 @@ func (ad *adminRepository) GetUserByID(id string) (domain.Users, error) {
 
 func (ad *adminRepository) UpdateBlockUserByID(user domain.Users) error {
 
-	err := ad.DB.Exec("update users set blocked = ? where id = ?", user.Blocked, user.ID).Error
+	err := ad.DB.Exec("update users set blocked = ? where id = ? AND is_admin = 'f'", user.Blocked, user.ID).Error
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (ad *adminRepository) GetUsers(page int) ([]models.UserDetailsAtAdmin, erro
 	offset := (page - 1) * 2
 	var userDetails []models.UserDetailsAtAdmin
 
-	if err := ad.DB.Raw("select id,name,email,phone,blocked from users limit ? offset ?", 2, offset).Scan(&userDetails).Error; err != nil {
+	if err := ad.DB.Raw("select id,name,email,phone,blocked from users limit ? offset ? where is_admin = 'f'", 2, offset).Scan(&userDetails).Error; err != nil {
 		return []models.UserDetailsAtAdmin{}, err
 	}
 	return userDetails, nil
