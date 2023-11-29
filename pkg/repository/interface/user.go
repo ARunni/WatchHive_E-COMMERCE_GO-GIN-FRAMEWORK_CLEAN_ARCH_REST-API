@@ -13,4 +13,6 @@ type UserRepository interface {
 	ShowUserDetails(userID int) (models.UsersProfileDetails, error)
 	GetAllAddress(userID int) ([]models.AddressInfoResponse, error)
 	EditProfile(user models.UsersProfileDetails) (models.UsersProfileDetails, error)
+	ChangePassword(userID, password string) error
+	FindUserById(id string) (models.UserSignInResponse, error)
 }

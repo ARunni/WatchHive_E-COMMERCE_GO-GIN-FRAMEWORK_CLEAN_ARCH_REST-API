@@ -1,5 +1,7 @@
 package interfaces
 
-type Cart interface {
-	
+import "WatchHive/pkg/utils/models"
+
+type CartUseCase interface {
+	AddToCart(productID int , userID int) (models.CartResponse,error)
 }

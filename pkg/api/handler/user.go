@@ -4,6 +4,7 @@ import (
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -151,7 +152,7 @@ func (u *UserHandler) GetAllAddress(c *gin.Context) {
 	}
 	userRep, err := u.userUseCase.GetAllAddress(userId)
 	if err != nil {
-		errResp := response.ClientResponse(http.StatusBadRequest, "cannot get Addresses", nil, err)
+		errResp := response.ClientResponse(http.StatusBadRequest, "cannot get Addresses", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 	}
 	successResp := response.ClientResponse(http.StatusOK, "Successfully Got All Addresses", userRep, nil)
@@ -173,7 +174,7 @@ func (u *UserHandler) EditProfile(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errResp)
 	}
 	if err := c.BindJSON(&details); err != nil {
-		errResp := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, err)
+		errResp := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
@@ -181,11 +182,44 @@ func (u *UserHandler) EditProfile(c *gin.Context) {
 
 	userResp, err := u.userUseCase.EditProfile(details)
 	if err != nil {
-		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot update profile", nil, err)
+		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot update profile", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 
 	succesResp := response.ClientResponse(http.StatusOK, "Suceessfully updated profile", userResp, nil)
+	c.JSON(http.StatusOK, succesResp)
+}
+
+func (u *UserHandler) ChangePassword(c *gin.Context) {
+	var change models.ChangePassword
+
+	userString, er := c.Get("id")
+	if !er {
+
+		errREsp := response.ClientResponse(http.StatusBadRequest, "Failed to get user id", nil, er)
+		c.JSON(http.StatusBadRequest, errREsp)
+		return
+	}
+	userid, ers := userString.(int)
+	if !ers {
+		errResp := response.ClientResponse(http.StatusBadRequest, "conversion error", nil, ers)
+		c.JSON(http.StatusBadRequest, errResp)
+	}
+	if err := c.BindJSON(&change); err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	change.UserID = uint(userid)
+
+	err := u.userUseCase.ChangePassword(change)
+	fmt.Println(",,,,,,,,,,,,,,,,,,,,,", err)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot change password", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	succesResp := response.ClientResponse(http.StatusOK, "Password changed Successfully", nil, nil)
 	c.JSON(http.StatusOK, succesResp)
 }

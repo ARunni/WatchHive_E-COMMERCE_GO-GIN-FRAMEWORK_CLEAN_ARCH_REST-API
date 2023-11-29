@@ -56,6 +56,16 @@ func (c *userDatabase) FindUserByEmail(user models.UserLogin) (models.UserSignIn
 
 }
 
+func (c *userDatabase) FindUserById(id string) (models.UserSignInResponse, error) {
+	var user_details models.UserSignInResponse
+	err := c.DB.Raw("select * from users where id = ?", id).Scan(&user_details).Error
+	if err != nil {
+		return models.UserSignInResponse{}, errors.New("error in checking user details")
+	}
+	return user_details, nil
+
+}
+
 func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {
 	var isBlocked bool
 	err := cr.DB.Raw("select blocked from users where email = ?", email).Scan(&isBlocked).Error
@@ -125,4 +135,13 @@ func (db *userDatabase) EditProfile(user models.UsersProfileDetails) (models.Use
 	}
 
 	return user, nil
+}
+
+func (db *userDatabase) ChangePassword(userID, password string) error {
+	query := "update users set password = ? where id = ?"
+	err := db.DB.Exec(query, password, userID).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

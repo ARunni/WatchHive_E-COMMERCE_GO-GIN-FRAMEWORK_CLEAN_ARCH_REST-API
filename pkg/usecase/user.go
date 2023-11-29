@@ -5,6 +5,7 @@ import (
 	helper_interface "WatchHive/pkg/helper/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"strconv"
 
 	interfaces "WatchHive/pkg/repository/interface"
 	services "WatchHive/pkg/usecase/interface"
@@ -134,13 +135,7 @@ func (u *userUseCase) AddAddress(userID int, address models.AddressInfoResponse)
 }
 
 func (u *userUseCase) ShowUserDetails(userID int) (models.UsersProfileDetails, error) {
-	// if userID <= 0 {
-	// 	return models.UsersProfileDetails{},errors.New("invalid userid error usecase")
-	// }
-	// err := u.userRepo.CheckUserById(userID)
-	// if !err {
-	// 	return models.UsersProfileDetails{},errors.New("user does not exist")
-	// }
+
 	profile, err := u.userRepo.ShowUserDetails(userID)
 	if err != nil {
 		return models.UsersProfileDetails{}, err
@@ -169,4 +164,34 @@ func (u *userUseCase) EditProfile(user models.UsersProfileDetails) (models.Users
 		return models.UsersProfileDetails{}, err
 	}
 	return details, nil
+}
+
+func (u *userUseCase) ChangePassword(user models.ChangePassword) error {
+
+	if user.NewPassWord == "" || user.ConfirmPassword == "" {
+		return errors.New("password cannot be empty")
+	}
+
+	if user.NewPassWord != user.ConfirmPassword {
+		return errors.New("password mismatch")
+	}
+	newHashed, err := u.helper.PasswordHashing(user.NewPassWord)
+	if err != nil {
+		return errors.New("password hashing failed")
+	}
+
+	idString := strconv.FormatUint(uint64(user.UserID), 10)
+
+	user_details, _ := u.userRepo.FindUserById(idString)
+
+	err = u.helper.CompareHashAndPassword(user_details.Password, user.CurrentPassWord)
+	if err != nil {
+		return errors.New("incorrect current password")
+	}
+
+	err = u.userRepo.ChangePassword(idString, newHashed)
+	if err != nil {
+		return errors.New("password cannot change")
+	}
+	return nil
 }

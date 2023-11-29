@@ -9,4 +9,5 @@ type UserUseCase interface {
 	ShowUserDetails(userID int) (models.UsersProfileDetails, error)
 	GetAllAddress(userID int) ([]models.AddressInfoResponse, error)
 	EditProfile(user models.UsersProfileDetails) (models.UsersProfileDetails, error)
+	ChangePassword(user models.ChangePassword) error
 }
