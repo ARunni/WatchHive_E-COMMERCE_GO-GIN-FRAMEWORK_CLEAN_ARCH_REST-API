@@ -91,3 +91,21 @@ func (cu *cartUseCase) AddToCart(cart models.AddCart) (models.CartResponse, erro
 		Cart:       cartDetails,
 	}, nil
 }
+
+func (cu *cartUseCase) ListCartItems(userID int) (models.CartResponse, error) {
+	cartDetails, err := cu.cartRepository.DisplayCart(userID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+	cartTotal, err := cu.cartRepository.GetTotalPrice(userID)
+	if err != nil {
+
+		return models.CartResponse{}, err
+	}
+
+	return models.CartResponse{
+		UserName:   cartTotal.UserName,
+		TotalPrice: cartTotal.TotalPrice,
+		Cart:       cartDetails,
+	}, nil
+}

@@ -46,3 +46,21 @@ func (ch *CartHandler) AddToCart(c *gin.Context) {
 	succesRsp := response.ClientResponse(http.StatusOK, "Successfully Added To Cart", cartResp, nil)
 	c.JSON(http.StatusOK, succesRsp)
 }
+
+func (ch *CartHandler) ListCartItems(c *gin.Context) {
+	userID, errs := c.Get("id")
+	if !errs {
+		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot list products", nil, errors.New("error in getting user id"))
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	cartResp, err := ch.CartUsecase.ListCartItems(userID.(int))
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "could not get list", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+
+	succesResp := response.ClientResponse(http.StatusOK, "successfully got the cart list", cartResp, nil)
+	c.JSON(http.StatusOK, succesResp)
+}

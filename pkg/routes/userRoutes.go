@@ -29,6 +29,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 		cart := engine.Group("/cart")
 		{
 			cart.POST("", cartHandler.AddToCart)
+			cart.GET("", cartHandler.ListCartItems)
 		}
 	}
 
