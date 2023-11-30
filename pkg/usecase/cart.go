@@ -157,3 +157,35 @@ func (cu *cartUseCase) UpdateProductQuantityCart(cart models.AddCart) (models.Ca
 	}, nil
 
 }
+
+func (cu *cartUseCase) RemoveFromCart(cart models.RemoveFromCart) (models.CartResponse, error) {
+
+	if cart.ProductID < 1 {
+		return models.CartResponse{}, errors.New("product id cannot be empty")
+	}
+	err := cu.cartRepository.RemoveFromCart(cart)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+	is_available, err := cu.cartRepository.CheckCart(cart.UserID)
+	if !is_available {
+		return models.CartResponse{}, err
+	}
+
+	cartDetails, err := cu.cartRepository.DisplayCart(cart.UserID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+	cartTotal, err := cu.cartRepository.GetTotalPrice(cart.UserID)
+	if err != nil {
+
+		return models.CartResponse{}, err
+	}
+
+	return models.CartResponse{
+		UserName:   cartTotal.UserName,
+		TotalPrice: cartTotal.TotalPrice,
+		Cart:       cartDetails,
+	}, nil
+
+}

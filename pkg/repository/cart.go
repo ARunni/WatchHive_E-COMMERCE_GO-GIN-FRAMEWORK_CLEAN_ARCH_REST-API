@@ -148,3 +148,25 @@ func (cr *cartRepository) UpdateProductQuantityCart(cart models.AddCart) error {
 	}
 	return nil
 }
+
+func (cr *cartRepository) RemoveFromCart(cart models.RemoveFromCart) error {
+	querry := `	DELETE  FROM carts WHERE product_id = ? AND user_id = ?`
+	err := cr.DB.Exec(querry, cart.ProductID, cart.UserID).Error
+	if err != nil {
+		return errors.New("error at database")
+	}
+	return nil
+}
+
+func (cr *cartRepository) CheckCart(userID int) (bool, error) {
+	var count int
+	querry := `	SELECT COUNT(*) FROM carts WHERE user_id = ?`
+	err := cr.DB.Raw(querry, userID).Scan(&count).Error
+	if err != nil {
+		return false, errors.New("no cart found")
+	}
+	if count < 0 {
+		return false, errors.New("no cart found")
+	}
+	return true, nil
+}

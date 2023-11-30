@@ -11,6 +11,8 @@ type CartRepository interface {
 	DisplayCart(userID int) ([]models.Cart, error)
 	GetTotalPrice(userID int) (models.CartTotal, error)
 	UpdateProductQuantityCart(cart models.AddCart) error
+	RemoveFromCart(cart models.RemoveFromCart) error
+	CheckCart(userID int) (bool, error)
 
 	// GetTotalPrice(userID int) (models.CartTotal, error)
 
