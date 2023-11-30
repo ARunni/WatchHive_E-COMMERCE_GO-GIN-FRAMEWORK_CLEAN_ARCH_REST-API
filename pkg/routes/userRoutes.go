@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, productHandler *handler.ProductHandler) {
+func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler) {
 
 	engine.POST("/signup", userHandler.UserSignUp)
 	engine.POST("/login", userHandler.LoginHandler)
@@ -25,6 +25,10 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			profile.GET("/alladdress", userHandler.GetAllAddress)
 			profile.PUT("", userHandler.EditProfile)
 			profile.PATCH("", userHandler.ChangePassword)
+		}
+		cart := engine.Group("/cart")
+		{
+			cart.POST("", cartHandler.AddToCart)
 		}
 	}
 

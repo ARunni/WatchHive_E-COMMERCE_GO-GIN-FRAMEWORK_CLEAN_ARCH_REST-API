@@ -146,3 +146,27 @@ func (i *productRepository) UpdateProduct(pid int, stock int) (models.ProductRes
 
 	return newdetails, nil
 }
+
+func (cr *productRepository) CheckProductAvailable(product_id int) (bool, error) {
+	var count int
+	querry := "SELECT COUNT(*) FROM products where id = ?"
+
+	err := cr.DB.Raw(querry, product_id).Scan(&count).Error
+	if err != nil {
+		return false, errors.New("product does not exist")
+	}
+	if count < 1 {
+		return false, errors.New("product does not exist")
+	}
+	return true, nil
+}
+func (cr *productRepository) GetPriceOfProduct(product_id int) (float64, error) {
+	qurry := "SELECT price FROM products where id = ?"
+	var price float64
+	err := cr.DB.Raw(qurry, product_id).Scan(&price).Error
+
+	if err != nil {
+		return 0, errors.New("error in getting price")
+	}
+	return price, nil
+}

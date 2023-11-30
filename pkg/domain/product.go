@@ -16,8 +16,8 @@ type Product struct {
 }
 
 type ProductImage struct {
-	ID        uint    `json:"id" gorm:"primaryKey"`
-	ProductId int     `json:"product_id"`
-	Product   Product `json:"product" gorm:"foreignKey:ID;constraint:OnDelete:CASCADE"`
-	Url       string  `json:"url"`
+	ID        uint `json:"id" gorm:"primaryKey"`
+	ProductId int  `json:"product_id"`
+	// Product   Product `json:"product" gorm:"foreignKey:ID;constraint:OnDelete:CASCADE"`
+	Url string `json:"url"`
 }

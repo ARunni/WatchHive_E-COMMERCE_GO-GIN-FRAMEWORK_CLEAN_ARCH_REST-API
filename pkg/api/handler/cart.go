@@ -1,0 +1,48 @@
+package handler
+
+import (
+	interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/models"
+	"WatchHive/pkg/utils/response"
+	"errors"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+type CartHandler struct {
+	CartUsecase interfaces.CartUseCase
+}
+
+func NewCartHandler(useCase interfaces.CartUseCase) *CartHandler {
+	return &CartHandler{
+		CartUsecase: useCase,
+	}
+}
+
+func (ch *CartHandler) AddToCart(c *gin.Context) {
+	var cart models.AddCart
+	userID, errb := c.Get("id")
+	if !errb {
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided are in wrong format", nil, errors.New("getting user id is failed"))
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	if err := c.BindJSON(&cart); err != nil {
+
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	cart.UserID, _ = userID.(int)
+
+	cartResp, err := ch.CartUsecase.AddToCart(cart)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "Cannot Add to Cart", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	succesRsp := response.ClientResponse(http.StatusOK, "Successfully Added To Cart", cartResp, nil)
+	c.JSON(http.StatusOK, succesRsp)
+}
