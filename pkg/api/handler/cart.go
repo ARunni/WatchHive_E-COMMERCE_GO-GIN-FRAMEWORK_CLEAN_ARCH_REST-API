@@ -64,3 +64,32 @@ func (ch *CartHandler) ListCartItems(c *gin.Context) {
 	succesResp := response.ClientResponse(http.StatusOK, "successfully got the cart list", cartResp, nil)
 	c.JSON(http.StatusOK, succesResp)
 }
+
+func (ch *CartHandler) UpdateProductQuantityCart(c *gin.Context) {
+	var cart models.AddCart
+	userID, errs := c.Get("id")
+	if !errs {
+		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot update quantity", nil, errors.New("error in getting user id"))
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+
+	if err := c.BindJSON(&cart); err != nil {
+
+		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	cart.UserID = userID.(int)
+
+	cartResp, err := ch.CartUsecase.UpdateProductQuantityCart(cart)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "Updation Failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	succesResp := response.ClientResponse(http.StatusOK, "Successfully Updated", cartResp, nil)
+	c.JSON(http.StatusOK, succesResp)
+
+}

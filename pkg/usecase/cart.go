@@ -109,3 +109,51 @@ func (cu *cartUseCase) ListCartItems(userID int) (models.CartResponse, error) {
 		Cart:       cartDetails,
 	}, nil
 }
+
+func (cu *cartUseCase) UpdateProductQuantityCart(cart models.AddCart) (models.CartResponse, error) {
+
+	if cart.Quantity < 1 || cart.ProductID < 1 {
+		return models.CartResponse{}, errors.New("invalid product id or quantity")
+	}
+	is_available, err := cu.productRepository.CheckProductAvailable(int(cart.ProductID))
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+	if !is_available {
+		return models.CartResponse{}, errors.New("product is not available")
+	}
+	stock, err := cu.cartRepository.CheckStock(int(cart.ProductID))
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+
+	if stock < int(cart.Quantity) {
+		return models.CartResponse{}, errors.New("out of stock")
+	}
+
+	if int(cart.Quantity) > 20 {
+		return models.CartResponse{}, errors.New("limit exceeds")
+	}
+
+	err = cu.cartRepository.UpdateProductQuantityCart(cart)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+
+	cartDetails, err := cu.cartRepository.DisplayCart(cart.UserID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+	cartTotal, err := cu.cartRepository.GetTotalPrice(cart.UserID)
+	if err != nil {
+
+		return models.CartResponse{}, err
+	}
+
+	return models.CartResponse{
+		UserName:   cartTotal.UserName,
+		TotalPrice: cartTotal.TotalPrice,
+		Cart:       cartDetails,
+	}, nil
+
+}
