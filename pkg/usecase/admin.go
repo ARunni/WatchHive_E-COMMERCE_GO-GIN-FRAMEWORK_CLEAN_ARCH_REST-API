@@ -118,3 +118,20 @@ func (ad *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) 
 	return userDetails, nil
 
 }
+
+///1 DEC
+
+func (ad *adminUseCase) AddPaymentMethod(payment models.NewPaymentMethod) (domain.PaymentMethod, error) {
+	exists, err := ad.adminRepository.CheckIfPaymentMethodAlreadyExists(payment.PaymentName)
+	if err != nil {
+		return domain.PaymentMethod{}, err
+	}
+	if exists {
+		return domain.PaymentMethod{}, errors.New("payment method already exists")
+	}
+	paymentadd, err := ad.adminRepository.AddPaymentMethod(payment)
+	if err != nil {
+		return domain.PaymentMethod{}, err
+	}
+	return paymentadd, nil
+}

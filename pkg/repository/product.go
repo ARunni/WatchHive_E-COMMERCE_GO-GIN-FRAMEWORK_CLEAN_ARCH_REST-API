@@ -68,7 +68,12 @@ func (prod *productRepository) ListProducts(pageList, offset int) ([]models.Prod
 
 	var product_list []models.ProductUserResponse
 
-	query := "SELECT i.id,i.category_id,c.category,i.product_name,i.color,i.price FROM products i INNER JOIN categories c ON i.category_id = c.id LIMIT $1 OFFSET $2"
+	query := `SELECT p.id, p.category_id, c.category, p.product_name, p.color, p.price, i.url
+	FROM products p
+	INNER JOIN categories c ON p.category_id = c.id
+	LEFT JOIN product_images i ON p.id = i.product_id
+	LIMIT $1 OFFSET $2`
+
 	err := prod.DB.Raw(query, pageList, offset).Scan(&product_list).Error
 
 	if err != nil {

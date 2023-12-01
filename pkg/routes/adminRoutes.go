@@ -36,5 +36,10 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 			productManagement.PATCH("", productHandler.UpdateProduct)
 		}
 
+		paymentManagement := engine.Group("/payment")
+		{
+			paymentManagement.POST("", adminHandler.AddPaymentMethod)
+		}
+
 	}
 }

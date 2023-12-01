@@ -94,14 +94,14 @@ func (db *userDatabase) CheckUserById(userID int) bool {
 	return true
 }
 
-func (db *userDatabase) AddAddress(userID int, address models.AddressInfoResponse) (models.AddressInfoResponse, error) {
+func (db *userDatabase) AddAddress(userID int, address models.AddressInfoResponse) error {
 
 	querry := "INSERT INTO addresses(user_id,name,house_name,street,city,state,phone,pin) VALUES (?,?,?,?,?,?,?,?)"
 	err := db.DB.Exec(querry, userID, address.Name, address.HouseName, address.Street, address.City, address.State, address.Phone, address.Pin).Error
 	if err != nil {
-		return models.AddressInfoResponse{}, errors.New("could not add address, db error")
+		return errors.New("could not add address, db error")
 	}
-	return models.AddressInfoResponse{}, nil
+	return nil
 
 }
 

@@ -128,3 +128,22 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 
 }
+
+func (ah *AdminHandler) AddPaymentMethod(c *gin.Context) {
+	var payment models.NewPaymentMethod
+
+	err := c.BindJSON(&payment)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot Add payment method Payment name", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	paymentResp, err := ah.adminUseCase.AddPaymentMethod(payment)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot Add payment method", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	successResp := response.ClientResponse(http.StatusOK, "Successfully Added", paymentResp, nil)
+	c.JSON(http.StatusOK, successResp)
+}

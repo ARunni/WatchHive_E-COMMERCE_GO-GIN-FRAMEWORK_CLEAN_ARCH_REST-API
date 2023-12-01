@@ -46,4 +46,5 @@ type ProductUserResponse struct {
 	ProductName string `json:"productname"`
 	Color       string `json:"color"`
 	Price       int    `json:"price"`
+	Url         string `json:"image"`
 }

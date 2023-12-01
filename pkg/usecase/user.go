@@ -105,33 +105,37 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 		Token: tokenString,
 	}, nil
 }
-func (u *userUseCase) AddAddress(userID int, address models.AddressInfoResponse) (models.AddressInfoResponse, error) {
+func (u *userUseCase) AddAddress(userID int, address models.AddressInfoResponse) ([]models.AddressInfoResponse, error) {
 
 	phone := u.helper.ValidatePhoneNumber(address.Phone)
 	if !phone {
-		return models.AddressInfoResponse{}, errors.New("invalid mobile number")
+		return []models.AddressInfoResponse{}, errors.New("invalid mobile number")
 	}
 
 	pin := u.helper.ValidatePin(address.Pin)
 	if !pin {
-		return models.AddressInfoResponse{}, errors.New("invalid pin number")
+		return []models.AddressInfoResponse{}, errors.New("invalid pin number")
 	}
 
 	if userID <= 0 {
-		return models.AddressInfoResponse{}, errors.New("invalid user_id")
+		return []models.AddressInfoResponse{}, errors.New("invalid user_id")
 	}
 
-	err := u.userRepo.CheckUserById(userID)
-	if !err {
-		return models.AddressInfoResponse{}, errors.New("user does not exist")
+	errs := u.userRepo.CheckUserById(userID)
+	if !errs {
+		return []models.AddressInfoResponse{}, errors.New("user does not exist")
 	}
 
-	adrs, errResp := u.userRepo.AddAddress(userID, address)
+	errResp := u.userRepo.AddAddress(userID, address)
 	if errResp != nil {
-		return models.AddressInfoResponse{}, errResp
+		return []models.AddressInfoResponse{}, errResp
 	}
-	return adrs, nil
 
+	addressRep, err := u.userRepo.GetAllAddress(userID)
+	if err != nil {
+		return []models.AddressInfoResponse{}, err
+	}
+	return addressRep, nil
 }
 
 func (u *userUseCase) ShowUserDetails(userID int) (models.UsersProfileDetails, error) {
