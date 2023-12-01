@@ -20,11 +20,11 @@ func NewAdminRepository(DB *gorm.DB) interfaces.AdminRepository {
 	}
 }
 
-func (ad *adminRepository) LoginHandler(adminDetails models.AdminLogin) (domain.Admin, error) {
+func (ad *adminRepository) LoginHandler(adminDetails models.AdminLogin) (models.Admin, error) {
 
-	var adminCompareDetails domain.Admin
+	var adminCompareDetails models.Admin
 	if err := ad.DB.Raw("SELECT * FROM users WHERE email = ? ", adminDetails.Email).Scan(&adminCompareDetails).Error; err != nil {
-		return domain.Admin{}, err
+		return models.Admin{}, err
 	}
 
 	return adminCompareDetails, nil
@@ -79,26 +79,4 @@ func (ad *adminRepository) GetUsers(page int) ([]models.UserDetailsAtAdmin, erro
 
 }
 
-func (ad *adminRepository) AddPaymentMethod(pay models.NewPaymentMethod) (domain.PaymentMethod, error) {
-	var payment string
-	if err := ad.DB.Raw("INSERT INTO payment_methods (payment_name) VALUES (?) RETURNING payment_name", pay.PaymentName).Scan(&payment).Error; err != nil {
-		return domain.PaymentMethod{}, err
-	}
-	var paymentResponse domain.PaymentMethod
-	err := ad.DB.Raw("SELECT id, payment_name FROM payment_methods WHERE payment_name = ?", payment).Scan(&paymentResponse).Error
-	if err != nil {
-		return domain.PaymentMethod{}, err
-	}
-	return paymentResponse, nil
 
-}
-
-func (ad *adminRepository) CheckIfPaymentMethodAlreadyExists(payment string) (bool, error) {
-	var count int64
-	err := ad.DB.Raw("SELECT COUNT(*) FROM payment_methods WHERE payment_name = $1", payment).Scan(&count).Error
-	if err != nil {
-		return false, err
-	}
-
-	return count > 0, nil
-}

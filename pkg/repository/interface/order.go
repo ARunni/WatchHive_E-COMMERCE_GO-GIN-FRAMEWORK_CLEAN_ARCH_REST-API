@@ -11,4 +11,12 @@ type OrderRepository interface {
 	FindCartQuantity(cart_id, product_id int) (int, error)
 	FindPrice(product_id int) (float64, error)
 	FindStock(id int) (int, error)
+	CheckOrderID(orderId int) (bool, error)
+	OrderItems(ob models.OrderIncoming, price float64) (int, error)
+	AddOrderProducts(order_id int, cart []models.Cart) error
+	GetBriefOrderDetails(orderID int) (models.OrderSuccessResponse, error)
+	OrderExist(orderID int) error
+	GetShipmentStatus(orderID int) (string, error)
+	UpdateOrder(orderID int) error
+	GetOrderDetails(userId int, page int, count int) ([]models.FullOrderDetails, error)
 }

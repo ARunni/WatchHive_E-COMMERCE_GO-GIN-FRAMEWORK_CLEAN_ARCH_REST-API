@@ -15,4 +15,5 @@ type UserRepository interface {
 	EditProfile(user models.UsersProfileDetails) (models.UsersProfileDetails, error)
 	ChangePassword(userID, password string) error
 	FindUserById(id string) (models.UserSignInResponse, error)
+	AddressExist(orderBody models.OrderIncoming) (bool, error)
 }

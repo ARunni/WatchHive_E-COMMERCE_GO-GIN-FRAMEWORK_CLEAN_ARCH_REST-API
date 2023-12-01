@@ -17,8 +17,26 @@ type OrderSuccessResponse struct {
 }
 
 type OrderDetails struct {
-    OrderId        int
-    FinalPrice     float64
-    ShipmentStatus string
-    PaymentStatus  string
+	OrderId        int
+	FinalPrice     float64
+	ShipmentStatus string
+	PaymentStatus  string
+}
+
+type OrderIncoming struct {
+	UserID    int `json:"user_id"`
+	PaymentID int `json:"payment_id"`
+	AddressID int `json:"address_id"`
+}
+
+type OrderProductDetails struct {
+	ProductID   uint    `json:"product_id"`
+	ProductName string  `json:"product_name"`
+	Quantity    int     `json:"quantity"`
+	TotalPrice  float64 `json:"total_price"`
+}
+
+type FullOrderDetails struct {
+	OrderDetails        OrderDetails
+	OrderProductDetails []OrderProductDetails
 }

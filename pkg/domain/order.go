@@ -26,7 +26,4 @@ type OrderItem struct {
 	TotalPrice float64 `json:"total_price"`
 }
 
-type OrderSuccessResponse struct {
-	OrderID        uint   `json:"order_id"`
-	ShipmentStatus string `json:"shipment_status"`
-}
+

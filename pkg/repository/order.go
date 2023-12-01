@@ -18,7 +18,6 @@ func NewOrderRepository(Db *gorm.DB) interfaces.OrderRepository {
 	}
 }
 
-
 func (or *orderRepository) GetAllPaymentOption() ([]models.PaymentDetails, error) {
 	var paymentMethods []models.PaymentDetails
 	err := or.DB.Raw("SELECT * FROM payment_methods").Scan(&paymentMethods).Error
@@ -103,4 +102,107 @@ func (or *orderRepository) FindStock(id int) (int, error) {
 	}
 
 	return stock, nil
+}
+
+func (or *orderRepository) CheckOrderID(orderId int) (bool, error) {
+	var count int
+	err := or.DB.Raw("SELECT COUNT(*) FROM orders WHERE id = ?", orderId).Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (or *orderRepository) OrderExist(orderID int) error {
+	err := or.DB.Raw("SELECT id FROM orders WHERE id = ?", orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (or *orderRepository) GetShipmentStatus(orderID int) (string, error) {
+	var status string
+	err := or.DB.Raw("SELECT shipment_status FROM orders WHERE id= ?", orderID).Scan(&status).Error
+	if err != nil {
+		return "", err
+	}
+	return status, nil
+}
+
+func (or *orderRepository) UpdateOrder(orderID int) error {
+	err := or.DB.Exec("UPDATE orders SET Shipment_status = 'processing' WHERE id = ?", orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (or *orderRepository) AddOrderProducts(order_id int, cart []models.Cart) error {
+	query := `
+    INSERT INTO order_items (order_id,product_id,quantity,total_price)
+    VALUES (?, ?, ?, ?) `
+	for _, v := range cart {
+		var productID int
+		if err := or.DB.Raw("SELECT id FROM products WHERE product_name = $1", v.ProductName).Scan(&productID).Error; err != nil {
+			return err
+		}
+		if err := or.DB.Exec(query, order_id, productID, v.Quantity, v.TotalPrice).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (or *orderRepository) GetBriefOrderDetails(orderID int) (models.OrderSuccessResponse, error) {
+	var orderSuccessResponse models.OrderSuccessResponse
+	err := or.DB.Raw(`SELECT id as order_id,shipment_status FROM orders WHERE id = ?`, orderID).Scan(&orderSuccessResponse).Error
+	if err != nil {
+		return models.OrderSuccessResponse{}, err
+	}
+	return orderSuccessResponse, nil
+}
+
+func (or *orderRepository) OrderItems(ob models.OrderIncoming, price float64) (int, error) {
+	var id int
+	query := `
+    INSERT INTO orders (created_at , user_id , address_id , payment_method_id , final_price)
+    VALUES (NOW(),?, ?, ?, ?)
+    RETURNING id`
+	or.DB.Raw(query, ob.UserID, ob.AddressID, ob.PaymentID, price).Scan(&id)
+	return id, nil
+}
+
+func (or *orderRepository) GetOrderDetails(userId int, page int, count int) ([]models.FullOrderDetails, error) {
+	if page == 0 {
+		page = 1
+	}
+	offset := (page - 1) * count
+	var orderDetails []models.OrderDetails
+	err := or.DB.Raw("SELECT id as order_id,final_price,shipment_status,payment_status FROM orders WHERE user_id = ? LIMIT ? OFFSET ? ", userId, count, offset).Scan(&orderDetails).Error
+
+	if err != nil {
+		return []models.FullOrderDetails{}, err
+	}
+
+	var fullOrderDetails []models.FullOrderDetails
+	for _, od := range orderDetails {
+		var orderProductDetails []models.OrderProductDetails
+		err := or.DB.Raw(`SELECT
+		order_items.product_id,
+		products.product_name AS product_name,
+		order_items.quantity,
+		order_items.total_price
+	    FROM
+		order_items
+	    INNER JOIN
+		products ON order_items.product_id = products.id
+	    WHERE
+		order_items.order_id = $1 `, od.OrderId).Scan(&orderProductDetails).Error
+		if err != nil {
+			return []models.FullOrderDetails{}, err
+		}
+		fullOrderDetails = append(fullOrderDetails, models.FullOrderDetails{OrderDetails: od, OrderProductDetails: orderProductDetails})
+	}
+	return fullOrderDetails, nil
 }

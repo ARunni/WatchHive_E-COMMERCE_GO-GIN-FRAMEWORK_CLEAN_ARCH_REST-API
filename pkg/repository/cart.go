@@ -170,3 +170,25 @@ func (cr *cartRepository) CheckCart(userID int) (bool, error) {
 	}
 	return true, nil
 }
+
+func (cr *cartRepository) TotalAmountInCart(userID int) (float64, error) {
+	var price float64
+	if err := cr.DB.Raw("SELECT sum(total_price) FROM carts WHERE  user_id= $1", userID).Scan(&price).Error; err != nil {
+		return 0, err
+	}
+	return price, nil
+}
+
+func (cr *cartRepository) UpdateCartAfterOrder(userID, productID int, quantity float64) error {
+	err := cr.DB.Exec("DELETE FROM carts WHERE user_id = ? and product_id = ?", userID, productID).Error
+	if err != nil {
+		return err
+	}
+
+	err = cr.DB.Exec("UPDATE products SET stock = stock - ? WHERE id = ?", quantity, productID).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

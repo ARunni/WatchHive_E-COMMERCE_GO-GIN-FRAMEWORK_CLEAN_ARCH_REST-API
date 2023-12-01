@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"WatchHive/pkg/domain"
 	helper "WatchHive/pkg/helper/interface"
 	interfaces "WatchHive/pkg/repository/interface"
 	usecase "WatchHive/pkg/usecase/interface"
@@ -25,26 +24,26 @@ func NewAdminUseCase(repo interfaces.AdminRepository, h helper.Helper) usecase.A
 	}
 }
 
-func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (domain.TockenAdmin, error) {
+func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (models.TockenAdmin, error) {
 
 	adminCompareDetails, err := ad.adminRepository.LoginHandler(adminDetails)
 	if err != nil {
-		return domain.TockenAdmin{}, err
+		return models.TockenAdmin{}, err
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(adminCompareDetails.Password), []byte(adminDetails.Password))
 	if err != nil {
-		return domain.TockenAdmin{}, err
+		return models.TockenAdmin{}, err
 	}
 	var adminDetailsResponse models.AdminDetailsResponse
 	err = copier.Copy(&adminDetailsResponse, &adminCompareDetails)
 	if err != nil {
-		return domain.TockenAdmin{}, err
+		return models.TockenAdmin{}, err
 	}
 	access, _, err := ad.helper.GenerateTokenAdmin(adminDetailsResponse)
 	if err != nil {
-		return domain.TockenAdmin{}, err
+		return models.TockenAdmin{}, err
 	}
-	return domain.TockenAdmin{
+	return models.TockenAdmin{
 		Admin:       adminDetailsResponse,
 		AccessToken: access,
 		// RefreshToken: refresh,
@@ -120,18 +119,3 @@ func (ad *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) 
 }
 
 ///1 DEC
-
-func (ad *adminUseCase) AddPaymentMethod(payment models.NewPaymentMethod) (domain.PaymentMethod, error) {
-	exists, err := ad.adminRepository.CheckIfPaymentMethodAlreadyExists(payment.PaymentName)
-	if err != nil {
-		return domain.PaymentMethod{}, err
-	}
-	if exists {
-		return domain.PaymentMethod{}, errors.New("payment method already exists")
-	}
-	paymentadd, err := ad.adminRepository.AddPaymentMethod(payment)
-	if err != nil {
-		return domain.PaymentMethod{}, err
-	}
-	return paymentadd, nil
-}
