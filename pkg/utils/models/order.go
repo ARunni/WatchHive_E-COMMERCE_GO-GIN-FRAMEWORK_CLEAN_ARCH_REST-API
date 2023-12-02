@@ -40,3 +40,8 @@ type FullOrderDetails struct {
 	OrderDetails        OrderDetails
 	OrderProductDetails []OrderProductDetails
 }
+
+type OrderProducts struct {
+	ProductId string `json:"id"`
+	Stock     int    `json:"stock"`
+}

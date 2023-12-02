@@ -142,3 +142,28 @@ func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Full Order Details", OrderDetails, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (oh *OrderHandler) CancelOrder(c *gin.Context) {
+	orderID, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusInternalServerError, "error from orderID", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	id, errs := c.Get("id")
+	if !errs {
+		err := errors.New("error in getting id")
+		errRes := response.ClientResponse(http.StatusInternalServerError, "error from userid", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errRes)
+		return
+	}
+	userID := id.(int)
+	err = oh.orderUsecase.CancelOrders(orderID, userID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "Could not cancel the order", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Cancel Successfull", nil, nil)
+	c.JSON(http.StatusOK, success)
+}

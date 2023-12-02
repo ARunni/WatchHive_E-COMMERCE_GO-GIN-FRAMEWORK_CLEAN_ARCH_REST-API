@@ -206,3 +206,58 @@ func (or *orderRepository) GetOrderDetails(userId int, page int, count int) ([]m
 	}
 	return fullOrderDetails, nil
 }
+
+func (or *orderRepository) UserOrderRelationship(orderID int, userID int) (int, error) {
+
+	var testUserID int
+	err := or.DB.Raw("select user_id from orders where id = ?", orderID).Scan(&testUserID).Error
+	if err != nil {
+		return -1, err
+	}
+	return testUserID, nil
+}
+
+func (or *orderRepository) GetProductDetailsFromOrders(orderID int) ([]models.OrderProducts, error) {
+	var OrderProductDetails []models.OrderProducts
+	if err := or.DB.Raw("SELECT product_id,quantity as stock FROM order_items WHERE order_id = ?", orderID).Scan(&OrderProductDetails).Error; err != nil {
+		return []models.OrderProducts{}, err
+	}
+	return OrderProductDetails, nil
+}
+func (or *orderRepository) CancelOrders(orderID int) error {
+	status := "cancelled"
+	err := or.DB.Exec("UPDATE orders SET shipment_status = ? , approval='false' WHERE id = ? ", status, orderID).Error
+	if err != nil {
+		return err
+	}
+	var paymentMethod int
+	err = or.DB.Raw("SELECT payment_method_id FROM orders WHERE id = ? ", orderID).Scan(&paymentMethod).Error
+	if err != nil {
+		return err
+	}
+	if paymentMethod == 3 || paymentMethod == 2 {
+		err = or.DB.Exec("UPDATE orders SET payment_status = 'refunded' WHERE id = ?", orderID).Error
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (or *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error {
+
+	for _, od := range orderProducts {
+
+		var quantity int
+		if err := or.DB.Raw("SELECT stock FROM products WHERE id = ?", od.ProductId).Scan(&quantity).Error; err != nil {
+			return err
+		}
+
+		od.Stock += quantity
+		if err := or.DB.Exec("UPDATE products SET stock = ? WHERE id = ?", od.Stock, od.ProductId).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+
+}

@@ -7,4 +7,5 @@ type OrderUseCase interface {
 	OrderItemsFromCart(orderFromCart models.OrderFromCart, userID int) (models.OrderSuccessResponse, error)
 	ExecutePurchaseCOD(orderID int) error
 	GetOrderDetails(userId int, page int, count int) ([]models.FullOrderDetails, error)
+	CancelOrders(orderID int, userId int) error 
 }

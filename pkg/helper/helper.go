@@ -82,7 +82,7 @@ func (h *helper) GenerateTokenClients(user models.UserDetailsResponse) (string, 
 		Email: user.Email,
 		Role:  "client",
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 10).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 	}

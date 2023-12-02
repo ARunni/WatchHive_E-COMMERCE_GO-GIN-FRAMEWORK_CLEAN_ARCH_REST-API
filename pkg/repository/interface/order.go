@@ -19,4 +19,8 @@ type OrderRepository interface {
 	GetShipmentStatus(orderID int) (string, error)
 	UpdateOrder(orderID int) error
 	GetOrderDetails(userId int, page int, count int) ([]models.FullOrderDetails, error)
+	UserOrderRelationship(orderID int, userID int) (int, error) 
+	GetProductDetailsFromOrders(orderID int) ([]models.OrderProducts, error) 
+	CancelOrders(orderID int) error 
+	UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error 
 }

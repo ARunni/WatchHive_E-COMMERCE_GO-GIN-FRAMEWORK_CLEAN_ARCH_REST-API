@@ -164,3 +164,43 @@ func (or *orderUseCase) GetOrderDetails(userId int, page int, count int) ([]mode
 	return fullOrderDetails, nil
 
 }
+
+func (or *orderUseCase) CancelOrders(orderID int, userId int) error {
+	userTest, err := or.orderRepository.UserOrderRelationship(orderID, userId)
+	if err != nil {
+		return err
+	}
+	if userTest != userId {
+		return errors.New("the order is not done by this user")
+	}
+	orderProductDetails, err := or.orderRepository.GetProductDetailsFromOrders(orderID)
+	if err != nil {
+		return err
+	}
+	shipmentStatus, err := or.orderRepository.GetShipmentStatus(orderID)
+	if err != nil {
+		return err
+	}
+	if shipmentStatus == "delivered" {
+		return errors.New("item already delivered, cannot cancel")
+	}
+
+	if shipmentStatus == "pending" || shipmentStatus == "returned" || shipmentStatus == "return" {
+		message := fmt.Sprint(shipmentStatus)
+		return errors.New("the order is in" + message + ", so no point in cancelling")
+	}
+
+	if shipmentStatus == "cancelled" {
+		return errors.New("the order is already cancelled, so no point in cancelling")
+	}
+	err = or.orderRepository.CancelOrders(orderID)
+	if err != nil {
+		return err
+	}
+	err = or.orderRepository.UpdateQuantityOfProduct(orderProductDetails)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
