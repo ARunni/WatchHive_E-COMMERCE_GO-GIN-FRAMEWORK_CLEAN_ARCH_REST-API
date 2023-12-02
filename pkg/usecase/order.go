@@ -204,3 +204,18 @@ func (or *orderUseCase) CancelOrders(orderID int, userId int) error {
 	return nil
 
 }
+
+func (ou *orderUseCase) GetAllOrdersAdmin(page models.Page) ([]models.CombinedOrderDetails, error) {
+
+	if page.Page == 0 {
+		page.Page = 1
+	}
+	offset := (page.Page - 1) * page.Size
+
+	orderDetail, err := ou.orderRepository.GetAllOrdersAdmin(offset,page.Size)
+	if err != nil {
+		return []models.CombinedOrderDetails{}, err
+	}
+	return orderDetail, nil
+
+}

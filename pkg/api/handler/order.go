@@ -68,8 +68,8 @@ func (oh *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 	}
 	orderSuccessResponse, err := oh.orderUsecase.OrderItemsFromCart(orderFromCart, userID)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not do the order", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errorRes)
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not do the order", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
@@ -82,20 +82,20 @@ func (oh *OrderHandler) PlaceOrderCOD(c *gin.Context) {
 	order_id, err := strconv.Atoi(c.Query("order_id"))
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "error from orderID", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errs)
+		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 	paymentMethodID, err := oh.paymentUsecase.PaymentMethodID(order_id)
 	if err != nil {
-		err := response.ClientResponse(http.StatusInternalServerError, "error from paymentId ", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, err)
+		err := response.ClientResponse(http.StatusBadRequest, "error from paymentId ", nil, err.Error())
+		c.JSON(http.StatusBadRequest, err)
 		return
 	}
 	if paymentMethodID == 1 {
 		err := oh.orderUsecase.ExecutePurchaseCOD(order_id)
 		if err != nil {
-			errorRes := response.ClientResponse(http.StatusInternalServerError, "error in cash on delivery ", nil, err.Error())
-			c.JSON(http.StatusInternalServerError, errorRes)
+			errorRes := response.ClientResponse(http.StatusBadRequest, "error in cash on delivery ", nil, err.Error())
+			c.JSON(http.StatusBadRequest, errorRes)
 			return
 		}
 		success := response.ClientResponse(http.StatusOK, "Placed Order with cash on delivery", nil, nil)
@@ -126,8 +126,8 @@ func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 	if !errs {
 		if err != nil {
 			err := errors.New("couldn't get id ")
-			errorRes := response.ClientResponse(http.StatusInternalServerError, "Error in getting id", nil, err.Error())
-			c.JSON(http.StatusInternalServerError, errorRes)
+			errorRes := response.ClientResponse(http.StatusBadRequest, "Error in getting id", nil, err.Error())
+			c.JSON(http.StatusBadRequest, errorRes)
 			return
 		}
 	}
@@ -135,8 +135,8 @@ func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 	UserID := id.(int)
 	OrderDetails, err := oh.orderUsecase.GetOrderDetails(UserID, page, pageSize)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not do the order", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errorRes)
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not do the order", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 	successRes := response.ClientResponse(http.StatusOK, "Full Order Details", OrderDetails, nil)
@@ -146,24 +146,52 @@ func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 func (oh *OrderHandler) CancelOrder(c *gin.Context) {
 	orderID, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusInternalServerError, "error from orderID", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errRes)
+		errRes := response.ClientResponse(http.StatusBadRequest, "error from orderID", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 	id, errs := c.Get("id")
 	if !errs {
 		err := errors.New("error in getting id")
-		errRes := response.ClientResponse(http.StatusInternalServerError, "error from userid", nil, err.Error())
-		c.JSON(http.StatusInternalServerError, errRes)
+		errRes := response.ClientResponse(http.StatusBadRequest, "error from userid", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 	userID := id.(int)
 	err = oh.orderUsecase.CancelOrders(orderID, userID)
 	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "Could not cancel the order", nil, err.Error())
+		errs := response.ClientResponse(http.StatusBadRequest, "Could not cancel the order", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 	success := response.ClientResponse(http.StatusOK, "Cancel Successfull", nil, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (oh *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
+	pageStr := c.DefaultQuery("page", "1")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	countStr := c.DefaultQuery("size", "10")
+	pageSize, err := strconv.Atoi(countStr)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "page count not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	var pageStruct models.Page
+	pageStruct.Page = page
+	pageStruct.Size = pageSize
+	allOrderDetails, err := oh.orderUsecase.GetAllOrdersAdmin(pageStruct)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Could not retrieve order details", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Order Details Retrieved successfully", allOrderDetails, nil)
 	c.JSON(http.StatusOK, success)
 }

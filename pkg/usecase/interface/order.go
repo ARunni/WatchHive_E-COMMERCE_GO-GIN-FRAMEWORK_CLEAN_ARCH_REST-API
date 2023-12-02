@@ -8,4 +8,5 @@ type OrderUseCase interface {
 	ExecutePurchaseCOD(orderID int) error
 	GetOrderDetails(userId int, page int, count int) ([]models.FullOrderDetails, error)
 	CancelOrders(orderID int, userId int) error 
+	GetAllOrdersAdmin(page models.Page) ([]models.CombinedOrderDetails, error)
 }

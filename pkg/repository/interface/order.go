@@ -23,4 +23,5 @@ type OrderRepository interface {
 	GetProductDetailsFromOrders(orderID int) ([]models.OrderProducts, error) 
 	CancelOrders(orderID int) error 
 	UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error 
+	GetAllOrdersAdmin(offset, count int) ([]models.CombinedOrderDetails, error) 
 }

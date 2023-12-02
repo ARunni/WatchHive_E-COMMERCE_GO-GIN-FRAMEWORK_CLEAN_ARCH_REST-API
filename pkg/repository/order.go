@@ -261,3 +261,24 @@ func (or *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderP
 	return nil
 
 }
+func (or *orderRepository) GetAllOrdersAdmin(offset, count int) ([]models.CombinedOrderDetails, error) {
+
+	var orderDatails []models.CombinedOrderDetails
+	querry := `
+SELECT orders.id as order_id,orders.final_price,
+orders.shipment_status,orders.payment_status,
+users.name,users.email,users.phone,
+addresses.house_name,addresses.street,
+addresses.city,addresses.state,
+addresses.pin 
+FROM orders INNER JOIN users 
+ON orders.user_id = users.id INNER JOIN addresses 
+ON orders.address_id = addresses.id limit ? offset ?`
+
+	err := or.DB.Raw(querry, count, offset).Scan(&orderDatails).Error
+	if err != nil {
+		return []models.CombinedOrderDetails{}, nil
+	}
+	return orderDatails, nil
+
+}
