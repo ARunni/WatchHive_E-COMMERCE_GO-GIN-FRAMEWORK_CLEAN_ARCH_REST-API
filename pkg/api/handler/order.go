@@ -60,7 +60,12 @@ func (oh *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-
+	if orderFromCart.PaymentID != 1 {
+		err := errors.New("invalid payment")
+		errorResp := response.ClientResponse(http.StatusBadRequest, "Payment Option is not COD", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorResp)
+		return
+	}
 	orderSuccessResponse, err := oh.orderUsecase.OrderItemsFromCart(orderFromCart, userID)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusInternalServerError, "Could not do the order", nil, err.Error())
@@ -96,8 +101,8 @@ func (oh *OrderHandler) PlaceOrderCOD(c *gin.Context) {
 		success := response.ClientResponse(http.StatusOK, "Placed Order with cash on delivery", nil, nil)
 		c.JSON(http.StatusOK, success)
 	}
-	if paymentMethodID == 2 {
-		success := response.ClientResponse(http.StatusOK, "Placed Order with razor pay", nil, nil)
+	if paymentMethodID != 1 {
+		success := response.ClientResponse(http.StatusOK, "cannot place order payment is not COD", nil, nil)
 		c.JSON(http.StatusOK, success)
 	}
 }
