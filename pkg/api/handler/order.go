@@ -195,3 +195,37 @@ func (oh *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 	success := response.ClientResponse(http.StatusOK, "Order Details Retrieved successfully", allOrderDetails, nil)
 	c.JSON(http.StatusOK, success)
 }
+
+func (oh *OrderHandler) ApproveOrder(c *gin.Context) {
+	orderId, err := strconv.Atoi(c.Query("order_id"))
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "error from orderID", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	err = oh.orderUsecase.ApproveOrder(orderId)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, "Couldn't approve the order", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Order Approved Successfully", nil, nil)
+	c.JSON(http.StatusOK, success)
+}
+
+func (oh *OrderHandler) CancelOrderFromAdmin(c *gin.Context) {
+	order_id, err := strconv.Atoi(c.Query("order_id"))
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "error from orderID", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	err = oh.orderUsecase.CancelOrderFromAdmin(order_id)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't cancel the order", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errs)
+		return
+	}
+	success := response.ClientResponse(http.StatusOK, "Order Cancel Successfully", nil, nil)
+	c.JSON(http.StatusOK, success)
+}

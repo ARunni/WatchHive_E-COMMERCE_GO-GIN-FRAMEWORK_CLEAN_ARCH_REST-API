@@ -282,3 +282,25 @@ ON orders.address_id = addresses.id limit ? offset ?`
 	return orderDatails, nil
 
 }
+
+func (or *orderRepository) ApproveOrder(orderID int) error {
+	err := or.DB.Exec("UPDATE orders SET shipment_status = 'order placed' , approval = 'true' WHERE id = ?", orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (or *orderRepository) UpdateStockOfProduct(orderProducts []models.OrderProducts) error {
+	for _, ok := range orderProducts {
+		var quantity int
+		if err := or.DB.Raw("SELECT stock FROM products WHERE id = ?", ok.ProductId).Scan(&quantity).Error; err != nil {
+			return err
+		}
+		ok.Stock += quantity
+		if err := or.DB.Exec("UPDATE products SET stock  = ? WHERE id = ?", ok.Stock, ok.ProductId).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}

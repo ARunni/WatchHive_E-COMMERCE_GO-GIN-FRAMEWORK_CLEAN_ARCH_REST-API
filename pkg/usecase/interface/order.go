@@ -9,4 +9,6 @@ type OrderUseCase interface {
 	GetOrderDetails(userId int, page int, count int) ([]models.FullOrderDetails, error)
 	CancelOrders(orderID int, userId int) error 
 	GetAllOrdersAdmin(page models.Page) ([]models.CombinedOrderDetails, error)
+	ApproveOrder(orderId int) error 
+	CancelOrderFromAdmin(orderId int) error 
 }

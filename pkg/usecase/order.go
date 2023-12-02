@@ -212,10 +212,61 @@ func (ou *orderUseCase) GetAllOrdersAdmin(page models.Page) ([]models.CombinedOr
 	}
 	offset := (page.Page - 1) * page.Size
 
-	orderDetail, err := ou.orderRepository.GetAllOrdersAdmin(offset,page.Size)
+	orderDetail, err := ou.orderRepository.GetAllOrdersAdmin(offset, page.Size)
 	if err != nil {
 		return []models.CombinedOrderDetails{}, err
 	}
 	return orderDetail, nil
 
+}
+
+func (ou *orderUseCase) ApproveOrder(orderId int) error {
+	ShipmentStatus, err := ou.orderRepository.GetShipmentStatus(orderId)
+	if err != nil {
+		return err
+	}
+	if ShipmentStatus == "cancelled" {
+		return errors.New("the order is cancelled,cannot approve it")
+	}
+	if ShipmentStatus == "pending" {
+		return errors.New("the order is pending,cannot approve it")
+	}
+	if ShipmentStatus == "processing" {
+		err := ou.orderRepository.ApproveOrder(orderId)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	if ShipmentStatus == "processing" {
+		err := ou.orderRepository.ApproveOrder(orderId)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	// if the shipment status is not processing or cancelled. Then it is defenetely cancelled
+	return nil
+}
+
+func (ou *orderUseCase) CancelOrderFromAdmin(orderId int) error {
+	ok, err := ou.orderRepository.CheckOrderID(orderId)
+	fmt.Println(err)
+	if !ok {
+		return err
+	}
+	orderProduct, err := ou.orderRepository.GetProductDetailsFromOrders(orderId)
+	if err != nil {
+		return err
+	}
+	err = ou.orderRepository.CancelOrders(orderId)
+	if err != nil {
+		return err
+	}
+	err = ou.orderRepository.UpdateStockOfProduct(orderProduct)
+	if err != nil {
+		return err
+	}
+	return nil
 }

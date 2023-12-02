@@ -43,6 +43,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 		orderManagement := engine.Group("/orders")
 		{
 			orderManagement.GET("", orderHandler.GetAllOrderDetailsForAdmin)
+			orderManagement.PUT("", orderHandler.ApproveOrder)
 		}
 	}
 }
