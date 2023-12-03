@@ -19,11 +19,14 @@ type OrderRepository interface {
 	GetShipmentStatus(orderID int) (string, error)
 	UpdateOrder(orderID int) error
 	GetOrderDetails(userId int, page int, count int) ([]models.FullOrderDetails, error)
-	UserOrderRelationship(orderID int, userID int) (int, error) 
-	GetProductDetailsFromOrders(orderID int) ([]models.OrderProducts, error) 
-	CancelOrders(orderID int) error 
-	UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error 
-	GetAllOrdersAdmin(offset, count int) ([]models.CombinedOrderDetails, error) 
-	ApproveOrder(orderID int) error 
-	UpdateStockOfProduct(orderProducts []models.OrderProducts) error 
+	UserOrderRelationship(orderID int, userID int) (int, error)
+	GetProductDetailsFromOrders(orderID int) ([]models.OrderProducts, error)
+	CancelOrders(orderID int) error
+	UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error
+	GetAllOrdersAdmin(offset, count int) ([]models.CombinedOrderDetails, error)
+	ApproveOrder(orderID int) error
+	UpdateStockOfProduct(orderProducts []models.OrderProducts) error
+	ApproveCodPaid(orderID int) error
+	ReturnOrderCod(orderId int) error
+	ApproveCodReturn(orderID int) error
 }

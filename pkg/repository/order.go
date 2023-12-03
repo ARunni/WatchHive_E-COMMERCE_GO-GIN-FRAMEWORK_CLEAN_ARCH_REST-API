@@ -174,6 +174,7 @@ func (or *orderRepository) OrderItems(ob models.OrderIncoming, price float64) (i
 }
 
 func (or *orderRepository) GetOrderDetails(userId int, page int, count int) ([]models.FullOrderDetails, error) {
+
 	if page == 0 {
 		page = 1
 	}
@@ -241,7 +242,25 @@ func (or *orderRepository) CancelOrders(orderID int) error {
 			return err
 		}
 	}
+	if paymentMethod == 1 {
+		err = or.DB.Exec("UPDATE orders SET payment_status = 'cod canceled' WHERE id = ?", orderID).Error
+		if err != nil {
+			return err
+		}
+	}
 	return nil
+}
+
+func (or *orderRepository) ReturnOrderCod(orderId int) error {
+
+	shipStatus := "returned"
+	payStatus := "processing"
+	err := or.DB.Exec("UPDATE orders SET shipment_status = ? , approval='false',payment_status = ? WHERE id = ? ", shipStatus, payStatus, orderId).Error
+	if err != nil {
+		return err
+	}
+	return nil
+
 }
 
 func (or *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error {
@@ -284,7 +303,22 @@ ON orders.address_id = addresses.id limit ? offset ?`
 }
 
 func (or *orderRepository) ApproveOrder(orderID int) error {
-	err := or.DB.Exec("UPDATE orders SET shipment_status = 'order placed' , approval = 'true' WHERE id = ?", orderID).Error
+	err := or.DB.Exec("UPDATE orders SET shipment_status = 'shipped' , approval = 'true' WHERE id = ?", orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (or *orderRepository) ApproveCodPaid(orderID int) error {
+	err := or.DB.Exec("UPDATE orders SET shipment_status = 'delivered' , approval = 'true', payment_status = 'paid' WHERE id = ?", orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (or *orderRepository) ApproveCodReturn(orderID int) error {
+	err := or.DB.Exec("UPDATE orders SET   approval = 'true', payment_status = 'added_to_wallet' WHERE id = ?", orderID).Error
 	if err != nil {
 		return err
 	}

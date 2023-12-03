@@ -21,11 +21,10 @@ func AdminAuthMiddleware(c *gin.Context) {
 
 	if err != nil {
 		// The access token is invalid.
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization Token"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization Token error"})
 		c.Abort()
 		return
-		// c.AbortWithStatus(401)
-		// return
+
 	}
 
 	c.Next()

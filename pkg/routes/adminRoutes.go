@@ -44,6 +44,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 		{
 			orderManagement.GET("", orderHandler.GetAllOrderDetailsForAdmin)
 			orderManagement.PUT("", orderHandler.ApproveOrder)
+			orderManagement.PATCH("", orderHandler.CancelOrderFromAdmin)
 		}
 	}
 }
