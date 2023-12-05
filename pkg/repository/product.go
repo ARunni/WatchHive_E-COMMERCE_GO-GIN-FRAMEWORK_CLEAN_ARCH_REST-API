@@ -68,7 +68,7 @@ func (prod *productRepository) ListProducts(pageList, offset int) ([]models.Prod
 
 	var product_list []models.ProductUserResponse
 
-	query := `SELECT p.id, p.category_id, c.category, p.product_name, p.color, p.price, i.url
+	query := `SELECT p.id, p.category_id, c.category, p.product_name, p.color, p.price, i.url, p.stock
 	FROM products p
 	INNER JOIN categories c ON p.category_id = c.id
 	LEFT JOIN product_images i ON p.id = i.product_id
