@@ -4,6 +4,8 @@ import (
 	cfg "WatchHive/pkg/config"
 	interfaces "WatchHive/pkg/helper/interface"
 	"WatchHive/pkg/utils/models"
+	"reflect"
+	"strconv"
 
 	"errors"
 	"fmt"
@@ -179,6 +181,23 @@ func (h *helper) ValidatePin(pin string) bool {
 	return match
 
 }
+func (h *helper) ValidateDatatype(data, intOrString string) (bool, error) {
+
+	switch intOrString {
+	case "int":
+		if _, err := strconv.Atoi(data); err != nil {
+			return false, errors.New("data is not an integer")
+		}
+		return true, nil
+	case "string":
+		kind := reflect.TypeOf(data).Kind()
+		return kind == reflect.String, nil
+	default:
+		return false, errors.New("data is not" + intOrString)
+	}
+
+}
+
 func (h *helper) AddImageToAwsS3(file *multipart.FileHeader) (string, error) {
 
 	f, openErr := file.Open()

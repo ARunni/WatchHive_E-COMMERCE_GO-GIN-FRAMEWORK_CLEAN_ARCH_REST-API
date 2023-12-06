@@ -18,6 +18,7 @@ type Helper interface {
 
 	ValidatePhoneNumber(phone string) bool
 	ValidatePin(pin string) bool
+	ValidateDatatype(data, intOrString string) (bool, error)
 
 	AddImageToAwsS3(file *multipart.FileHeader) (string, error)
 }

@@ -4,7 +4,6 @@ import (
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -180,6 +179,14 @@ func (u *UserHandler) EditProfile(c *gin.Context) {
 	}
 	details.ID = uint(userid)
 
+
+	err := validator.New().Struct(details)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "constraints not satisfied", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+
 	userResp, err := u.userUseCase.EditProfile(details)
 	if err != nil {
 		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot update profile", nil, err.Error())
@@ -214,7 +221,7 @@ func (u *UserHandler) ChangePassword(c *gin.Context) {
 	change.UserID = uint(userid)
 
 	err := u.userUseCase.ChangePassword(change)
-	fmt.Println(",,,,,,,,,,,,,,,,,,,,,", err)
+
 	if err != nil {
 		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot change password", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)

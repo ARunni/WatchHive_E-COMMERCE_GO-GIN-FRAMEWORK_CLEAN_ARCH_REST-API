@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt"
 )
 
@@ -31,6 +32,13 @@ func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 
 	if err := c.BindJSON(&adminDetails); err != nil {
 		errResp := response.ClientResponse(http.StatusBadRequest, "details is not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+
+	err := validator.New().Struct(adminDetails)
+	if err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, "constraints not satisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
@@ -128,4 +136,3 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 
 }
-
