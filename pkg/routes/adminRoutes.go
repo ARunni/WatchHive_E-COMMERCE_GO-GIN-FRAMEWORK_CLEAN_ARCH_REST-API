@@ -15,15 +15,15 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 	{
 		userManagement := engine.Group("/users")
 		{
-			userManagement.PUT("/block", adminHandler.BlockUser)
-			userManagement.PUT("/unblock", adminHandler.UnBlockUser)
+			userManagement.PATCH("/block", adminHandler.BlockUser)
+			userManagement.PATCH("/unblock", adminHandler.UnBlockUser)
 			userManagement.GET("", adminHandler.GetUsers)
 		}
 		categorymanagement := engine.Group("/category")
 		{
 			categorymanagement.POST("", categoryHandler.AddCategory)
 			categorymanagement.GET("", categoryHandler.GetCategory)
-			categorymanagement.PUT("", categoryHandler.UpdateCategory)
+			categorymanagement.PATCH("", categoryHandler.UpdateCategory)
 			categorymanagement.DELETE("", categoryHandler.DeleteCategory)
 		}
 
@@ -31,9 +31,9 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 		{
 			productManagement.GET("", productHandler.ListProducts)
 			productManagement.POST("", productHandler.AddProduct)
-			productManagement.PUT("", productHandler.EditProduct)
+			productManagement.PATCH("", productHandler.EditProduct)
 			productManagement.DELETE("", productHandler.DeleteProduct)
-			productManagement.PATCH("", productHandler.UpdateProduct)
+			productManagement.PATCH("/stock", productHandler.UpdateProduct)
 		}
 
 		paymentManagement := engine.Group("/payment")
@@ -43,7 +43,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 		orderManagement := engine.Group("/orders")
 		{
 			orderManagement.GET("", orderHandler.GetAllOrderDetailsForAdmin)
-			orderManagement.PUT("", orderHandler.ApproveOrder)
+			orderManagement.PATCH("", orderHandler.ApproveOrder)
 			orderManagement.DELETE("", orderHandler.CancelOrderFromAdmin)
 		}
 	}

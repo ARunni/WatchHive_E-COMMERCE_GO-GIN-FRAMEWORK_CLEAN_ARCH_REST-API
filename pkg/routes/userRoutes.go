@@ -14,7 +14,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 	engine.POST("/otplogin", otpHandler.SendOTP)
 	engine.POST("/verifyotp", otpHandler.VerifyOTP)
-	engine.GET("", productHandler.ListProducts)
+	engine.GET("/products", productHandler.ListProducts)
 
 	engine.Use(middleware.UserAuthMiddleware)
 	{
@@ -23,15 +23,15 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			profile.POST("/address", userHandler.AddAddress)
 			profile.GET("", userHandler.ShowUserDetails)
 			profile.GET("/alladdress", userHandler.GetAllAddress)
-			profile.PUT("", userHandler.EditProfile)
-			profile.PATCH("", userHandler.ChangePassword)
+			profile.PATCH("", userHandler.EditProfile)
+			profile.PATCH("/password", userHandler.ChangePassword)
 		}
 		cart := engine.Group("/cart")
 		{
 			cart.POST("", cartHandler.AddToCart)
 			cart.GET("", cartHandler.ListCartItems)
 			cart.PATCH("", cartHandler.UpdateProductQuantityCart)
-			cart.PUT("", cartHandler.RemoveFromCart)
+			cart.DELETE("", cartHandler.RemoveFromCart)
 		}
 		checkout := engine.Group("/orders")
 		{
