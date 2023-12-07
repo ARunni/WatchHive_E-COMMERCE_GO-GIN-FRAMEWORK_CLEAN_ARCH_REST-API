@@ -113,12 +113,16 @@ func (or *orderRepository) CheckOrderID(orderId int) (bool, error) {
 	return count > 0, nil
 }
 
-func (or *orderRepository) OrderExist(orderID int) error {
-	err := or.DB.Raw("SELECT id FROM orders WHERE id = ?", orderID).Error
+func (or *orderRepository) OrderExist(orderID int) (bool ,error) {
+	var count int 
+	err := or.DB.Raw("SELECT count(*) FROM orders WHERE id = ?", orderID).Scan(&count).Error
 	if err != nil {
-		return err
+		return false,err
 	}
-	return nil
+	if count <= 0 {
+		return false, nil
+	}
+	return true,nil
 }
 
 func (or *orderRepository) GetShipmentStatus(orderID int) (string, error) {

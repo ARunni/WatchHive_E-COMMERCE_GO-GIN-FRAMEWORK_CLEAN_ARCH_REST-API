@@ -29,6 +29,13 @@ func NewOrderUseCase(orderRepo repo_interface.OrderRepository, cartRepo repo_int
 }
 
 func (ou *orderUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
+	ok, err := ou.cartRepository.CheckCart(userID)
+	if err != nil {
+		return models.CheckoutDetails{}, errors.New("error in getting details")
+	}
+	if !ok {
+		return models.CheckoutDetails{}, errors.New("no items in cart")
+	}
 	allUserAddress, err := ou.userRepository.GetAllAddress(userID)
 	if err != nil {
 		return models.CheckoutDetails{}, err
@@ -130,39 +137,6 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 	return orderSuccessResponse, nil
 }
 
-//jhjhsjhsgf
-
-// func (ou *orderUseCase) ExecutePurchaseCOD(orderID int) error {
-// 	err := ou.orderRepository.OrderExist(orderID)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	shipmentStatus, err := ou.orderRepository.GetShipmentStatus(orderID)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	if shipmentStatus == "delivered" {
-// 		return errors.New("item  delivered, cannot pay")
-// 	}
-// 	if shipmentStatus == "order placed" {
-// 		return errors.New("item placed, cannot pay")
-// 	}
-// 	if shipmentStatus == "cancelled" || shipmentStatus == "returned" || shipmentStatus == "return" {
-// 		message := fmt.Sprint(shipmentStatus)
-// 		return errors.New("the order is in" + message + "so can't paid")
-// 	}
-// 	if shipmentStatus == "processing" {
-// 		return errors.New("the order is already paid")
-// 	}
-// 	err = ou.orderRepository.UpdateOrder(orderID)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-
-// }
-
 func (ou *orderUseCase) GetOrderDetails(userId int, page int, count int) ([]models.FullOrderDetails, error) {
 
 	fullOrderDetails, err := ou.orderRepository.GetOrderDetails(userId, page, count)
@@ -174,12 +148,22 @@ func (ou *orderUseCase) GetOrderDetails(userId int, page int, count int) ([]mode
 }
 
 func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
+	if orderID <= 0 {
+		return errors.New("invalid order id")
+	}
 	userTest, err := ou.orderRepository.UserOrderRelationship(orderID, userId)
 	if err != nil {
 		return err
 	}
 	if userTest != userId {
 		return errors.New("the order is not done by this user")
+	}
+	ok, err := ou.orderRepository.OrderExist(orderID)
+	if err != nil {
+		return errors.New("error in getting data")
+	}
+	if !ok {
+		return errors.New("order is not exist")
 	}
 	orderProductDetails, err := ou.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
@@ -190,7 +174,7 @@ func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
 		return err
 	}
 
-	if shipmentStatus == "pending" || shipmentStatus == "returned" || shipmentStatus == "return" {
+	if shipmentStatus == "pending" || shipmentStatus == "returned" {
 		message := fmt.Sprint(shipmentStatus)
 		return errors.New("the order is in" + message + ", so no point in cancelling")
 	}
@@ -231,6 +215,16 @@ func (ou *orderUseCase) GetAllOrdersAdmin(page models.Page) ([]models.CombinedOr
 }
 
 func (ou *orderUseCase) ApproveOrder(orderId int) error {
+	if orderId <= 0 {
+		return errors.New("invalid id")
+	}
+	ok, err := ou.orderRepository.OrderExist(orderId)
+	if err != nil {
+		return errors.New("error in getting data")
+	}
+	if !ok {
+		return errors.New("order is not exist")
+	}
 	ShipmentStatus, err := ou.orderRepository.GetShipmentStatus(orderId)
 	if err != nil {
 		return err
@@ -274,10 +268,13 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 }
 
 func (ou *orderUseCase) CancelOrderFromAdmin(orderId int) error {
+	if orderId <= 0 {
+		return errors.New("invalid order id")
+	}
 	ok, err := ou.orderRepository.CheckOrderID(orderId)
 	fmt.Println(err)
 	if !ok {
-		return err
+		return errors.New("order does not exist")
 	}
 	orderProduct, err := ou.orderRepository.GetProductDetailsFromOrders(orderId)
 	if err != nil {
@@ -310,7 +307,11 @@ func (ou *orderUseCase) ReturnOrderCod(orderId, userId int) error {
 	if orderId < 0 {
 		return errors.New("invalid order id")
 	}
-
+	ok, err := ou.orderRepository.CheckOrderID(orderId)
+	fmt.Println(err)
+	if !ok {
+		return errors.New("order does not exist")
+	}
 	userTest, err := ou.orderRepository.UserOrderRelationship(orderId, userId)
 	if err != nil {
 		return err

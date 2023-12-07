@@ -18,12 +18,16 @@ func NewCategoryUseCase(repo interfaces.CategoryRepository) services.CategoryUse
 	}
 
 }
-func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Category, error) {
+func (cu *categoryUseCase) AddCategory(category domain.Category) (domain.Category, error) {
 	if category.Category == "" {
 		return domain.Category{}, errors.New("invalid category")
 	}
+	ok := cu.repository.CheckCategoryByName(category.Category)
+	if ok {
+		return domain.Category{}, errors.New("already exist")
+	}
 
-	productResponse, err := Cat.repository.AddCategory(category)
+	productResponse, err := cu.repository.AddCategory(category)
 
 	if err != nil {
 		return domain.Category{}, err
@@ -33,31 +37,31 @@ func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Catego
 
 }
 
-func (Cat *categoryUseCase) GetCategories() ([]domain.Category, error) {
+func (cu *categoryUseCase) GetCategories() ([]domain.Category, error) {
 
-	categories, err := Cat.repository.GetCategories()
+	categories, err := cu.repository.GetCategories()
 	if err != nil {
 		return []domain.Category{}, err
 	}
 	return categories, nil
 }
 
-func (Cat *categoryUseCase) UpdateCategory(currentId int, new string) (domain.Category, error) {
+func (cu *categoryUseCase) UpdateCategory(currentId int, new string) (domain.Category, error) {
 
 	if currentId <= 0 {
 		return domain.Category{}, errors.New("invalid category id")
 	}
 
-	result, err := Cat.repository.CheckCategory(currentId)
+	ok, err := cu.repository.CheckCategory(currentId)
 	if err != nil {
 		return domain.Category{}, err
 	}
 
-	if !result {
+	if !ok {
 		return domain.Category{}, errors.New("there is no category as you mentioned")
 	}
 
-	newcat, err := Cat.repository.UpdateCategory(currentId, new)
+	newcat, err := cu.repository.UpdateCategory(currentId, new)
 	if err != nil {
 		return domain.Category{}, err
 	}
@@ -65,14 +69,23 @@ func (Cat *categoryUseCase) UpdateCategory(currentId int, new string) (domain.Ca
 	return newcat, err
 }
 
-func (Cat *categoryUseCase) DeleteCategory(categoryID string) error {
+func (cu *categoryUseCase) DeleteCategory(categoryID string) error {
+	if categoryID == "" {
+		return errors.New("invalid data")
+	}
 	catId, catErr := strconv.Atoi(categoryID)
 
 	if catErr != nil || catId <= 0 {
 		return errors.New("invalid category id")
 	}
-
-	err := Cat.repository.DeleteCategory(categoryID)
+	ok, err := cu.repository.CheckCategory(catId)
+	if err != nil {
+		return errors.New("error in checking")
+	}
+	if !ok {
+		return errors.New("category does not exist")
+	}
+	err = cu.repository.DeleteCategory(categoryID)
 	if err != nil {
 		return err
 	}

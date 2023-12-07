@@ -128,6 +128,18 @@ func (i *productRepository) CheckProduct(pid int) (bool, error) {
 	return true, err
 }
 
+func (i *productRepository) CheckProductAndCat(prdt string, cat int) bool {
+	var count int
+	err := i.DB.Raw("SELECT COUNT(*) FROM products WHERE category_id=? And product_name=?", cat, prdt).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	if count <= 0 {
+		return false
+	}
+	return true
+}
+
 func (i *productRepository) UpdateProduct(pid int, stock int) (models.ProductResponse, error) {
 
 	// Check the database connection

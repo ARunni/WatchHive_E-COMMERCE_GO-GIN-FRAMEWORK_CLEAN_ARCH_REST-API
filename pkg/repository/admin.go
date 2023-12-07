@@ -78,3 +78,15 @@ func (ad *adminRepository) GetUsers(page int) ([]models.UserDetailsAtAdmin, erro
 	return userDetails, nil
 
 }
+
+func (ad *adminRepository) IsUserExist(userID int) bool {
+	var count int
+	err := ad.DB.Raw("select count(*) from users where id = ?", userID).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+	if count <= 0 {
+		return false
+	}
+	return true
+}

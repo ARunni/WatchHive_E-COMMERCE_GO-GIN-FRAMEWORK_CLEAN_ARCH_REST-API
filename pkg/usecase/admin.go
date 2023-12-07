@@ -26,8 +26,6 @@ func NewAdminUseCase(repo interfaces.AdminRepository, h helper.Helper) usecase.A
 
 func (ad *adminUseCase) LoginHandler(adminDetails models.AdminLogin) (models.TockenAdmin, error) {
 
-	
-
 	adminCompareDetails, err := ad.adminRepository.LoginHandler(adminDetails)
 	if err != nil {
 		return models.TockenAdmin{}, err
@@ -59,7 +57,10 @@ func (ad *adminUseCase) BlockUser(id string) error {
 	if IdErr != nil || iD <= 0 {
 		return errors.New("invalid id")
 	}
-
+	ok := ad.adminRepository.IsUserExist(iD)
+	if !ok {
+		return errors.New("user does not exist")
+	}
 	user, err := ad.adminRepository.GetUserByID(id)
 	if err != nil {
 		return err
@@ -86,7 +87,10 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 	if IdErr != nil || iD <= 0 {
 		return errors.New("invalid id")
 	}
-
+	ok := ad.adminRepository.IsUserExist(iD)
+	if !ok {
+		return errors.New("user does not exist")
+	}
 	user, err := ad.adminRepository.GetUserByID(id)
 	if err != nil {
 		return err

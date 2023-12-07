@@ -8,4 +8,5 @@ type CategoryRepository interface {
 	UpdateCategory(currentId int , new string) (domain.Category,error)
 	CheckCategory(currentId int) (bool,error)
 	DeleteCategory(categoryID string) error
+	CheckCategoryByName(name string) bool
 }

@@ -14,21 +14,41 @@ import (
 type productUseCase struct {
 	repository rep.ProductRepository
 	helper     helper.Helper
+	cat        rep.CategoryRepository
 }
 
-func NewProductUseCase(repo rep.ProductRepository, h helper.Helper) interfaces.ProductUseCase {
+func NewProductUseCase(repo rep.ProductRepository, h helper.Helper, cat rep.CategoryRepository) interfaces.ProductUseCase {
 	return &productUseCase{
 		repository: repo,
 		helper:     h,
+		cat:        cat,
 	}
 
 }
 
 func (i *productUseCase) AddProduct(product models.AddProducts, file *multipart.FileHeader) (models.ProductResponse, error) {
+	if product.ProductName == "" {
+		return models.ProductResponse{}, errors.New("product name cannot be empty")
 
+	}
+	if product.Color == "" {
+		return models.ProductResponse{}, errors.New("color cannot be empty")
+	}
 	if product.CategoryID < 0 || product.Price < 0 || product.Stock < 0 {
 		err := errors.New("enter valid values")
 		return models.ProductResponse{}, err
+	}
+	ok, err := i.cat.CheckCategory(product.CategoryID)
+	if err != nil {
+		return models.ProductResponse{}, err
+	}
+	if !ok {
+		return models.ProductResponse{}, errors.New("category id not available")
+	}
+	ok = i.repository.CheckProductAndCat(product.ProductName, product.CategoryID)
+
+	if ok {
+		return models.ProductResponse{}, errors.New("already exist")
 	}
 
 	url, err := i.helper.AddImageToAwsS3(file)
@@ -45,7 +65,9 @@ func (i *productUseCase) AddProduct(product models.AddProducts, file *multipart.
 
 }
 func (i *productUseCase) ListProducts(pageNo, pageList int) ([]models.ProductUserResponse, error) {
-
+	if pageNo <= 0 {
+		pageNo = 1
+	}
 	offset := (pageNo - 1) * pageList
 	productList, err := i.repository.ListProducts(pageList, offset)
 	if err != nil {
@@ -60,7 +82,12 @@ func (usecase *productUseCase) EditProduct(product domain.Product, id int) (doma
 		err := errors.New("enter valid values")
 		return domain.Product{}, err
 	}
-
+	if product.ProductName == "" {
+		return domain.Product{}, errors.New("product name cannot be empty")
+	}
+	if product.Color == "" {
+		return domain.Product{}, errors.New("color cannot be empty")
+	}
 	modProduct, err := usecase.repository.EditProduct(product, id)
 	if err != nil {
 		return domain.Product{}, err

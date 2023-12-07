@@ -19,6 +19,10 @@ func NewPaymentUseCase(repo interfaces_repo.PaymentRepository) interfaces.Paymen
 }
 
 func (pu *paymentUseCase) PaymentMethodID(order_id int) (int, error) {
+	if order_id <= 0 {
+		return 0, errors.New("invalid order id")
+	}
+
 	id, err := pu.paymentRepository.PaymentMethodID(order_id)
 	if err != nil {
 		return 0, err
@@ -26,6 +30,9 @@ func (pu *paymentUseCase) PaymentMethodID(order_id int) (int, error) {
 	return id, nil
 }
 func (pu *paymentUseCase) AddPaymentMethod(payment models.NewPaymentMethod) (models.PaymentDetails, error) {
+	if payment.PaymentName == "" {
+		return models.PaymentDetails{}, errors.New("payment method cannot be empty")
+	}
 	exists, err := pu.paymentRepository.CheckIfPaymentMethodAlreadyExists(payment.PaymentName)
 	if err != nil {
 		return models.PaymentDetails{}, err

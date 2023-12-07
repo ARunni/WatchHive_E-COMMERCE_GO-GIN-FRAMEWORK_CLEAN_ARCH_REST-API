@@ -163,12 +163,14 @@ func (cu *cartUseCase) RemoveFromCart(cart models.RemoveFromCart) (models.CartRe
 	if cart.ProductID < 1 {
 		return models.CartResponse{}, errors.New("product id cannot be empty")
 	}
-	err := cu.cartRepository.RemoveFromCart(cart)
-	if err != nil {
-		return models.CartResponse{}, err
-	}
+
 	is_available, err := cu.cartRepository.CheckCart(cart.UserID)
 	if !is_available {
+		return models.CartResponse{}, err
+	}
+
+	err = cu.cartRepository.RemoveFromCart(cart)
+	if err != nil {
 		return models.CartResponse{}, err
 	}
 

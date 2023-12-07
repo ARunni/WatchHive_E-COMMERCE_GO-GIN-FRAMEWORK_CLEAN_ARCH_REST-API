@@ -10,5 +10,6 @@ type AdminRepository interface {
 	GetUserByID(id string) (domain.Users, error)
 	UpdateBlockUserByID(user domain.Users) error
 	GetUsers(page int) ([]models.UserDetailsAtAdmin, error)
+	IsUserExist(userID int)bool
 	
 }

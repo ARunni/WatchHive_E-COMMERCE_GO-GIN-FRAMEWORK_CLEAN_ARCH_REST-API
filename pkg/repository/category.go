@@ -40,13 +40,13 @@ func (cr *categoryRepository) GetCategories() ([]domain.Category, error) {
 }
 
 func (cr *categoryRepository) CheckCategory(currentId int) (bool, error) {
-	var i int
-	err := cr.DB.Raw("SELECT COUNT(*) FROM categories WHERE id =?", currentId).Scan(&i).Error
+	var count int
+	err := cr.DB.Raw("SELECT COUNT(*) FROM categories WHERE id =?", currentId).Scan(&count).Error
 	if err != nil {
 		return false, err
 	}
 
-	if i == 0 {
+	if count == 0 {
 		return false, err
 	}
 
@@ -87,4 +87,18 @@ func (cr *categoryRepository) DeleteCategory(catergoryID string) error {
 		return errors.New("now rows with that id exist")
 	}
 	return nil
+}
+
+func (cr *categoryRepository) CheckCategoryByName(name string) bool {
+	var count int
+	err := cr.DB.Raw("SELECT COUNT(*) FROM categories WHERE category =?", name).Scan(&count).Error
+	if err != nil {
+		return false
+	}
+
+	if count == 0 {
+		return false
+	}
+
+	return true
 }
