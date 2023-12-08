@@ -88,14 +88,14 @@ func (i *ProductHandler) ListProducts(c *gin.Context) {
 func (u *ProductHandler) EditProduct(c *gin.Context) {
 	var product domain.Product
 
-	id := c.Query("product_id")
-	idInt, err := strconv.Atoi(id)
+	// id := c.Query("product_id")
+	// idInt, err := strconv.Atoi(id)
 
-	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "problems in the id", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errRes)
-		return
-	}
+	// if err != nil {
+	// 	errRes := response.ClientResponse(http.StatusBadRequest, "problems in the id", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errRes)
+	// 	return
+	// }
 
 	if err := c.BindJSON(&product); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "fields are in the wrong format", nil, err.Error())
@@ -103,7 +103,7 @@ func (u *ProductHandler) EditProduct(c *gin.Context) {
 		return
 	}
 
-	modProduct, err := u.ProductUseCase.EditProduct(product, idInt)
+	modProduct, err := u.ProductUseCase.EditProduct(product)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "could not edit the product", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)

@@ -76,21 +76,21 @@ func (i *productUseCase) ListProducts(pageNo, pageList int) ([]models.ProductUse
 	return productList, nil
 }
 
-func (usecase *productUseCase) EditProduct(product domain.Product, id int) (domain.Product, error) {
+func (usecase *productUseCase) EditProduct(product domain.Product) (models.ProductUserResponse, error) {
 
 	if product.ID <= 0 || product.CategoryID <= 0 || product.Price <= 0 || product.Stock <= 0 {
 		err := errors.New("enter valid values")
-		return domain.Product{}, err
+		return models.ProductUserResponse{}, err
 	}
 	if product.ProductName == "" {
-		return domain.Product{}, errors.New("product name cannot be empty")
+		return models.ProductUserResponse{}, errors.New("product name cannot be empty")
 	}
 	if product.Color == "" {
-		return domain.Product{}, errors.New("color cannot be empty")
+		return models.ProductUserResponse{}, errors.New("color cannot be empty")
 	}
-	modProduct, err := usecase.repository.EditProduct(product, id)
+	modProduct, err := usecase.repository.EditProduct(product)
 	if err != nil {
-		return domain.Product{}, err
+		return models.ProductUserResponse{}, err
 	}
 	return modProduct, nil
 }

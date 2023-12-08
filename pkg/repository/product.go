@@ -83,18 +83,18 @@ func (prod *productRepository) ListProducts(pageList, offset int) ([]models.Prod
 	return product_list, nil
 }
 
-func (db *productRepository) EditProduct(product domain.Product, id int) (domain.Product, error) {
+func (db *productRepository) EditProduct(product domain.Product) (models.ProductUserResponse, error) {
 
-	var modProduct domain.Product
+	var modProduct models.ProductUserResponse
 
 	query := "UPDATE products SET category_id = ?, product_name = ?, color = ?, stock = ?, price = ? WHERE id = ?"
 
-	if err := db.DB.Exec(query, product.CategoryID, product.ProductName, product.Color, product.Stock, product.Price, id).Error; err != nil {
-		return domain.Product{}, err
+	if err := db.DB.Exec(query, product.CategoryID, product.ProductName, product.Color, product.Stock, product.Price, product.ID).Error; err != nil {
+		return models.ProductUserResponse{}, err
 	}
 
-	if err := db.DB.First(&modProduct, id).Error; err != nil {
-		return domain.Product{}, err
+	if err := db.DB.Raw("select * from products where id = ?", product.ID).Scan(&modProduct).Error; err != nil {
+		return models.ProductUserResponse{}, err
 	}
 	return modProduct, nil
 }

@@ -1,6 +1,6 @@
 package models
 
-type Category struct {
+type CategoryResp struct {
 	Id       uint   `json:"id" gorm:"unique; not null"`
 	Category string `json:"category" gorm:"unique;not null"`
 }
