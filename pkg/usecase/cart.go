@@ -182,6 +182,13 @@ func (cu *cartUseCase) RemoveFromCart(cart models.RemoveFromCart) (models.CartRe
 	if !is_available {
 		return models.CartResponse{}, err
 	}
+	ok, err := cu.cartRepository.CheckProductOnCart(cart.ProductID, cart.UserID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+	if !ok {
+		return models.CartResponse{}, errors.New("product not available in cart")
+	}
 
 	err = cu.cartRepository.RemoveFromCart(cart)
 	if err != nil {
