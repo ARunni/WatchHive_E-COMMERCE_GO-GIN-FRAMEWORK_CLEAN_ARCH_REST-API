@@ -192,3 +192,14 @@ func (cr *cartRepository) UpdateCartAfterOrder(userID, productID int, quantity f
 
 	return nil
 }
+func (cr *cartRepository) CheckProductOnCart(productID, userID int) (bool, error) {
+	var count int
+	err := cr.DB.Raw("select count(*) from carts where product_id=? and user_id= ?", productID, userID).Scan(&count).Error
+	if err != nil {
+		return false, errors.New("error in getting data")
+	}
+	if count < 1 {
+		return false, nil
+	}
+	return true, nil
+}

@@ -133,6 +133,13 @@ func (cu *cartUseCase) UpdateProductQuantityCart(cart models.AddCart) (models.Ca
 	if err != nil {
 		return models.CartResponse{}, err
 	}
+	ok, err = cu.cartRepository.CheckProductOnCart(cart.ProductID, cart.UserID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+	if !ok {
+		return models.CartResponse{}, errors.New("product not available in cart")
+	}
 
 	if stock < int(cart.Quantity) {
 		return models.CartResponse{}, errors.New("out of stock")
