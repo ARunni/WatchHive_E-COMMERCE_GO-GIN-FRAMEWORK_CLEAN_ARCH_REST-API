@@ -4,6 +4,7 @@ import (
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -179,9 +180,9 @@ func (u *UserHandler) EditProfile(c *gin.Context) {
 	}
 	details.ID = uint(userid)
 
-
 	err := validator.New().Struct(details)
 	if err != nil {
+		err = errors.New("check the values that you are providing or wrong data provided")
 		errResp := response.ClientResponse(http.StatusBadRequest, "constraints not satisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 		return

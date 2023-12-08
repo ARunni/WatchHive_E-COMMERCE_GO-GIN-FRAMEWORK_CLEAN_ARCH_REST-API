@@ -112,6 +112,13 @@ func (cu *cartUseCase) ListCartItems(userID int) (models.CartResponse, error) {
 
 func (cu *cartUseCase) UpdateProductQuantityCart(cart models.AddCart) (models.CartResponse, error) {
 
+	ok, err := cu.cartRepository.CheckCart(cart.UserID)
+	if err != nil {
+		return models.CartResponse{}, errors.New("error in checking cart")
+	}
+	if !ok {
+		return models.CartResponse{}, errors.New("cart is empty")
+	}
 	if cart.Quantity < 1 || cart.ProductID < 1 {
 		return models.CartResponse{}, errors.New("invalid product id or quantity")
 	}
