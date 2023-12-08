@@ -34,7 +34,7 @@ func (i *productUseCase) AddProduct(product models.AddProducts, file *multipart.
 	if product.Color == "" {
 		return models.ProductResponse{}, errors.New("color cannot be empty")
 	}
-	if product.CategoryID < 0 || product.Price < 0 || product.Stock < 0 {
+	if product.CategoryID <= 0 || product.Price <= 0 || product.Stock <= 0 {
 		err := errors.New("enter valid values")
 		return models.ProductResponse{}, err
 	}
@@ -78,7 +78,7 @@ func (i *productUseCase) ListProducts(pageNo, pageList int) ([]models.ProductUse
 
 func (usecase *productUseCase) EditProduct(product domain.Product, id int) (domain.Product, error) {
 
-	if product.ID == 0 || product.CategoryID == 0 || product.Price < 0 || product.Stock < 0 {
+	if product.ID <= 0 || product.CategoryID <= 0 || product.Price <= 0 || product.Stock <= 0 {
 		err := errors.New("enter valid values")
 		return domain.Product{}, err
 	}
@@ -95,16 +95,22 @@ func (usecase *productUseCase) EditProduct(product domain.Product, id int) (doma
 	return modProduct, nil
 }
 
-func (usecase *productUseCase) DeleteProduct(productID string) error {
+func (pu *productUseCase) DeleteProduct(productID string) error {
 
-	id, cErr := strconv.Atoi(productID)
+	pID, cErr := strconv.Atoi(productID)
 
-	if cErr != nil || id <= 0 {
-		return cErr
+	if cErr != nil || pID <= 0 {
+		return errors.New("invalid data")
 
 	}
-
-	err := usecase.repository.DeleteProduct(productID)
+	ok, err := pu.repository.CheckProduct(pID)
+	if err != nil {
+		return errors.New("error in searching")
+	}
+	if !ok {
+		return errors.New("product does not exist")
+	}
+	err = pu.repository.DeleteProduct(productID)
 	if err != nil {
 		return err
 	}
@@ -119,7 +125,7 @@ func (i productUseCase) UpdateProduct(pid int, stock int) (models.ProductRespons
 
 	result, err := i.repository.CheckProduct(pid)
 	if err != nil {
-		return models.ProductResponse{}, err
+		return models.ProductResponse{}, errors.New("error occured during the search")
 	}
 
 	if !result {

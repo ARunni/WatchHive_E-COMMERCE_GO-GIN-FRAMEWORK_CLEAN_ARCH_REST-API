@@ -29,6 +29,12 @@ var InternalError = "Internal Server Error"
 var ErrorHashingPassword = "Error In Hashing Password"
 
 func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
+	if user.Password == "" {
+		return models.TokenUsers{}, errors.New("password cannot be empty")
+	}
+	if user.Name == "" {
+		return models.TokenUsers{}, errors.New("name cannot be empty")
+	}
 
 	phoneNumber := u.helper.ValidatePhoneNumber(user.Phone)
 

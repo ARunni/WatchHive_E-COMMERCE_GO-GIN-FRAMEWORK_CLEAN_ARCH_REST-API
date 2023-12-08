@@ -154,12 +154,12 @@ func (i *productRepository) UpdateProduct(pid int, stock int) (models.ProductRes
 
 	// Retrieve the update
 	var newdetails models.ProductResponse
-	var newstock int
-	if err := i.DB.Raw("SELECT stock FROM products WHERE id=?", pid).Scan(&newstock).Error; err != nil {
+	// var newstock int
+	if err := i.DB.Raw("SELECT * FROM products WHERE id=?", pid).Scan(&newdetails).Error; err != nil {
 		return models.ProductResponse{}, err
 	}
-	newdetails.ID = pid
-	newdetails.Stock = newstock
+	// newdetails.ID = pid
+	// newdetails.Stock = newstock
 
 	return newdetails, nil
 }

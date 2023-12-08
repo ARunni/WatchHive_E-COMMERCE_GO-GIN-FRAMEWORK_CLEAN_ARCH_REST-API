@@ -43,7 +43,7 @@ type ProductUserResponse struct {
 	ID          uint   `json:"id"`
 	CategoryID  int    `json:"category_id"`
 	Category    string `json:"category"`
-	ProductName string `json:"productname"`
+	ProductName string `json:"product_name"`
 	Color       string `json:"color"`
 	Price       int    `json:"price"`
 	Url         string `json:"image"`
