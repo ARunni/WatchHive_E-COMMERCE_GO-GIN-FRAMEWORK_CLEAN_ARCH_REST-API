@@ -61,7 +61,7 @@ func (ou *orderUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 	}, nil
 }
 
-// tyewtuyuiyewiuye
+
 
 func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, userID int) (models.OrderSuccessResponse, error) {
 	var orderBody models.OrderIncoming

@@ -124,4 +124,3 @@ func (ad *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) 
 
 }
 
-///1 DEC
