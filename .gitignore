@@ -1,2 +1,5 @@
 # Environment file
 .env
+
+# Folder Pet
+.vscode
