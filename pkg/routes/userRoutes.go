@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler) {
+func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler, paymentHandler *handler.PaymentHandler) {
 
 	engine.POST("/signup", userHandler.UserSignUp)
 	engine.POST("/login", userHandler.LoginHandler)
@@ -15,6 +15,8 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 	engine.POST("/otplogin", otpHandler.SendOTP)
 	engine.POST("/verifyotp", otpHandler.VerifyOTP)
 	engine.GET("/products", productHandler.ListProducts)
+	engine.GET("/payment", paymentHandler.MakePaymentRazorpay)
+	engine.GET("/verifypayment", paymentHandler.VerifyPayment)
 
 	engine.Use(middleware.UserAuthMiddleware)
 	{
@@ -41,6 +43,10 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			checkout.DELETE("", orderHandler.CancelOrder)
 			checkout.PATCH("", orderHandler.ReturnOrderCod)
 		}
+		// payment := engine.Group("/payment")
+		// {
+
+		// }
 	}
 
 }

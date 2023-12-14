@@ -61,8 +61,6 @@ func (ou *orderUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 	}, nil
 }
 
-
-
 func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, userID int) (models.OrderSuccessResponse, error) {
 	var orderBody models.OrderIncoming
 	err := copier.Copy(&orderBody, &orderFromCart)
@@ -229,37 +227,78 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 	if err != nil {
 		return err
 	}
-	if ShipmentStatus == "cancelled" {
-		return errors.New("the order is cancelled,cannot approve it")
+	paymenType, err := ou.orderRepository.GetPaymentType(orderId)
+	if err != nil {
+		return err
 	}
-	if ShipmentStatus == "pending" {
-		return errors.New("the order is pending,cannot approve it")
-	}
-	if ShipmentStatus == "delivered" {
-		return errors.New("the order is already deliverd")
-	}
-	if ShipmentStatus == "processing" {
-		err := ou.orderRepository.ApproveOrder(orderId)
-		if err != nil {
-			return err
+
+	if paymenType == 1 {
+
+		if ShipmentStatus == "cancelled" {
+			return errors.New("the order is cancelled,cannot approve it")
+		}
+		if ShipmentStatus == "pending" {
+			return errors.New("the order is pending,cannot approve it")
+		}
+		if ShipmentStatus == "delivered" {
+			return errors.New("the order is already deliverd")
+		}
+		if ShipmentStatus == "processing" {
+			err := ou.orderRepository.ApproveOrder(orderId)
+			if err != nil {
+				return err
+			}
+
+			return nil
 		}
 
-		return nil
-	}
+		if ShipmentStatus == "shipped" {
+			err := ou.orderRepository.ApproveCodPaid(orderId)
+			if err != nil {
+				return err
+			}
 
-	if ShipmentStatus == "shipped" {
-		err := ou.orderRepository.ApproveCodPaid(orderId)
-		if err != nil {
-			return err
+			return nil
 		}
 
-		return nil
+		if ShipmentStatus == "returned" {
+			err := ou.orderRepository.ApproveCodReturn(orderId)
+			if err != nil {
+				return err
+			}
+		}
 	}
+	// razorpay
+	if paymenType == 2 {
+		if ShipmentStatus == "cancelled" {
+			return errors.New("the order is cancelled,cannot approve it")
+		}
+		if ShipmentStatus == "pending" {
+			return errors.New("the order is pending,cannot approve it")
+		}
+		if ShipmentStatus == "delivered" {
+			return errors.New("the order is already deliverd")
+		}
+		if ShipmentStatus == "processing" {
+			err := ou.orderRepository.ApproveOrder(orderId)
+			if err != nil {
+				return err
+			}
 
-	if ShipmentStatus == "returned" {
-		err := ou.orderRepository.ApproveCodReturn(orderId)
-		if err != nil {
-			return err
+			return nil
+		}
+		if ShipmentStatus == "shipped" {
+			err := ou.orderRepository.ApproveRazorPaid(orderId)
+			if err != nil {
+				return err
+			}
+			err = ou.orderRepository.ApproveRazorDelivered(orderId)
+			if err != nil {
+				return err
+			}
+
+			return nil
+
 		}
 	}
 

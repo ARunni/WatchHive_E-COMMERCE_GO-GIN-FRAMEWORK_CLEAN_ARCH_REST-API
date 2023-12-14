@@ -61,12 +61,12 @@ func (oh *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 
-	if orderFromCart.PaymentID != 1 {
-		err := errors.New("invalid payment")
-		errorResp := response.ClientResponse(http.StatusBadRequest, "Payment Option is not COD", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorResp)
-		return
-	}
+	// if orderFromCart.PaymentID != 1 {
+	// 	err := errors.New("invalid payment")
+	// 	errorResp := response.ClientResponse(http.StatusBadRequest, "Payment Option is not COD", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errorResp)
+	// 	return
+	// }
 	orderSuccessResponse, err := oh.orderUsecase.OrderItemsFromCart(orderFromCart, userID)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not do the order", nil, err.Error())
@@ -74,11 +74,9 @@ func (oh *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 
-	success := response.ClientResponse(http.StatusOK, "Placed Order with cash on delivery", orderSuccessResponse, nil)
+	success := response.ClientResponse(http.StatusOK, "Successfully Placed Order", orderSuccessResponse, nil)
 	c.JSON(http.StatusOK, success)
 }
-
-
 
 func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")

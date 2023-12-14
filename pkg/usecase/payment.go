@@ -1,19 +1,26 @@
 package usecase
 
 import (
+	"WatchHive/pkg/config"
 	interfaces_repo "WatchHive/pkg/repository/interface"
-	interfaces "WatchHive/pkg/usecase/interface"
+	interfaces_usecase "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+
+	"github.com/razorpay/razorpay-go"
 )
 
 type paymentUseCase struct {
 	paymentRepository interfaces_repo.PaymentRepository
+	orderRepo         interfaces_repo.OrderRepository
+	cfg               config.Config
 }
 
-func NewPaymentUseCase(repo interfaces_repo.PaymentRepository) interfaces.PaymentUseCase {
+func NewPaymentUseCase(repo interfaces_repo.PaymentRepository, orderRepo interfaces_repo.OrderRepository, cfg config.Config) interfaces_usecase.PaymentUseCase {
 	return &paymentUseCase{
 		paymentRepository: repo,
+		orderRepo:         orderRepo,
+		cfg:               cfg,
 	}
 
 }
@@ -45,4 +52,68 @@ func (pu *paymentUseCase) AddPaymentMethod(payment models.NewPaymentMethod) (mod
 		return models.PaymentDetails{}, err
 	}
 	return paymentadd, nil
+}
+
+//razor
+
+func (pu *paymentUseCase) MakePaymentRazorpay(orderId, userId int) (models.CombinedOrderDetails, string, error) {
+
+	if orderId <= 0 || userId <= 0 {
+		return models.CombinedOrderDetails{}, "", errors.New("please provide valid IDs")
+	}
+
+	order, err := pu.orderRepo.GetOrder(orderId)
+	if err != nil {
+		err = errors.New("error in getting order details through order id" + err.Error())
+		return models.CombinedOrderDetails{}, "", err
+	}
+
+	client := razorpay.NewClient(pu.cfg.RazorPay_key_id, pu.cfg.RazorPay_key_secret)
+
+	data := map[string]interface{}{
+		"amount":   int(order.FinalPrice) * 100,
+		"currency": "INR",
+		"receipt":  "some_receipt_id",
+	}
+
+	body, err := client.Order.Create(data, nil)
+	if err != nil {
+		return models.CombinedOrderDetails{}, "", nil
+	}
+
+	razorPayOrderId := body["id"].(string)
+
+	err = pu.paymentRepository.AddRazorPayDetails(orderId, razorPayOrderId)
+	if err != nil {
+		return models.CombinedOrderDetails{}, "", err
+	}
+	body2, err := pu.orderRepo.GetDetailedOrderThroughId(int(order.ID))
+	if err != nil {
+		return models.CombinedOrderDetails{}, "", err
+	}
+
+	return body2, razorPayOrderId, nil
+}
+
+func (pu *paymentUseCase) SavePaymentDetails(paymentId, razorId, orderId string) error {
+
+	status, err := pu.paymentRepository.GetPaymentStatus(orderId)
+	if err != nil {
+		return err
+	}
+
+	if !status {
+		err = pu.paymentRepository.UpdatePaymentDetails(razorId, paymentId)
+		if err != nil {
+			return err
+		}
+
+		err = pu.paymentRepository.UpdatePaymentStatus(true, orderId)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	return errors.New("already paid")
+
 }

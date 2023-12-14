@@ -1,6 +1,9 @@
 package interfaces
 
-import "WatchHive/pkg/utils/models"
+import (
+	"WatchHive/pkg/domain"
+	"WatchHive/pkg/utils/models"
+)
 
 type OrderRepository interface {
 	GetAllPaymentOption() ([]models.PaymentDetails, error)
@@ -29,4 +32,9 @@ type OrderRepository interface {
 	ApproveCodPaid(orderID int) error
 	ReturnOrderCod(orderId int) error
 	ApproveCodReturn(orderID int) error
+	GetOrder(orderId int) (domain.Order, error)
+	GetDetailedOrderThroughId(orderId int) (models.CombinedOrderDetails, error) 
+	ApproveRazorPaid(orderID int) error 
+	GetPaymentType(orderID int) (int, error) 
+	ApproveRazorDelivered(orderID int) error 
 }

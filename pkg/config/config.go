@@ -6,21 +6,23 @@ import (
 )
 
 type Config struct {
-	DBHost             string `mapstructure:"DB_HOST"`
-	DBName             string `mapstructure:"DB_NAME"`
-	DBUser             string `mapstructure:"DB_USER"`
-	DBPort             string `mapstructure:"DB_PORT"`
-	DBPassword         string `mapstructure:"DB_PASSWORD"`
-	AUTHTOKEN          string `mapstructure:"DB_AUTHTOKEN"`
-	ACCOUNTSID         string `mapstructure:"DB_ACCOUNTSID"`
-	SERVICESID         string `mapstructure:"DB_SERVICESID"`
-	AdminAccessKey     string `mapstructure:"AdminAccessKey"`
-	AdminRefreshKey    string `mapstructure:"AdminRefreshKey"`
-	UserAccessKey      string `mapstructure:"UserAccessKey"`
-	UserRefreshKey     string `mapstructure:"UserRefreshKey"`
-	AWSRegion          string `mapstructure:"AWSRegion"`
-	AWSAccesskeyID     string `mapstructure:"AWSAccesskeyID"`
-	AWSSecretaccesskey string `mapstructure:"AWSSecretaccesskey"`
+	DBHost              string `mapstructure:"DB_HOST"`
+	DBName              string `mapstructure:"DB_NAME"`
+	DBUser              string `mapstructure:"DB_USER"`
+	DBPort              string `mapstructure:"DB_PORT"`
+	DBPassword          string `mapstructure:"DB_PASSWORD"`
+	AUTHTOKEN           string `mapstructure:"DB_AUTHTOKEN"`
+	ACCOUNTSID          string `mapstructure:"DB_ACCOUNTSID"`
+	SERVICESID          string `mapstructure:"DB_SERVICESID"`
+	AdminAccessKey      string `mapstructure:"AdminAccessKey"`
+	AdminRefreshKey     string `mapstructure:"AdminRefreshKey"`
+	UserAccessKey       string `mapstructure:"UserAccessKey"`
+	UserRefreshKey      string `mapstructure:"UserRefreshKey"`
+	AWSRegion           string `mapstructure:"AWSRegion"`
+	AWSAccesskeyID      string `mapstructure:"AWSAccesskeyID"`
+	AWSSecretaccesskey  string `mapstructure:"AWSSecretaccesskey"`
+	RazorPay_key_id     string `mapstructure:"RazorPay_key_id"`
+	RazorPay_key_secret string `mapstructure:"RazorPay_key_secret"`
 }
 
 var envs = []string{
@@ -29,6 +31,7 @@ var envs = []string{
 	"AdminAccessKey", "AdminRefreshKey",
 	"UserAccessKey", "UserRefreshKey",
 	"AWSRegion", "AWSAccesskeyID", "AWSSecretaccesskey",
+	"RazorPay_key_id", "RazorPay_key_secret",
 }
 
 func LoadConfig() (Config, error) {

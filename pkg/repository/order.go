@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -113,16 +115,16 @@ func (or *orderRepository) CheckOrderID(orderId int) (bool, error) {
 	return count > 0, nil
 }
 
-func (or *orderRepository) OrderExist(orderID int) (bool ,error) {
-	var count int 
+func (or *orderRepository) OrderExist(orderID int) (bool, error) {
+	var count int
 	err := or.DB.Raw("SELECT count(*) FROM orders WHERE id = ?", orderID).Scan(&count).Error
 	if err != nil {
-		return false,err
+		return false, err
 	}
 	if count <= 0 {
 		return false, nil
 	}
-	return true,nil
+	return true, nil
 }
 
 func (or *orderRepository) GetShipmentStatus(orderID int) (string, error) {
@@ -133,6 +135,18 @@ func (or *orderRepository) GetShipmentStatus(orderID int) (string, error) {
 	}
 	return status, nil
 }
+
+// pay
+func (or *orderRepository) GetPaymentType(orderID int) (int, error) {
+	var status int
+	err := or.DB.Raw("SELECT payment_method_id FROM orders WHERE id= ?", orderID).Scan(&status).Error
+	if err != nil {
+		return 0, err
+	}
+	return status, nil
+}
+
+// pay
 
 func (or *orderRepository) UpdateOrder(orderID int) error {
 	err := or.DB.Exec("UPDATE orders SET Shipment_status = 'processing' WHERE id = ?", orderID).Error
@@ -321,6 +335,21 @@ func (or *orderRepository) ApproveCodPaid(orderID int) error {
 	}
 	return nil
 }
+func (or *orderRepository) ApproveRazorPaid(orderID int) error {
+	err := or.DB.Exec("UPDATE orders SET shipment_status = 'shipped' , approval = 'true', payment_status = 'paid' WHERE id = ?", orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (or *orderRepository) ApproveRazorDelivered(orderID int) error {
+	err := or.DB.Exec("UPDATE orders SET shipment_status = 'delivered' , approval = 'true', payment_status = 'paid' WHERE id = ?", orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (or *orderRepository) ApproveCodReturn(orderID int) error {
 	err := or.DB.Exec("UPDATE orders SET   approval = 'true', payment_status = 'added_to_wallet' WHERE id = ?", orderID).Error
 	if err != nil {
@@ -341,4 +370,41 @@ func (or *orderRepository) UpdateStockOfProduct(orderProducts []models.OrderProd
 		}
 	}
 	return nil
+}
+
+//razor
+
+func (repo *orderRepository) GetOrder(orderId int) (domain.Order, error) {
+	var body domain.Order
+	query := `
+		select * from orders
+		where id = $1
+	`
+	if err := repo.DB.Raw(query, orderId).Scan(&body).Error; err != nil {
+		return domain.Order{}, err
+	}
+	fmt.Println("amount", body.FinalPrice)
+	return body, nil
+}
+
+func (repo *orderRepository) GetDetailedOrderThroughId(orderId int) (models.CombinedOrderDetails, error) {
+	var body models.CombinedOrderDetails
+
+	query := `
+	SELECT orders.id as order_id,orders.final_price,
+orders.shipment_status,orders.payment_status,
+users.name,users.email,users.phone,
+addresses.house_name,addresses.street,
+addresses.city,addresses.state,
+addresses.pin 
+FROM orders INNER JOIN users 
+ON orders.user_id = users.id INNER JOIN addresses 
+ON orders.address_id = addresses.id WHERE orders.id =?
+	`
+	if err := repo.DB.Raw(query, orderId).Scan(&body).Error; err != nil {
+		err = errors.New("error in getting detailed order through id in repository: " + err.Error())
+		return models.CombinedOrderDetails{}, err
+	}
+	fmt.Println("body in repo", body.OrderId)
+	return body, nil
 }
