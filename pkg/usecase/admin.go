@@ -153,3 +153,15 @@ func (au *adminUseCase) AdminDashboard() (models.CompleteAdminDashboard, error) 
 		DashboardRevenue: totalRevnueDetails,
 	}, nil
 }
+
+//sales report
+func (ah *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesReport, error) {
+
+	startTime, endTime := ah.helper.GetTimeFromPeriod(timePeriod)
+	saleReport, err := ah.adminRepository.FilteredSalesReport(startTime, endTime)
+
+	if err != nil {
+		return models.SalesReport{}, err
+	}
+	return saleReport, nil
+}

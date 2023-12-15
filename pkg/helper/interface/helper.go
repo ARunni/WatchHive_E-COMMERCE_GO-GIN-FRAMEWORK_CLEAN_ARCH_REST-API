@@ -3,6 +3,7 @@ package interfaces
 import (
 	"WatchHive/pkg/utils/models"
 	"mime/multipart"
+	"time"
 )
 
 type Helper interface {
@@ -21,4 +22,6 @@ type Helper interface {
 	ValidateDatatype(data, intOrString string) (bool, error)
 
 	AddImageToAwsS3(file *multipart.FileHeader) (string, error)
+
+	GetTimeFromPeriod(timePeriod string) (time.Time, time.Time)
 }

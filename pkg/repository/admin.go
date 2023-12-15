@@ -205,3 +205,60 @@ func (ar *adminRepository) DashboardTotalRevenueDetails() (models.DashBoardReven
 	}
 	return revenueDetails, nil
 }
+
+//sales report
+
+func (ar *adminRepository) FilteredSalesReport(startTime time.Time, endTime time.Time) (models.SalesReport, error) {
+	var salesReport models.SalesReport
+	querry := `
+		SELECT COALESCE(SUM(final_price),0) 
+		FROM orders WHERE payment_status='PAID'
+		AND created_at >= ? AND created_at <= ?
+		`
+	result := ar.DB.Raw(querry, startTime, endTime).Scan(&salesReport.TotalSales)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	result = ar.DB.Raw("SELECT COUNT(*) FROM orders").Scan(&salesReport.TotalOrders)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	querry = `
+		SELECT COUNT(*) FROM orders 
+		WHERE payment_status = 'PAID' and 
+		created_at >= ? AND created_at <= ?
+		`
+
+	result = ar.DB.Raw(querry, startTime, endTime).Scan(&salesReport.CompletedOrders)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	querry = `
+		SELECT COUNT(*) FROM orders WHERE 
+		order_status = 'processing' AND 
+		approval = false AND created_at >= ? AND created_at<=?
+		`
+	result = ar.DB.Raw(querry, startTime, endTime).Scan(&salesReport.PendingOrders)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	var productID int
+	querry = `
+		SELECT inventory_id FROM order_items 
+		GROUP BY product_id order by SUM(quantity) DESC LIMIT 1
+		`
+	result = ar.DB.Raw(querry).Scan(&productID)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	result = ar.DB.Raw("SELECT product_name FROM products WHERE id = ?", productID).Scan(&salesReport.TrendingProduct)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+	return salesReport, nil
+}
