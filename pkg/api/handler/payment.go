@@ -72,6 +72,8 @@ func (ph *PaymentHandler) MakePaymentRazorpay(c *gin.Context) {
 		return
 	}
 
+	// razorPay:=
+
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"final_price": body.FinalPrice * 100,
 		"razor_id":    razorId,
@@ -79,6 +81,7 @@ func (ph *PaymentHandler) MakePaymentRazorpay(c *gin.Context) {
 		"order_id":    body.OrderId,
 		"user_name":   body.Name,
 		"total":       int(body.FinalPrice),
+		// "razor_key": razorPay,
 	})
 }
 

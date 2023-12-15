@@ -124,3 +124,32 @@ func (ad *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) 
 
 }
 
+func (au *adminUseCase) AdminDashboard() (models.CompleteAdminDashboard, error) {
+	userDetails, err := au.adminRepository.DashboardUserDetails()
+	if err != nil {
+		return models.CompleteAdminDashboard{}, err
+	}
+	productDetails, err := au.adminRepository.DashboardProductDetails()
+	if err != nil {
+		return models.CompleteAdminDashboard{}, err
+	}
+	orderDetails, err := au.adminRepository.DashboardOrderDetails()
+	if err != nil {
+		return models.CompleteAdminDashboard{}, err
+	}
+	amountDetails, err := au.adminRepository.DashboardAmountDetails()
+	if err != nil {
+		return models.CompleteAdminDashboard{}, err
+	}
+	totalRevnueDetails, err := au.adminRepository.DashboardTotalRevenueDetails()
+	if err != nil {
+		return models.CompleteAdminDashboard{}, err
+	}
+	return models.CompleteAdminDashboard{
+		DashboardUser:    userDetails,
+		DashboardProduct: productDetails,
+		DashboardOrder:   orderDetails,
+		DashboardAmount:  amountDetails,
+		DashboardRevenue: totalRevnueDetails,
+	}, nil
+}

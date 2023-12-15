@@ -9,4 +9,5 @@ type PaymentUseCase interface {
 	AddPaymentMethod(payment models.NewPaymentMethod) (models.PaymentDetails, error)
 	MakePaymentRazorpay(orderId, userId int) (models.CombinedOrderDetails, string, error) 
 	SavePaymentDetails(paymentId, razorId, orderId string) error 
+	
 }
