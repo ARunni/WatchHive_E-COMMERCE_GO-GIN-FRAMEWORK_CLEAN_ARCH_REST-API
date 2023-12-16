@@ -238,7 +238,7 @@ func (ar *adminRepository) FilteredSalesReport(startTime time.Time, endTime time
 
 	querry = `
 		SELECT COUNT(*) FROM orders WHERE 
-		order_status = 'processing' AND 
+		shipment_status = 'processing' AND 
 		approval = false AND created_at >= ? AND created_at<=?
 		`
 	result = ar.DB.Raw(querry, startTime, endTime).Scan(&salesReport.PendingOrders)
@@ -248,7 +248,7 @@ func (ar *adminRepository) FilteredSalesReport(startTime time.Time, endTime time
 
 	var productID int
 	querry = `
-		SELECT inventory_id FROM order_items 
+		SELECT product_id FROM order_items 
 		GROUP BY product_id order by SUM(quantity) DESC LIMIT 1
 		`
 	result = ar.DB.Raw(querry).Scan(&productID)
