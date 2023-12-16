@@ -66,9 +66,11 @@ type CompleteAdminDashboard struct {
 	DashboardAmount  DashBoardAmount
 }
 type SalesReport struct {
-    TotalSales      float64
-    TotalOrders     int
-    CompletedOrders int
-    PendingOrders   int
-    TrendingProduct string
+	TotalSales      float64
+	TotalOrders     int
+	CompletedOrders int
+	PendingOrders   int
+	ReturnedOrders  int
+	CancelledOrders int
+	TrendingProduct string
 }

@@ -160,6 +160,8 @@ func (ah *AdminHandler) FilteredSalesReport(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
-	success := response.ClientResponse(http.StatusOK, "sales report retrieved successfully", salesReport, nil)
+	message := " current " + timePeriod + " sales report retrieved successfully"
+
+	success := response.ClientResponse(http.StatusOK, message, salesReport, nil)
 	c.JSON(http.StatusOK, success)
 }
