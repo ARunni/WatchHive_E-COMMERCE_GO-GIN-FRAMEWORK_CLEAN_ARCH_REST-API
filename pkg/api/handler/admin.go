@@ -165,3 +165,4 @@ func (ah *AdminHandler) FilteredSalesReport(c *gin.Context) {
 	success := response.ClientResponse(http.StatusOK, message, salesReport, nil)
 	c.JSON(http.StatusOK, success)
 }
+

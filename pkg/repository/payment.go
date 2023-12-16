@@ -103,11 +103,11 @@ func (pr *paymentRepository) UpdatePaymentStatus(status bool, orderId string) er
 	if status {
 		paymentStatus = "PAID"
 	} else {
-		paymentStatus = "NOT PAID"
+		paymentStatus = "not_paid"
 	}
 
 	query := `
-		UPDATE orders SET payment_status = $1, shipment_status = 'SHIPPED' WHERE id = $2 
+		UPDATE orders SET payment_status = $1, shipment_status = 'shipped' WHERE id = $2 
 	`
 	if err := pr.DB.Exec(query, paymentStatus, orderId).Error; err != nil {
 		err = errors.New("error in updating orders payment status: " + err.Error())
