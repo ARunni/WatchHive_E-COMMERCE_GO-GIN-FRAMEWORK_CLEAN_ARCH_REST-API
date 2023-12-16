@@ -278,3 +278,4 @@ func (ar *adminRepository) FilteredSalesReport(startTime time.Time, endTime time
 	}
 	return salesReport, nil
 }
+

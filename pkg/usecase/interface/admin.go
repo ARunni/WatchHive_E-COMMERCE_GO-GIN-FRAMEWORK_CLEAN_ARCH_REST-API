@@ -9,6 +9,7 @@ type AdminUseCase interface {
 	BlockUser(id string) error
 	UnBlockUser(id string) error
 	GetUsers(page int) ([]models.UserDetailsAtAdmin, error)
-	AdminDashboard()(models.CompleteAdminDashboard,error)
-	FilteredSalesReport(timePeriod string) (models.SalesReport, error) 
+	AdminDashboard() (models.CompleteAdminDashboard, error)
+	FilteredSalesReport(timePeriod string) (models.SalesReport, error)
+	ExecuteSalesReportByDate(startDate, endDate string) (models.SalesReport, error)
 }

@@ -20,4 +20,5 @@ type AdminRepository interface {
 	DashboardAmountDetails() (models.DashBoardAmount, error)
 
 	FilteredSalesReport(startTime time.Time, endTime time.Time) (models.SalesReport, error)
+	
 }

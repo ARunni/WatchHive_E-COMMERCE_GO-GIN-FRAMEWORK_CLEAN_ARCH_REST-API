@@ -24,4 +24,6 @@ type Helper interface {
 	AddImageToAwsS3(file *multipart.FileHeader) (string, error)
 
 	GetTimeFromPeriod(timePeriod string) (time.Time, time.Time)
+	ValidateDate(dateString string) bool 
 }
+

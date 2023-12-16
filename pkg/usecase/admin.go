@@ -7,6 +7,7 @@ import (
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"strconv"
+	"time"
 
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
@@ -173,4 +174,42 @@ func (ah *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesRepo
 		return models.SalesReport{}, err
 	}
 	return saleReport, nil
+}
+
+func (au *adminUseCase) ExecuteSalesReportByDate(startDate, endDate string) (models.SalesReport, error) {
+
+	parsedStartDate, err := time.Parse("02-01-2006", startDate)
+	if err != nil {
+		err := errors.New("enter the date in correct format")
+		return models.SalesReport{}, err
+	}
+
+	isValid := !parsedStartDate.IsZero()
+	if !isValid {
+		err := errors.New("enter the date in correct format & valid date")
+		return models.SalesReport{}, err
+	}
+	parsedEndDate, err := time.Parse("02-01-2006", endDate)
+	if err != nil {
+		err := errors.New("enter the date in correct format")
+		return models.SalesReport{}, err
+	}
+
+	isValid = !parsedEndDate.IsZero()
+	if !isValid {
+		err := errors.New("enter the date in correct format & valid date")
+		return models.SalesReport{}, err
+	}
+
+	if parsedStartDate.After(parsedEndDate) {
+		err := errors.New("start date is after end date")
+
+		return models.SalesReport{}, err
+	}
+
+	orders, err := au.adminRepository.FilteredSalesReport(parsedStartDate, parsedEndDate)
+	if err != nil {
+		return models.SalesReport{}, errors.New("report fetching failed")
+	}
+	return orders, nil
 }
