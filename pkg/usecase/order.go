@@ -231,7 +231,7 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 	if err != nil {
 		return err
 	}
-
+//cod
 	if paymenType == 1 {
 
 		if ShipmentStatus == "cancelled" {
