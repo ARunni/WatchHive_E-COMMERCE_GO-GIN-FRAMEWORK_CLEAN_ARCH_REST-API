@@ -31,6 +31,7 @@ type OrderRepository interface {
 	UpdateStockOfProduct(orderProducts []models.OrderProducts) error
 	ApproveCodPaid(orderID int) error
 	ReturnOrderCod(orderId int) error
+	ReturnOrderRazorPay(orderId int) error 
 	ApproveCodReturn(orderID int) error
 	GetOrder(orderId int) (domain.Order, error)
 	GetDetailedOrderThroughId(orderId int) (models.CombinedOrderDetails, error) 

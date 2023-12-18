@@ -202,7 +202,7 @@ func (oh *OrderHandler) CancelOrderFromAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
-func (oh *OrderHandler) ReturnOrderCod(c *gin.Context) {
+func (oh *OrderHandler) ReturnOrder(c *gin.Context) {
 	orderID, err := strconv.Atoi(c.Query("order_id"))
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "error from orderID", nil, err.Error())
@@ -217,7 +217,7 @@ func (oh *OrderHandler) ReturnOrderCod(c *gin.Context) {
 		return
 	}
 	userID := userId.(int)
-	err = oh.orderUsecase.ReturnOrderCod(orderID, userID)
+	err = oh.orderUsecase.ReturnOrder(orderID, userID)
 	if err != nil {
 		errs := response.ClientResponse(http.StatusInternalServerError, "Couldn't cancel the order", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)

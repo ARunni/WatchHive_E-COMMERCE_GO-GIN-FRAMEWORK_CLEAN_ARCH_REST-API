@@ -280,6 +280,18 @@ func (or *orderRepository) ReturnOrderCod(orderId int) error {
 	return nil
 
 }
+func (or *orderRepository) ReturnOrderRazorPay(orderId int) error {
+
+	shipStatus := "returned"
+	payStatus := "credited to wallet"
+	err := or.DB.Exec("UPDATE orders SET shipment_status = ? , approval='false',payment_status = ? WHERE id = ? ", shipStatus, payStatus, orderId).Error
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
 
 func (or *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error {
 
