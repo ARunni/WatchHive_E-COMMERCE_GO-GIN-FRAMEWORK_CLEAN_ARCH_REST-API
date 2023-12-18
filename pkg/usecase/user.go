@@ -113,6 +113,13 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 }
 func (u *userUseCase) AddAddress(userID int, address models.AddressInfoResponse) ([]models.AddressInfoResponse, error) {
 
+	ok, err := u.helper.ValidateAlphabets(address.Name)
+	if err != nil {
+		return []models.AddressInfoResponse{}, errors.New("invalid name")
+	}
+	if !ok {
+		return []models.AddressInfoResponse{}, errors.New("invalid name")
+	}
 	phone := u.helper.ValidatePhoneNumber(address.Phone)
 	if !phone {
 		return []models.AddressInfoResponse{}, errors.New("invalid mobile number")
@@ -164,6 +171,13 @@ func (u *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, e
 func (u *userUseCase) EditProfile(user models.UsersProfileDetails) (models.UsersProfileDetails, error) {
 	if user.Name == "" {
 		return models.UsersProfileDetails{}, errors.New("name cannot be empty")
+	}
+	ok, err := u.helper.ValidateAlphabets(user.Name)
+	if err != nil {
+		return models.UsersProfileDetails{}, errors.New("invalid name")
+	}
+	if !ok {
+		return models.UsersProfileDetails{}, errors.New("invalid name")
 	}
 	phErr := u.helper.ValidatePhoneNumber(user.Phone)
 	if !phErr {

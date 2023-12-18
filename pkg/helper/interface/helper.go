@@ -25,5 +25,7 @@ type Helper interface {
 
 	GetTimeFromPeriod(timePeriod string) (time.Time, time.Time)
 	ValidateDate(dateString string) bool 
+
+	ValidateAlphabets(data string) (bool, error) 
 }
 

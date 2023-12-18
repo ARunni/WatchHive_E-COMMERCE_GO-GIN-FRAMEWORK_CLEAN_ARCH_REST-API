@@ -6,6 +6,7 @@ import (
 	"WatchHive/pkg/utils/models"
 	"reflect"
 	"strconv"
+	"unicode"
 
 	"errors"
 	"fmt"
@@ -269,4 +270,13 @@ func (h *helper) ValidateDate(dateString string) bool {
 	// }
 
 	return err == nil
+}
+
+func (h *helper) ValidateAlphabets(data string) (bool, error) {
+	for _, char := range data {
+		if !unicode.IsLetter(char) {
+			return false, errors.New("data contains non-alphabetic characters")
+		}
+	}
+	return true, nil
 }
