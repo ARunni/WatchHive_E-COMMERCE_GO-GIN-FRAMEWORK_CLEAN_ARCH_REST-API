@@ -65,6 +65,8 @@ type CompleteAdminDashboard struct {
 	DashboardOrder   DashBoardOrder
 	DashboardAmount  DashBoardAmount
 }
+// sales report
+
 type SalesReport struct {
 	TotalSales      float64
 	TotalOrders     int
