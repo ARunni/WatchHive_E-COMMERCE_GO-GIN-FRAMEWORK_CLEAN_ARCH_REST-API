@@ -27,6 +27,16 @@ func NewUserHandler(usecase interfaces.UserUseCase) *UserHandler {
 	}
 }
 
+// UserSignUp registers a new user.
+// @Summary Register a new user
+// @Description Registers a new user with provided details
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param body body models.UserDetails true "User details for sign-up"
+// @Success 201 {object} response.Response "User signed up successfully"
+// @Failure 400 {object} response.Response "Invalid request or constraints not satisfied"
+// @Router /user/signup [post]
 func (u *UserHandler) UserSignUp(c *gin.Context) {
 
 	var user models.UserDetails
@@ -88,6 +98,17 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 
 }
 
+// AddAddress adds an address for a user.
+// @Summary Add user address
+// @Description Adds an address for the user identified by ID
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param id header int true "User ID" Format(int64)
+// @Param body body models.AddressInfoResponse true "Address details for addition"
+// @Success 200 {object} response.Response "Address added successfully"
+// @Failure 400 {object} response.Response "Invalid request or constraints not satisfied"
+// @Router /user/profile/address [post]
 func (u *UserHandler) AddAddress(c *gin.Context) {
 	var address models.AddressInfoResponse
 

@@ -1,12 +1,27 @@
 definitions:
-  models.AdminDetailsResponse:
+  models.AddressInfoResponse:
     properties:
-      email:
+      city:
+        type: string
+      house_name:
         type: string
       id:
         type: integer
       name:
         type: string
+      phone:
+        type: string
+      pin:
+        type: string
+      state:
+        type: string
+      street:
+        type: string
+    required:
+    - house_name
+    - name
+    - pin
+    - state
     type: object
   models.AdminLogin:
     properties:
@@ -19,19 +34,34 @@ definitions:
     required:
     - email
     type: object
-  models.TockenAdmin:
+  models.UserDetails:
     properties:
-      accessToken:
+      confirmpassword:
         type: string
-      admin:
-        $ref: '#/definitions/models.AdminDetailsResponse'
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+      status_code:
+        type: integer
     type: object
 info:
   contact:
     name: API Support
   description: TechDeck is an E-commerce platform to purchase and sell Electronic
     itmes
-  title: Go + Gin E-Commerce API
+  title: Go + Gin E-Commerce API Watch Hive
   version: 1.0.0
 paths:
   /admin/:
@@ -52,18 +82,102 @@ paths:
         "200":
           description: Admin login successful
           schema:
-            $ref: '#/definitions/models.TockenAdmin'
+            $ref: '#/definitions/response.Response'
         "400":
           description: Invalid request or constraints not satisfied
           schema:
-            $ref: '#/definitions/models.TockenAdmin'
+            $ref: '#/definitions/response.Response'
         "401":
           description: 'Unauthorized: cannot authenticate user'
           schema:
-            $ref: '#/definitions/models.TockenAdmin'
+            $ref: '#/definitions/response.Response'
       summary: Admin login
       tags:
       - admin
+  /admin/block:
+    put:
+      consumes:
+      - application/json
+      description: Blocks a user based on the provided ID
+      parameters:
+      - description: User ID to block
+        format: uuid
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User blocked successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Failed to block user
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Block a user
+      tags:
+      - admin
+  /user/profile/address:
+    post:
+      consumes:
+      - application/json
+      description: Adds an address for the user identified by ID
+      parameters:
+      - description: User ID
+        format: int64
+        in: header
+        name: id
+        required: true
+        type: integer
+      - description: Address details for addition
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddressInfoResponse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Address added successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or constraints not satisfied
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Add user address
+      tags:
+      - users
+  /user/signup:
+    post:
+      consumes:
+      - application/json
+      description: Registers a new user with provided details
+      parameters:
+      - description: User details for sign-up
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserDetails'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User signed up successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or constraints not satisfied
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Register a new user
+      tags:
+      - users
 securityDefinitions:
   BearerTokenAuth:
     in: header

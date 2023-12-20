@@ -33,9 +33,9 @@ func NewAdminHandler(usecase interfaces.AdminUseCase) *AdminHandler {
 // @Accept json
 // @Produce json
 // @Param body body models.AdminLogin true "Admin credentials for login"
-// @Success 200 {object} successResp "Admin login successful"
-// @Failure 400 {object} errResp "Invalid request or constraints not satisfied"
-// @Failure 401 {object} errREsp "Unauthorized: cannot authenticate user"
+// @Success 200 {object} response.Response "Admin login successful"
+// @Failure 400 {object} response.Response "Invalid request or constraints not satisfied"
+// @Failure 401 {object} response.Response "Unauthorized: cannot authenticate user"
 // @Router /admin/ [post]
 func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 
@@ -104,10 +104,9 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id query string true "User ID to block" Format(uuid)
-// @Success 200 {object} SuccessResponse "User blocked successfully"
-// @Failure 400 {object} ErrorResponse "Failed to block user"
+// @Success 200 {object} response.Response "User blocked successfully"
+// @Failure 400 {object} response.Response "Failed to block user"
 // @Router /admin/block [put]
-
 func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	id := c.Query("id")
 	err := ad.adminUseCase.BlockUser(id)

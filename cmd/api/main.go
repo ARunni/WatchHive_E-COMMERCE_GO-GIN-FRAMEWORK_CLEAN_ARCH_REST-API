@@ -12,7 +12,7 @@ import (
 	_ "github.com/swaggo/gin-swagger"
 )
 
-// @title Go + Gin E-Commerce API
+// @title Go + Gin E-Commerce API Watch Hive
 // @version 1.0.0
 // @description TechDeck is an E-commerce platform to purchase and sell Electronic itmes
 // @contact.name API Support

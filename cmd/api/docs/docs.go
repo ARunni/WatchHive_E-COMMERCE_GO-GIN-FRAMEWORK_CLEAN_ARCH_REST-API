@@ -45,19 +45,146 @@ const docTemplate = `{
                     "200": {
                         "description": "Admin login successful",
                         "schema": {
-                            "$ref": "#/definitions/models.TockenAdmin"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Invalid request or constraints not satisfied",
                         "schema": {
-                            "$ref": "#/definitions/models.TockenAdmin"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized: cannot authenticate user",
                         "schema": {
-                            "$ref": "#/definitions/models.TockenAdmin"
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/block": {
+            "put": {
+                "description": "Blocks a user based on the provided ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Block a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "User ID to block",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User blocked successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to block user",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/profile/address": {
+            "post": {
+                "description": "Adds an address for the user identified by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Add user address",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Address details for addition",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddressInfoResponse"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address added successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or constraints not satisfied",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/signup": {
+            "post": {
+                "description": "Registers a new user with provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "User details for sign-up",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserDetails"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User signed up successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or constraints not satisfied",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -65,16 +192,37 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.AdminDetailsResponse": {
+        "models.AddressInfoResponse": {
             "type": "object",
+            "required": [
+                "house_name",
+                "name",
+                "pin",
+                "state"
+            ],
             "properties": {
-                "email": {
+                "city": {
+                    "type": "string"
+                },
+                "house_name": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "pin": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "street": {
                     "type": "string"
                 }
             }
@@ -95,14 +243,36 @@ const docTemplate = `{
                 }
             }
         },
-        "models.TockenAdmin": {
+        "models.UserDetails": {
             "type": "object",
             "properties": {
-                "accessToken": {
+                "confirmpassword": {
                     "type": "string"
                 },
-                "admin": {
-                    "$ref": "#/definitions/models.AdminDetailsResponse"
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {},
+                "message": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         }
@@ -122,7 +292,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Go + Gin E-Commerce API",
+	Title:            "Go + Gin E-Commerce API Watch Hive",
 	Description:      "TechDeck is an E-commerce platform to purchase and sell Electronic itmes",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
