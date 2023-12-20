@@ -1,0 +1,72 @@
+definitions:
+  models.AdminDetailsResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  models.AdminLogin:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 20
+        minLength: 8
+        type: string
+    required:
+    - email
+    type: object
+  models.TockenAdmin:
+    properties:
+      accessToken:
+        type: string
+      admin:
+        $ref: '#/definitions/models.AdminDetailsResponse'
+    type: object
+info:
+  contact:
+    name: API Support
+  description: TechDeck is an E-commerce platform to purchase and sell Electronic
+    itmes
+  title: Go + Gin E-Commerce API
+  version: 1.0.0
+paths:
+  /admin/:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate an admin and get access token
+      parameters:
+      - description: Admin credentials for login
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Admin login successful
+          schema:
+            $ref: '#/definitions/models.TockenAdmin'
+        "400":
+          description: Invalid request or constraints not satisfied
+          schema:
+            $ref: '#/definitions/models.TockenAdmin'
+        "401":
+          description: 'Unauthorized: cannot authenticate user'
+          schema:
+            $ref: '#/definitions/models.TockenAdmin'
+      summary: Admin login
+      tags:
+      - admin
+securityDefinitions:
+  BearerTokenAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

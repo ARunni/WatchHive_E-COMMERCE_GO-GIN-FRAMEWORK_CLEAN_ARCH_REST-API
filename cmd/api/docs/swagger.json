@@ -1,0 +1,109 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "TechDeck is an E-commerce platform to purchase and sell Electronic itmes",
+        "title": "Go + Gin E-Commerce API",
+        "contact": {
+            "name": "API Support"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/admin/": {
+            "post": {
+                "description": "Authenticate an admin and get access token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Admin login",
+                "parameters": [
+                    {
+                        "description": "Admin credentials for login",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AdminLogin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Admin login successful",
+                        "schema": {
+                            "$ref": "#/definitions/models.TockenAdmin"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or constraints not satisfied",
+                        "schema": {
+                            "$ref": "#/definitions/models.TockenAdmin"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: cannot authenticate user",
+                        "schema": {
+                            "$ref": "#/definitions/models.TockenAdmin"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.AdminDetailsResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.AdminLogin": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "minLength": 8
+                }
+            }
+        },
+        "models.TockenAdmin": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "admin": {
+                    "$ref": "#/definitions/models.AdminDetailsResponse"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerTokenAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
