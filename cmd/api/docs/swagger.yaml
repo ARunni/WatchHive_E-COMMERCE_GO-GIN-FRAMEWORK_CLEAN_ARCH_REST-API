@@ -34,6 +34,17 @@ definitions:
     required:
     - email
     type: object
+  models.ChangePassword:
+    properties:
+      confirm_password:
+        type: string
+      current_password:
+        type: string
+      id:
+        type: integer
+      new_password:
+        type: string
+    type: object
   models.UserDetails:
     properties:
       confirmpassword:
@@ -43,6 +54,17 @@ definitions:
       name:
         type: string
       password:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.UsersProfileDetails:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
         type: string
       phone:
         type: string
@@ -120,6 +142,63 @@ paths:
       summary: Block a user
       tags:
       - admin
+  /user/profile:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves details of the user identified by ID
+      parameters:
+      - description: User ID
+        format: int64
+        in: header
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User details retrieved successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or unable to get user details
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve user details
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: Updates user profile details based on provided information
+      parameters:
+      - description: User ID
+        format: int64
+        in: header
+        name: id
+        required: true
+        type: integer
+      - description: User profile details for update
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.UsersProfileDetails'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile updated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or unable to update user profile
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Update user profile
+      tags:
+      - users
   /user/profile/address:
     post:
       consumes:
@@ -151,6 +230,64 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Add user address
       tags:
+      - user
+  /user/profile/alladdress:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all addresses of the user identified by ID
+      parameters:
+      - description: User ID
+        format: int64
+        in: header
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All user addresses retrieved successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or unable to get user addresses
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve all user addresses
+      tags:
+      - users
+  /user/profile/password:
+    patch:
+      consumes:
+      - application/json
+      description: Changes the password for the user identified by ID
+      parameters:
+      - description: User ID
+        format: int64
+        in: header
+        name: id
+        required: true
+        type: integer
+      - description: Password details for change
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password changed successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or unable to change password
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Change user password
+      tags:
       - users
   /user/signup:
     post:
@@ -177,7 +314,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Register a new user
       tags:
-      - users
+      - user
 securityDefinitions:
   BearerTokenAuth:
     in: header

@@ -145,6 +145,16 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 
 }
 
+// ShowUserDetails retrieves details of a user.
+// @Summary Retrieve user details
+// @Description Retrieves details of the user identified by ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id header int true "User ID" Format(int64)
+// @Success 200 {object} response.Response "User details retrieved successfully"
+// @Failure 400 {object} response.Response "Invalid request or unable to get user details"
+// @Router /user/profile [get]
 func (u *UserHandler) ShowUserDetails(c *gin.Context) {
 	userIdstring, _ := c.Get("id")
 	userId, strErr := userIdstring.(int)
@@ -163,6 +173,16 @@ func (u *UserHandler) ShowUserDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, successResp)
 }
 
+// GetAllAddress retrieves all addresses of a user.
+// @Summary Retrieve all user addresses
+// @Description Retrieves all addresses of the user identified by ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id header int true "User ID" Format(int64)
+// @Success 200 {object} response.Response "All user addresses retrieved successfully"
+// @Failure 400 {object} response.Response "Invalid request or unable to get user addresses"
+// @Router /user/profile/alladdress [get]
 func (u *UserHandler) GetAllAddress(c *gin.Context) {
 	userIdstring, _ := c.Get("id")
 	userId, strErr := userIdstring.(int)
@@ -180,6 +200,17 @@ func (u *UserHandler) GetAllAddress(c *gin.Context) {
 	c.JSON(http.StatusOK, successResp)
 }
 
+// EditProfile updates user profile details.
+// @Summary Update user profile
+// @Description Updates user profile details based on provided information
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id header int true "User ID" Format(int64)
+// @Param body body models.UsersProfileDetails true "User profile details for update"
+// @Success 200 {object} response.Response "User profile updated successfully"
+// @Failure 400 {object} response.Response "Invalid request or unable to update user profile"
+// @Router /user/profile [patch]
 func (u *UserHandler) EditProfile(c *gin.Context) {
 	var details models.UsersProfileDetails
 
@@ -220,6 +251,17 @@ func (u *UserHandler) EditProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, succesResp)
 }
 
+// ChangePassword changes the user's password.
+// @Summary Change user password
+// @Description Changes the password for the user identified by ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id header int true "User ID" Format(int64)
+// @Param body body models.ChangePassword true "Password details for change"
+// @Success 200 {object} response.Response "Password changed successfully"
+// @Failure 400 {object} response.Response "Invalid request or unable to change password"
+// @Router /user/profile/password [patch]
 func (u *UserHandler) ChangePassword(c *gin.Context) {
 	var change models.ChangePassword
 
