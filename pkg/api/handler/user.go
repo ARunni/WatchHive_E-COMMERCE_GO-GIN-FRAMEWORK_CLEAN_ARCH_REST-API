@@ -71,6 +71,16 @@ func (u *UserHandler) UserSignUp(c *gin.Context) {
 
 }
 
+// LoginHandler handles user login.
+// @Summary Handle user login
+// @Description Handles user login using provided credentials
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param body body models.UserLogin true "User credentials for login"
+// @Success 200 {object} response.Response "User logged in successfully"
+// @Failure 400 {object} response.Response "Invalid request or unable to log in user"
+// @Router /user/login [post]
 func (u *UserHandler) LoginHandler(c *gin.Context) {
 	var user models.UserLogin
 

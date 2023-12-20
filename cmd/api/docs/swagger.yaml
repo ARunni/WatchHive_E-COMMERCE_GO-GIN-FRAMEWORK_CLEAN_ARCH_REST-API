@@ -58,6 +58,13 @@ definitions:
       phone:
         type: string
     type: object
+  models.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   models.UsersProfileDetails:
     properties:
       email:
@@ -142,6 +149,126 @@ paths:
       summary: Block a user
       tags:
       - admin
+  /admin/currentsalesreport:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves sales report for the specified time period
+      parameters:
+      - description: Time period for sales report
+        in: query
+        name: period
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sales report retrieved successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Unable to retrieve sales report
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve sales report for a specific time period
+      tags:
+      - admin
+  /admin/dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves dashboard information for admin
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Admin dashboard retrieved successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or unable to retrieve dashboard
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve admin dashboard information
+      tags:
+      - admin
+  /admin/users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves users based on the provided page number
+      parameters:
+      - description: Page number for pagination
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Users retrieved successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or unable to retrieve users
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve users with pagination
+      tags:
+      - admin
+  /admin/users/unblock:
+    patch:
+      consumes:
+      - application/json
+      description: Unblocks a user based on the provided ID
+      parameters:
+      - description: User ID to unblock
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User unblocked successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or unable to unblock user
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Unblock a user
+      tags:
+      - admin
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Handles user login using provided credentials
+      parameters:
+      - description: User credentials for login
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User logged in successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or unable to log in user
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Handle user login
+      tags:
+      - users
   /user/profile:
     get:
       consumes:
