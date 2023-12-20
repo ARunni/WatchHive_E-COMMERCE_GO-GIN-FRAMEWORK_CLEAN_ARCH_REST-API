@@ -26,6 +26,17 @@ func NewAdminHandler(usecase interfaces.AdminUseCase) *AdminHandler {
 	}
 }
 
+// LoginHandler handles the login operation for an admin.
+// @Summary Admin login
+// @Description Authenticate an admin and get access token
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param body body models.AdminLogin true "Admin credentials for login"
+// @Success 200 {object} successResp "Admin login successful"
+// @Failure 400 {object} errResp "Invalid request or constraints not satisfied"
+// @Failure 401 {object} errREsp "Unauthorized: cannot authenticate user"
+// @Router /admin/ [post]
 func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 
 	var adminDetails models.AdminLogin
@@ -85,6 +96,17 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 	}
 	c.JSON(200, newAccessToken)
 }
+
+// BlockUser blocks a user by ID.
+// @Summary Block a user
+// @Description Blocks a user based on the provided ID
+// @Tags admin
+// @Accept json
+// @Produce json
+// @Param id query string true "User ID to block" Format(uuid)
+// @Success 200 {object} SuccessResponse "User blocked successfully"
+// @Failure 400 {object} ErrorResponse "Failed to block user"
+// @Router /admin/block [put]
 
 func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	id := c.Query("id")
@@ -167,7 +189,6 @@ func (ah *AdminHandler) FilteredSalesReport(c *gin.Context) {
 }
 
 //repot by date
-
 
 func (ah *AdminHandler) SalesReportByDate(c *gin.Context) {
 	startDateStr := c.Query("start")

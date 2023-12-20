@@ -5,10 +5,25 @@ import (
 	"WatchHive/pkg/di"
 	"log"
 
+	_ "WatchHive/cmd/api/docs"
+
 	"github.com/joho/godotenv"
+	_ "github.com/swaggo/files"
+	_ "github.com/swaggo/gin-swagger"
 )
 
+// @title Go + Gin E-Commerce API
+// @version 1.0.0
+// @description TechDeck is an E-commerce platform to purchase and sell Electronic itmes
+// @contact.name API Support
+// @securityDefinitions.apikey BearerTokenAuth
+// @in header
+// @name Authorization
+// @host localhost:8080
+// @BasePath /
+// @query.collection.format multi
 func main() {
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("error loading the env file")
