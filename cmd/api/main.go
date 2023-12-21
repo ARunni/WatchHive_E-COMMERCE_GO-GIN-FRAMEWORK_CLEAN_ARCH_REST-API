@@ -14,7 +14,7 @@ import (
 
 // @title Go + Gin E-Commerce API Watch Hive
 // @version 1.0.0
-// @description TechDeck is an E-commerce platform to purchase and sell Electronic itmes
+// @description Watch Hive is an E-commerce platform to purchase Watch
 // @contact.name API Support
 // @securityDefinitions.apikey BearerTokenAuth
 // @in header
