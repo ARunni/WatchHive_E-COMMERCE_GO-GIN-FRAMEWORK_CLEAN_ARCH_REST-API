@@ -12,12 +12,13 @@ import (
 )
 
 type userUseCase struct {
-	userRepo interfaces.UserRepository
-	cfg      config.Config
-	helper   helper_interface.Helper
+	userRepo   interfaces.UserRepository
+	cfg        config.Config
+	helper     helper_interface.Helper
+	walletRepo interfaces.WalletRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository, cfg config.Config, h helper_interface.Helper) services.UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository, cfg config.Config, h helper_interface.Helper, wallet interfaces.WalletRepository) services.UserUseCase {
 	return &userUseCase{
 		userRepo: repo,
 		cfg:      cfg,
@@ -57,6 +58,9 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	user.Password = hashedPassword
 	userData, err := u.userRepo.UserSignup(user)
 	if err != nil {
+		return models.TokenUsers{}, err
+	}
+	if err = u.walletRepo.CreateWallet(userData.Id); err != nil {
 		return models.TokenUsers{}, err
 	}
 	tokenString, err := u.helper.GenerateTokenClients(userData)

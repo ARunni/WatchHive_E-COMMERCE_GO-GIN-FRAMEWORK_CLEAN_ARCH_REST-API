@@ -15,7 +15,7 @@ type userDatabase struct {
 
 func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 
-	return &userDatabase{DB}
+	return &userDatabase{DB: DB}
 }
 
 func (c *userDatabase) CheckUserAvilability(email string) bool {

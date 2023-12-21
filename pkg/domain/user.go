@@ -22,3 +22,4 @@ type Address struct {
 	Phone     string `json:"phone" gorm:"phone,unique"`
 	Pin       int    `json:"pin" validate:"required"`
 }
+
