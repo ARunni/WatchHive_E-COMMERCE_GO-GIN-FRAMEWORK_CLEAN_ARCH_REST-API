@@ -19,18 +19,11 @@ func NewWalletRepository(DB *gorm.DB) interfaces.WalletRepository {
 
 func (wr *WalletDB) CreateWallet(userID int) error {
 
-	result := wr.Db.Exec("INSERT INTO wallets (user_id) VALUES (?) RETURNNING id", userID)
-	if result.Error != nil {
+	err := wr.Db.Exec("INSERT INTO wallets (created_at ,user_id) VALUES (NOW(),?) RETURNING id", userID).Error
+	if err != nil {
 		fmt.Println("error walletcreation id:")
 		return errors.New("cannot create wallet error at database")
 	}
-	// var walletID int
-	// if row := result.RowsAffected; row > 0 {
-	// 	err := result.Scan(&walletID).Error
-	// 	if err != nil {
-	// 		return  errors.New("getting data failed error at database")
-	// 	}
-	// }
 
 	return nil
 }

@@ -20,9 +20,10 @@ type userUseCase struct {
 
 func NewUserUseCase(repo interfaces.UserRepository, cfg config.Config, h helper_interface.Helper, wallet interfaces.WalletRepository) services.UserUseCase {
 	return &userUseCase{
-		userRepo: repo,
-		cfg:      cfg,
-		helper:   h,
+		userRepo:   repo,
+		cfg:        cfg,
+		helper:     h,
+		walletRepo: wallet,
 	}
 }
 
@@ -60,7 +61,8 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	if err != nil {
 		return models.TokenUsers{}, err
 	}
-	if err = u.walletRepo.CreateWallet(userData.Id); err != nil {
+	err = u.walletRepo.CreateWallet(userData.Id)
+	if err != nil {
 		return models.TokenUsers{}, err
 	}
 	tokenString, err := u.helper.GenerateTokenClients(userData)
