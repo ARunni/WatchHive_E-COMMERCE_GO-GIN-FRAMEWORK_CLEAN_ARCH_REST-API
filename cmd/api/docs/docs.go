@@ -1908,11 +1908,6 @@ const docTemplate = `{
         },
         "/user/signup": {
             "post": {
-                "security": [
-                    {
-                        "BearerTokenAuth": []
-                    }
-                ],
                 "description": "Registers a new user with provided details",
                 "consumes": [
                     "application/json"

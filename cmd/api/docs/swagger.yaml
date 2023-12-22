@@ -1422,8 +1422,6 @@ paths:
           description: Invalid request or constraints not satisfied
           schema:
             $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
       summary: Register a new user
       tags:
       - User
