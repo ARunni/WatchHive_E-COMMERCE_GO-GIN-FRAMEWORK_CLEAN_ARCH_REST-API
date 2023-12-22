@@ -1237,11 +1237,6 @@ const docTemplate = `{
         },
         "/user/login": {
             "post": {
-                "security": [
-                    {
-                        "BearerTokenAuth": []
-                    }
-                ],
                 "description": "Handles user login using provided credentials",
                 "consumes": [
                     "application/json"

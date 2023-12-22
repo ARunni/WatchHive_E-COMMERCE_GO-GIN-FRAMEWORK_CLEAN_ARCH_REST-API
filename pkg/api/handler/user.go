@@ -77,7 +77,6 @@ func (u *UserHandler) UserSignUp(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @security BearerTokenAuth
 // @Param body body models.UserLogin true "User credentials for login"
 // @Success 200 {object} response.Response "User logged in successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to log in user"

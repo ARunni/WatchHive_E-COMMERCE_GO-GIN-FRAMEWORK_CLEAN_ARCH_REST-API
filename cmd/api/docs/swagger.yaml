@@ -986,8 +986,6 @@ paths:
           description: Invalid request or unable to log in user
           schema:
             $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
       summary: Handle user login
       tags:
       - User
