@@ -29,7 +29,7 @@ func NewAdminHandler(usecase interfaces.AdminUseCase) *AdminHandler {
 // LoginHandler handles the login operation for an admin.
 // @Summary Admin login
 // @Description Authenticate an admin and get access token
-// @Tags admin
+// @Tags Admin
 // @Accept json
 // @Produce json
 // @Param body body models.AdminLogin true "Admin credentials for login"
@@ -100,7 +100,7 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 // BlockUser blocks a user by ID.
 // @Summary Block a user
 // @Description Blocks a user based on the provided ID
-// @Tags admin
+// @Tags Admin User Management
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -125,7 +125,7 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 // UnBlockUser unblocks a user by ID.
 // @Summary Unblock a user
 // @Description Unblocks a user based on the provided ID
-// @Tags admin
+// @Tags Admin User Management
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -151,7 +151,7 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 // GetUsers retrieves users based on the provided page number.
 // @Summary Retrieve users with pagination
 // @Description Retrieves users based on the provided page number
-// @Tags admin
+// @Tags Admin User Management
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -185,7 +185,7 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 // AdminDashBoard retrieves the dashboard information for admin.
 // @Summary Retrieve admin dashboard information
 // @Description Retrieves dashboard information for admin
-// @Tags admin
+// @Tags Admin Dashboard
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -207,7 +207,7 @@ func (ah *AdminHandler) AdminDashBoard(c *gin.Context) {
 // FilteredSalesReport retrieves the sales report for a specified time period.
 // @Summary Retrieve sales report for a specific time period
 // @Description Retrieves sales report for the specified time period
-// @Tags admin
+// @Tags Admin Dashboard
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -235,7 +235,7 @@ func (ah *AdminHandler) FilteredSalesReport(c *gin.Context) {
 // SalesReportByDate generates a sales report within a specified date range.
 // @Summary Generate sales report by date range
 // @Description Retrieves sales report data between the provided start and end dates.
-// @Tags Admin
+// @Tags Admin Dashboard
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth

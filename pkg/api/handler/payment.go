@@ -24,7 +24,7 @@ func NewPaymentHandler(usecase interfaces.PaymentUseCase) *PaymentHandler {
 // AddPaymentMethod adds a new payment method.
 // @Summary Add payment method
 // @Description Adds a new payment method using the provided details.
-// @Tags Admin Payment Methods
+// @Tags Admin Payment Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth

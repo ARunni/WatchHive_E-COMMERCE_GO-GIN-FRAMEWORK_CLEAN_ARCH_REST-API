@@ -14,7 +14,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 	engine.POST("/otplogin", otpHandler.SendOTP)
 	engine.POST("/verifyotp", otpHandler.VerifyOTP)
-	engine.GET("/products", productHandler.ListProducts)
+	engine.GET("/products", productHandler.ListProductsUser)
 	engine.GET("/payment", paymentHandler.MakePaymentRazorpay)
 	engine.GET("/verifypayment", paymentHandler.VerifyPayment)
 

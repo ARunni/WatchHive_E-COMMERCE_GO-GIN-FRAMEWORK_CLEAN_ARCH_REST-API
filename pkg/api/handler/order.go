@@ -26,7 +26,7 @@ func NewOrderHandler(oUsecase interfaces.OrderUseCase, pUsecase interfaces.Payme
 // CheckOut processes the checkout for the user's order.
 // @Summary Process checkout
 // @Description Processes the checkout for the user's order.
-// @Tags Order
+// @Tags User Order Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -59,7 +59,7 @@ func (oh *OrderHandler) CheckOut(c *gin.Context) {
 // OrderItemsFromCart places an order with items from the user's cart.
 // @Summary Place order from cart
 // @Description Places an order with items from the user's cart based on the provided details.
-// @Tags Order
+// @Tags User Order Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -102,7 +102,7 @@ func (oh *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // GetOrderDetails retrieves order details for a user.
 // @Summary Retrieve order details
 // @Description Retrieves order details for a user based on the provided pagination parameters.
-// @Tags Order
+// @Tags User Order Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -154,7 +154,7 @@ func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 // CancelOrder cancels an order by ID for the logged-in user.
 // @Summary Cancel order
 // @Description Cancels an order based on the provided order ID for the logged-in user.
-// @Tags Order
+// @Tags User Order Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -193,7 +193,7 @@ func (oh *OrderHandler) CancelOrder(c *gin.Context) {
 // GetAllOrderDetailsForAdmin retrieves all order details for admin with pagination.
 // @Summary Retrieve all order details for admin
 // @Description Retrieves all order details for admin with pagination based on the provided parameters.
-// @Tags Admin
+// @Tags Admin Order Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -235,7 +235,7 @@ func (oh *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 // ApproveOrder approves an order by its ID.
 // @Summary Approve order
 // @Description Approves an order based on the provided order ID.
-// @Tags Order
+// @Tags Admin Order Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -265,7 +265,7 @@ func (oh *OrderHandler) ApproveOrder(c *gin.Context) {
 // CancelOrderFromAdmin cancels an order by its ID from an admin perspective.
 // @Summary Cancel order from admin
 // @Description Cancels an order based on the provided order ID from an admin perspective.
-// @Tags Admin
+// @Tags Admin Order Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -293,7 +293,7 @@ func (oh *OrderHandler) CancelOrderFromAdmin(c *gin.Context) {
 // ReturnOrder initiates the return process for a specific order.
 // @Summary Initiate order return
 // @Description Initiates the return process for an order based on the provided order ID and user ID.
-// @Tags Order
+// @Tags  User Order Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth

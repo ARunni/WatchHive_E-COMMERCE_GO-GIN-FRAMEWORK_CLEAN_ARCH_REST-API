@@ -24,7 +24,7 @@ func NewProductHandler(usecase interfaces.ProductUseCase) *ProductHandler {
 // AddProduct adds a new product.
 // @Summary Add product
 // @Description Adds a new product using the provided details and image.
-// @Tags Product
+// @Tags Admin Product Management
 // @Accept multipart/form-data
 // @Produce json
 // @Security BearerTokenAuth
@@ -65,10 +65,51 @@ func (i *ProductHandler) AddProduct(c *gin.Context) {
 
 }
 
+// ListProductsUser lists products for users with pagination.
+// @Summary List products for users
+// @Description Retrieves a paginated list of products available for users.
+// @Tags User Product Management
+// @Accept json
+// @Produce json
+// @Param page query integer false "Page number (default: 1)"
+// @Param per_page query integer false "Number of products per page (default: 5)"
+// @Success 200 {object} response.Response  "Success: Products for users displayed successfully"
+// @Failure 400 {object} response.Response  "Bad request: Product display error"
+// @Router /user/product [get]
+func (i *ProductHandler) ListProductsUser(c *gin.Context) {
+
+	pageNo := c.DefaultQuery("page", "1")
+	pageList := c.DefaultQuery("per_page", "5")
+	pageNoInt, err := strconv.Atoi(pageNo)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "Product cannot be displayed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	pageListInt, err := strconv.Atoi(pageList)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "Product cannot be displayed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+	}
+
+	products_list, err := i.ProductUseCase.ListProducts(pageNoInt, pageListInt)
+
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadRequest, "Product cannot be displayed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	message := "product list"
+
+	successRes := response.ClientResponse(http.StatusOK, message, products_list, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
 // ListProducts lists products with pagination.
 // @Summary List products
 // @Description Retrieves a paginated list of products.
-// @Tags Product
+// @Tags Admin Product Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -77,7 +118,7 @@ func (i *ProductHandler) AddProduct(c *gin.Context) {
 // @Success 200 {object} response.Response  "Success: Products displayed successfully"
 // @Failure 400 {object} response.Response  "Bad request: Product display error"
 // @Router /admin/product [get]
-func (i *ProductHandler) ListProducts(c *gin.Context) {
+func (i *ProductHandler) ListProductsAdmin(c *gin.Context) {
 
 	pageNo := c.DefaultQuery("page", "1")
 	pageList := c.DefaultQuery("per_page", "5")
@@ -110,7 +151,7 @@ func (i *ProductHandler) ListProducts(c *gin.Context) {
 // EditProduct updates an existing product.
 // @Summary Edit product
 // @Description Updates an existing product using the provided details.
-// @Tags Product
+// @Tags Admin Product Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -137,10 +178,11 @@ func (u *ProductHandler) EditProduct(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "sucessfully edited products", modProduct, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
 // DeleteProduct deletes an existing product by ID.
 // @Summary Delete product
 // @Description Deletes an existing product by the provided ID.
-// @Tags Product
+// @Tags Admin Product Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -161,10 +203,11 @@ func (u *ProductHandler) DeleteProduct(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Sucessfully deleted the product", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
 // UpdateProduct updates the stock of an existing product.
 // @Summary Update product stock
 // @Description Updates the stock of an existing product using the provided details.
-// @Tags Product
+// @Tags Admin Product Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth

@@ -30,7 +30,7 @@ func NewUserHandler(usecase interfaces.UserUseCase) *UserHandler {
 // UserSignUp registers a new user.
 // @Summary Register a new user
 // @Description Registers a new user with provided details
-// @Tags user
+// @Tags User
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -75,7 +75,7 @@ func (u *UserHandler) UserSignUp(c *gin.Context) {
 // LoginHandler handles user login.
 // @Summary Handle user login
 // @Description Handles user login using provided credentials
-// @Tags users
+// @Tags User
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -113,7 +113,7 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 // AddAddress adds an address for a user.
 // @Summary Add user address
 // @Description Adds an address for the user identified by ID
-// @Tags user
+// @Tags User Profile Management
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -161,7 +161,7 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 // ShowUserDetails retrieves details of a user.
 // @Summary Retrieve user details
 // @Description Retrieves details of the user identified by ID
-// @Tags users
+// @Tags User Profile Management
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -190,7 +190,7 @@ func (u *UserHandler) ShowUserDetails(c *gin.Context) {
 // GetAllAddress retrieves all addresses of a user.
 // @Summary Retrieve all user addresses
 // @Description Retrieves all addresses of the user identified by ID
-// @Tags users
+// @Tags User Profile Management
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -218,7 +218,7 @@ func (u *UserHandler) GetAllAddress(c *gin.Context) {
 // EditProfile updates user profile details.
 // @Summary Update user profile
 // @Description Updates user profile details based on provided information
-// @Tags users
+// @Tags User Profile Management
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
@@ -270,7 +270,7 @@ func (u *UserHandler) EditProfile(c *gin.Context) {
 // ChangePassword changes the user's password.
 // @Summary Change user password
 // @Description Changes the password for the user identified by ID
-// @Tags users
+// @Tags User Profile Management
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth

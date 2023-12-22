@@ -22,7 +22,7 @@ func NewOtpHandler(usecase interfaces.OtpUseCase) *OtpHandler {
 // SendOTP sends an OTP to a provided phone number.
 // @Summary Send OTP
 // @Description Sends an OTP (One-Time Password) to the provided phone number for verification.
-// @Tags OTP
+// @Tags User
 // @Accept json
 // @Produce json
 // @Param OTPdata body models.OTPdata true "Phone number to send OTP"
@@ -50,7 +50,7 @@ func (ot *OtpHandler) SendOTP(c *gin.Context) {
 // VerifyOTP verifies the provided OTP code.
 // @Summary Verify OTP
 // @Description Verifies the provided OTP (One-Time Password) code for user authentication.
-// @Tags OTP
+// @Tags User
 // @Accept json
 // @Produce json
 // @Param VerifyData body models.VerifyData true "Data containing OTP for verification"

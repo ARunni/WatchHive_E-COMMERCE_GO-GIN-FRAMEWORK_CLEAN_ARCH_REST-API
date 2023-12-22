@@ -23,7 +23,7 @@ func NewCartHandler(useCase interfaces.CartUseCase) *CartHandler {
 // AddToCart adds an item to the user's cart.
 // @Summary Add item to cart
 // @Description Adds an item to the user's cart based on the provided details.
-// @Tags Cart
+// @Tags User Cart Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -64,7 +64,7 @@ func (ch *CartHandler) AddToCart(c *gin.Context) {
 // ListCartItems retrieves the list of items in the user's cart.
 // @Summary Retrieve cart items
 // @Description Retrieves the list of items in the user's cart based on the user ID.
-// @Tags Cart
+// @Tags User Cart Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -95,7 +95,7 @@ func (ch *CartHandler) ListCartItems(c *gin.Context) {
 // UpdateProductQuantityCart updates the quantity of a product in the user's cart.
 // @Summary Update product quantity in cart
 // @Description Updates the quantity of a product in the user's cart based on the provided details.
-// @Tags Cart
+// @Tags User Cart Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -134,10 +134,11 @@ func (ch *CartHandler) UpdateProductQuantityCart(c *gin.Context) {
 	c.JSON(http.StatusOK, succesResp)
 
 }
+
 // RemoveFromCart removes a product from the user's cart.
 // @Summary Remove product from cart
 // @Description Removes a product from the user's cart based on the provided details.
-// @Tags Cart
+// @Tags User Cart Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth

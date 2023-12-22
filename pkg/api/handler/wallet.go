@@ -20,7 +20,7 @@ func NewWalletHandler(usecase interfaces.WalletUsecase) *WalletHandler {
 // GetWallet retrieves wallet details for a user.
 // @Summary Retrieve wallet details
 // @Description Retrieves wallet details for a specific user.
-// @Tags Wallet
+// @Tags User Wallet
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth

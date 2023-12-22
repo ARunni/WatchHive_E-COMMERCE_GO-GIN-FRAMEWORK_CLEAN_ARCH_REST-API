@@ -33,7 +33,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 
 		productManagement := engine.Group("/product")
 		{
-			productManagement.GET("", productHandler.ListProducts)
+			productManagement.GET("", productHandler.ListProductsAdmin)
 			productManagement.POST("", productHandler.AddProduct)
 			productManagement.PATCH("", productHandler.EditProduct)
 			productManagement.DELETE("", productHandler.DeleteProduct)
