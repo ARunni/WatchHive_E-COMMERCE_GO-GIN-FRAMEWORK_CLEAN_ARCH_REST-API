@@ -403,12 +403,19 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 	if shipmentStatus == "shipped" {
 		return errors.New("the order is shipped cannot return it")
 	}
-
+	amount, err := ou.orderRepository.GetFinalPriceOrder(orderId)
+	if err != nil {
+		return err
+	}
 	if paymenType == 1 {
 
 		if shipmentStatus == "delivered" {
 
 			err = ou.orderRepository.ReturnOrderCod(orderId)
+			if err != nil {
+				return err
+			}
+			err = ou.walletRepo.AddToWallet(userId, amount)
 			if err != nil {
 				return err
 			}
@@ -418,6 +425,10 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 	if paymenType == 2 {
 		if shipmentStatus == "delivered" {
 			err = ou.orderRepository.ReturnOrderRazorPay(orderId)
+			if err != nil {
+				return err
+			}
+			err = ou.walletRepo.AddToWallet(userId, amount)
 			if err != nil {
 				return err
 			}
