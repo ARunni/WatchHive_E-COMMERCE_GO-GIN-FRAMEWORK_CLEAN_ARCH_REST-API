@@ -16,16 +16,16 @@ type orderUseCase struct {
 	cartRepository    repo_interface.CartRepository
 	userRepository    repo_interface.UserRepository
 	paymentRepository repo_interface.PaymentRepository
-	walletRepo repo_interface.WalletRepository
+	walletRepo        repo_interface.WalletRepository
 }
 
-func NewOrderUseCase(orderRepo repo_interface.OrderRepository,walletRepo repo_interface.WalletRepository, cartRepo repo_interface.CartRepository, userRepo repo_interface.UserRepository, paymentRepo repo_interface.PaymentRepository) usecase_interfaces.OrderUseCase {
+func NewOrderUseCase(orderRepo repo_interface.OrderRepository, walletRepo repo_interface.WalletRepository, cartRepo repo_interface.CartRepository, userRepo repo_interface.UserRepository, paymentRepo repo_interface.PaymentRepository) usecase_interfaces.OrderUseCase {
 	return &orderUseCase{
 		orderRepository:   orderRepo,
 		cartRepository:    cartRepo,
 		userRepository:    userRepo,
 		paymentRepository: paymentRepo,
-		walletRepo: walletRepo,
+		walletRepo:        walletRepo,
 	}
 
 }
@@ -173,10 +173,10 @@ func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
 	if err != nil {
 		return err
 	}
-paymentStatus,err := ou.orderRepository.GetPaymentStatus(orderID)
-if err != nil {
-	return err
-}
+	paymentStatus, err := ou.orderRepository.GetPaymentStatus(orderID)
+	if err != nil {
+		return err
+	}
 
 	if shipmentStatus == "pending" || shipmentStatus == "returned" {
 		message := fmt.Sprint(shipmentStatus)
@@ -196,11 +196,11 @@ if err != nil {
 		return err
 	}
 	if paymentStatus == "paid" || paymentStatus == "PAID" {
-		amount,err := ou.orderRepository.GetFinalPriceOrder(orderID)
-		if err!= nil{
+		amount, err := ou.orderRepository.GetFinalPriceOrder(orderID)
+		if err != nil {
 			return err
 		}
-		err = ou.walletRepo.AddToWallet(userId,amount)
+		err = ou.walletRepo.AddToWallet(userId, amount)
 		if err != nil {
 			return err
 		}
@@ -247,7 +247,11 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 	if err != nil {
 		return err
 	}
-//cod
+	paymentStatus, err := ou.orderRepository.GetPaymentStatus(orderId)
+	if err != nil {
+		return err
+	}
+	//cod
 	if paymenType == 1 {
 
 		if ShipmentStatus == "cancelled" {
@@ -295,7 +299,7 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 		if ShipmentStatus == "delivered" {
 			return errors.New("the order is already deliverd")
 		}
-		if ShipmentStatus == "processing" {
+		if ShipmentStatus == "processing" && paymentStatus == "PAID" {
 			err := ou.orderRepository.ApproveOrder(orderId)
 			if err != nil {
 				return err
@@ -304,10 +308,10 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 			return nil
 		}
 		if ShipmentStatus == "shipped" {
-			err := ou.orderRepository.ApproveRazorPaid(orderId)
-			if err != nil {
-				return err
-			}
+			// 	err := ou.orderRepository.ApproveRazorPaid(orderId)
+			// 	if err != nil {
+			// 		return err
+			// }
 			err = ou.orderRepository.ApproveRazorDelivered(orderId)
 			if err != nil {
 				return err
@@ -413,11 +417,11 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 	}
 	if paymenType == 2 {
 		if shipmentStatus == "delivered" {
-		err = ou.orderRepository.ReturnOrderRazorPay(orderId)
-		if err != nil {
-			return err
+			err = ou.orderRepository.ReturnOrderRazorPay(orderId)
+			if err != nil {
+				return err
+			}
 		}
-	}
 	}
 	return nil
 }
