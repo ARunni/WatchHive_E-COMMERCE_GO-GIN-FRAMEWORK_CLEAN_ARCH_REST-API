@@ -33,7 +33,6 @@ func NewAdminHandler(usecase interfaces.AdminUseCase) *AdminHandler {
 // @Accept json
 // @Produce json
 // @Param body body models.AdminLogin true "Admin credentials for login"
-// @S
 // @Success 200 {object} response.Response "Admin login successful"
 // @Failure 400 {object} response.Response "Invalid request or constraints not satisfied"
 // @Failure 401 {object} response.Response "Unauthorized: cannot authenticate user"
