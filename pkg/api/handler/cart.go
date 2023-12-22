@@ -20,6 +20,20 @@ func NewCartHandler(useCase interfaces.CartUseCase) *CartHandler {
 	}
 }
 
+// AddToCart adds an item to the user's cart.
+// @Summary Add item to cart
+// @Description Adds an item to the user's cart based on the provided details.
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param id header string true "User ID"
+// @Param AddCart body models.AddCart true "Item details to add to the cart"
+// @Success 200 {object} response.Response "Success: Item added to cart successfully"
+// @Failure 400 {object} response.Response "Bad request: Fields are provided in the wrong format"
+// @Failure 401 {object} response.Response "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response "Internal server error: Cannot add item to cart"
+// @Router /user/cart [post]
 func (ch *CartHandler) AddToCart(c *gin.Context) {
 	var cart models.AddCart
 	userID, errb := c.Get("id")
@@ -47,6 +61,19 @@ func (ch *CartHandler) AddToCart(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRsp)
 }
 
+// ListCartItems retrieves the list of items in the user's cart.
+// @Summary Retrieve cart items
+// @Description Retrieves the list of items in the user's cart based on the user ID.
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param id header string true "User ID"
+// @Success 200 {object} response.Response "Success: Retrieved cart items successfully"
+// @Failure 400 {object} response.Response  "Bad request: Cannot list products"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Could not get the cart list"
+// @Router /cart/list [get]
 func (ch *CartHandler) ListCartItems(c *gin.Context) {
 	userID, errs := c.Get("id")
 	if !errs {
@@ -65,6 +92,20 @@ func (ch *CartHandler) ListCartItems(c *gin.Context) {
 	c.JSON(http.StatusOK, succesResp)
 }
 
+// UpdateProductQuantityCart updates the quantity of a product in the user's cart.
+// @Summary Update product quantity in cart
+// @Description Updates the quantity of a product in the user's cart based on the provided details.
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param id header string true "User ID"
+// @Param UpdateCart body models.AddCart true "Product details to update quantity"
+// @Success 200 {object} response.Response  "Success: Quantity updated successfully"
+// @Failure 400 {object} response.Response  "Bad request: Cannot update quantity or fields are provided in the wrong format"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Updation failed"
+// @Router /user/cart [patch]
 func (ch *CartHandler) UpdateProductQuantityCart(c *gin.Context) {
 	var cart models.AddCart
 	userID, errs := c.Get("id")
@@ -93,7 +134,20 @@ func (ch *CartHandler) UpdateProductQuantityCart(c *gin.Context) {
 	c.JSON(http.StatusOK, succesResp)
 
 }
-
+// RemoveFromCart removes a product from the user's cart.
+// @Summary Remove product from cart
+// @Description Removes a product from the user's cart based on the provided details.
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param id header string true "User ID"
+// @Param RemoveFromCart body models.RemoveFromCart true "Product details to remove from cart"
+// @Success 200 {object} response.Response  "Success: Product removed from cart successfully"
+// @Failure 400 {object} response.Response  "Bad request: Cannot remove product or fields are provided in the wrong format"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Removing from cart failed"
+// @Router /cart/remove [delete]
 func (ch *CartHandler) RemoveFromCart(c *gin.Context) {
 	var cart models.RemoveFromCart
 

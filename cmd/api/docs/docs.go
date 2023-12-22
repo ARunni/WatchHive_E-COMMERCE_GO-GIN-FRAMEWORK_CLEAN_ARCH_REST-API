@@ -171,6 +171,11 @@ const docTemplate = `{
         },
         "/admin/users": {
             "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
                 "description": "Retrieves users based on the provided page number",
                 "consumes": [
                     "application/json"
@@ -693,7 +698,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Go + Gin E-Commerce API Watch Hive",
-	Description:      "TechDeck is an E-commerce platform to purchase and sell Electronic itmes",
+	Description:      "Watch Hive is an E-commerce platform to purchase Watch",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

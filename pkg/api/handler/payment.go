@@ -21,7 +21,17 @@ func NewPaymentHandler(usecase interfaces.PaymentUseCase) *PaymentHandler {
 	}
 
 }
-
+// AddPaymentMethod adds a new payment method.
+// @Summary Add payment method
+// @Description Adds a new payment method using the provided details.
+// @Tags Admin Payment Methods
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param NewPaymentMethod body models.NewPaymentMethod true "Details of the new payment method"
+// @Success 200 {object} response.Response  "Success: Payment method added successfully"
+// @Failure 400 {object} response.Response  "Bad request: Cannot add payment method or payment name error"
+// @Router /admin/payment [post]
 func (ph *PaymentHandler) AddPaymentMethod(c *gin.Context) {
 	var payment models.NewPaymentMethod
 
@@ -41,7 +51,7 @@ func (ph *PaymentHandler) AddPaymentMethod(c *gin.Context) {
 	c.JSON(http.StatusOK, successResp)
 }
 
-// razor
+
 
 func (ph *PaymentHandler) MakePaymentRazorpay(c *gin.Context) {
 

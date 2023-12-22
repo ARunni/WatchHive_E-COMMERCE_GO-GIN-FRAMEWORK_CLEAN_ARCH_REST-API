@@ -33,6 +33,7 @@ func NewAdminHandler(usecase interfaces.AdminUseCase) *AdminHandler {
 // @Accept json
 // @Produce json
 // @Param body body models.AdminLogin true "Admin credentials for login"
+// @S
 // @Success 200 {object} response.Response "Admin login successful"
 // @Failure 400 {object} response.Response "Invalid request or constraints not satisfied"
 // @Failure 401 {object} response.Response "Unauthorized: cannot authenticate user"
@@ -103,6 +104,7 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 // @Tags admin
 // @Accept json
 // @Produce json
+// @security BearerTokenAuth
 // @Param id query string true "User ID to block" Format(uuid)
 // @Success 200 {object} response.Response "User blocked successfully"
 // @Failure 400 {object} response.Response "Failed to block user"
@@ -127,6 +129,7 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 // @Tags admin
 // @Accept json
 // @Produce json
+// @security BearerTokenAuth
 // @Param id query string true "User ID to unblock"
 // @Success 200 {object} response.Response "User unblocked successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to unblock user"
@@ -152,6 +155,7 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 // @Tags admin
 // @Accept json
 // @Produce json
+// @security BearerTokenAuth
 // @Param page query int true "Page number for pagination"
 // @Success 200 {object} response.Response "Users retrieved successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to retrieve users"
@@ -185,6 +189,7 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 // @Tags admin
 // @Accept json
 // @Produce json
+// @security BearerTokenAuth
 // @Success 200 {object} response.Response "Admin dashboard retrieved successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to retrieve dashboard"
 // @Router /admin/dashboard [get]
@@ -206,6 +211,7 @@ func (ah *AdminHandler) AdminDashBoard(c *gin.Context) {
 // @Tags admin
 // @Accept json
 // @Produce json
+// @security BearerTokenAuth
 // @Param period query string true "Time period for sales report"
 // @Success 200 {object} response.Response "Sales report retrieved successfully"
 // @Failure 500 {object} response.Response "Unable to retrieve sales report"
@@ -227,6 +233,19 @@ func (ah *AdminHandler) FilteredSalesReport(c *gin.Context) {
 
 //repot by date
 
+// SalesReportByDate generates a sales report within a specified date range.
+// @Summary Generate sales report by date range
+// @Description Retrieves sales report data between the provided start and end dates.
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @security BearerTokenAuth
+// @Param start query string true "Start date (format: 'YYYY-MM-DD')" Format(YYYY-MM-DD)
+// @Param end query string true "End date (format: 'YYYY-MM-DD')" Format(YYYY-MM-DD)
+// @Failure 400 {object} response.Response "Bad request: Start or end date is empty"
+// @Failure 500 {object} response.Response "Internal server error: Sales report could not be retrieved"
+// @Success 200 {object} response.Response "Success: Sales report retrieved successfully"
+// @Router /admin/salesreport [get]
 func (ah *AdminHandler) SalesReportByDate(c *gin.Context) {
 	startDateStr := c.Query("start")
 	endDateStr := c.Query("end")

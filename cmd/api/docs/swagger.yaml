@@ -88,8 +88,7 @@ definitions:
 info:
   contact:
     name: API Support
-  description: TechDeck is an E-commerce platform to purchase and sell Electronic
-    itmes
+  description: Watch Hive is an E-commerce platform to purchase Watch
   title: Go + Gin E-Commerce API Watch Hive
   version: 1.0.0
 paths:
@@ -215,6 +214,8 @@ paths:
           description: Invalid request or unable to retrieve users
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
       summary: Retrieve users with pagination
       tags:
       - admin

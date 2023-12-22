@@ -23,6 +23,19 @@ func NewOrderHandler(oUsecase interfaces.OrderUseCase, pUsecase interfaces.Payme
 	}
 }
 
+// CheckOut processes the checkout for the user's order.
+// @Summary Process checkout
+// @Description Processes the checkout for the user's order.
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param id header string true "User ID"
+// @Success 200 {object} response.Response  "Success: Checkout completed successfully"
+// @Failure 400 {object} response.Response  "Bad request: Getting user ID failed"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Checkout failed"
+// @Router /user/orders/checkout [post]
 func (oh *OrderHandler) CheckOut(c *gin.Context) {
 	userID, errs := c.Get("id")
 	if !errs {
@@ -43,6 +56,20 @@ func (oh *OrderHandler) CheckOut(c *gin.Context) {
 	c.JSON(http.StatusOK, successResp)
 }
 
+// OrderItemsFromCart places an order with items from the user's cart.
+// @Summary Place order from cart
+// @Description Places an order with items from the user's cart based on the provided details.
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param id header string true "User ID"
+// @Param OrderFromCart body models.OrderFromCart true "Order details from cart"
+// @Success 200 {object} response.Response  "Success: Order placed successfully"
+// @Failure 400 {object} response.Response  "Bad request: Error in getting ID or bad request"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Could not place the order"
+// @Router /user/orders [post]
 func (oh *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
 	id, errs := c.Get("id")
@@ -61,12 +88,6 @@ func (oh *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 
-	// if orderFromCart.PaymentID != 1 {
-	// 	err := errors.New("invalid payment")
-	// 	errorResp := response.ClientResponse(http.StatusBadRequest, "Payment Option is not COD", nil, err.Error())
-	// 	c.JSON(http.StatusBadRequest, errorResp)
-	// 	return
-	// }
 	orderSuccessResponse, err := oh.orderUsecase.OrderItemsFromCart(orderFromCart, userID)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not do the order", nil, err.Error())
@@ -78,6 +99,21 @@ func (oh *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// GetOrderDetails retrieves order details for a user.
+// @Summary Retrieve order details
+// @Description Retrieves order details for a user based on the provided pagination parameters.
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param id header string true "User ID"
+// @Param page query integer false "Page number (default: 1)"
+// @Param count query integer false "Number of items per page (default: 10)"
+// @Success 200 {object} response.Response  "Success: Retrieved order details successfully"
+// @Failure 400 {object} response.Response  "Bad request: Page number or count not in correct format"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Could not retrieve order details"
+// @Router /user/orders [get]
 func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
@@ -115,6 +151,20 @@ func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// CancelOrder cancels an order by ID for the logged-in user.
+// @Summary Cancel order
+// @Description Cancels an order based on the provided order ID for the logged-in user.
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param id query integer true "Order ID to cancel"
+// @Param id header string true "User ID"
+// @Success 200 {object} response.Response  "Success: Order canceled successfully"
+// @Failure 400 {object} response.Response  "Bad request: Error from orderID or error from userid"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Could not cancel the order"
+// @Router /user/orders [delete]
 func (oh *OrderHandler) CancelOrder(c *gin.Context) {
 	orderID, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
@@ -140,6 +190,20 @@ func (oh *OrderHandler) CancelOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// GetAllOrderDetailsForAdmin retrieves all order details for admin with pagination.
+// @Summary Retrieve all order details for admin
+// @Description Retrieves all order details for admin with pagination based on the provided parameters.
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param page query integer false "Page number (default: 1)"
+// @Param size query integer false "Number of items per page (default: 10)"
+// @Success 200 {object} response.Response  "Success: Retrieved all order details for admin successfully"
+// @Failure 400 {object} response.Response  "Bad request: Page number or count not in correct format"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Could not retrieve order details for admin"
+// @Router /admin/orders [get]
 func (oh *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
@@ -168,6 +232,19 @@ func (oh *OrderHandler) GetAllOrderDetailsForAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// ApproveOrder approves an order by its ID.
+// @Summary Approve order
+// @Description Approves an order based on the provided order ID.
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param order_id query integer true "Order ID to approve"
+// @Success 200 {object} response.Response  "Success: Order approved successfully"
+// @Failure 400 {object} response.Response  "Bad request: Error from orderID or couldn't approve the order"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Failed to approve the order"
+// @Router /admin/orders [patch]
 func (oh *OrderHandler) ApproveOrder(c *gin.Context) {
 	orderId, err := strconv.Atoi(c.Query("order_id"))
 	if err != nil {
@@ -185,6 +262,17 @@ func (oh *OrderHandler) ApproveOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// CancelOrderFromAdmin cancels an order by its ID from an admin perspective.
+// @Summary Cancel order from admin
+// @Description Cancels an order based on the provided order ID from an admin perspective.
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param order_id query integer true "Order ID to cancel"
+// @Success 200 {object} response.Response  "Success: Order canceled successfully"
+// @Failure 500 {object} response.Response  "Internal server error: Error from orderID or couldn't cancel the order"
+// @Router /admin/orders [delete]
 func (oh *OrderHandler) CancelOrderFromAdmin(c *gin.Context) {
 	order_id, err := strconv.Atoi(c.Query("order_id"))
 	if err != nil {
@@ -202,6 +290,19 @@ func (oh *OrderHandler) CancelOrderFromAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, success)
 }
 
+// ReturnOrder initiates the return process for a specific order.
+// @Summary Initiate order return
+// @Description Initiates the return process for an order based on the provided order ID and user ID.
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Security BearerTokenAuth
+// @Param order_id query integer true "Order ID to initiate return"
+// @Param id header string true "User ID"
+// @Success 200 {object} response.Response  "Success: Order returned successfully"
+// @Failure 400 {object} response.Response  "Bad request: Error from orderID or error from userid"
+// @Failure 500 {object} response.Response  "Internal server error: Couldn't initiate the order return"
+// @Router /user/orders [patch]
 func (oh *OrderHandler) ReturnOrder(c *gin.Context) {
 	orderID, err := strconv.Atoi(c.Query("order_id"))
 	if err != nil {
