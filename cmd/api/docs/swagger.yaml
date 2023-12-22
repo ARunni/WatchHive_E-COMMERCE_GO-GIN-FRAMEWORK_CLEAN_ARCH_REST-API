@@ -204,7 +204,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin login
       tags:
-      - admin
+      - Admin
   /admin/block:
     put:
       consumes:
@@ -212,7 +212,6 @@ paths:
       description: Blocks a user based on the provided ID
       parameters:
       - description: User ID to block
-        format: uuid
         in: query
         name: id
         required: true
@@ -232,7 +231,7 @@ paths:
       - BearerTokenAuth: []
       summary: Block a user
       tags:
-      - admin
+      - Admin User Management
   /admin/category:
     get:
       consumes:
@@ -359,7 +358,7 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve sales report for a specific time period
       tags:
-      - admin
+      - Admin Dashboard
   /admin/dashboard:
     get:
       consumes:
@@ -380,7 +379,7 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve admin dashboard information
       tags:
-      - admin
+      - Admin Dashboard
   /admin/orders:
     delete:
       consumes:
@@ -408,7 +407,7 @@ paths:
       - BearerTokenAuth: []
       summary: Cancel order from admin
       tags:
-      - Admin
+      - Admin Order Management
     get:
       consumes:
       - application/json
@@ -447,7 +446,7 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve all order details for admin
       tags:
-      - Admin
+      - Admin Order Management
     patch:
       consumes:
       - application/json
@@ -481,7 +480,7 @@ paths:
       - BearerTokenAuth: []
       summary: Approve order
       tags:
-      - Order
+      - Admin Order Management
   /admin/payment:
     post:
       consumes:
@@ -509,7 +508,7 @@ paths:
       - BearerTokenAuth: []
       summary: Add payment method
       tags:
-      - Admin Payment Methods
+      - Admin Payment Management
   /admin/product:
     delete:
       consumes:
@@ -537,7 +536,7 @@ paths:
       - BearerTokenAuth: []
       summary: Delete product
       tags:
-      - Product
+      - Admin Product Management
     get:
       consumes:
       - application/json
@@ -566,7 +565,7 @@ paths:
       - BearerTokenAuth: []
       summary: List products
       tags:
-      - Product
+      - Admin Product Management
     patch:
       consumes:
       - application/json
@@ -594,7 +593,7 @@ paths:
       - BearerTokenAuth: []
       summary: Edit product
       tags:
-      - Product
+      - Admin Product Management
     post:
       consumes:
       - multipart/form-data
@@ -645,7 +644,7 @@ paths:
       - BearerTokenAuth: []
       summary: Add product
       tags:
-      - Product
+      - Admin Product Management
   /admin/salesreport:
     get:
       consumes:
@@ -684,7 +683,7 @@ paths:
       - BearerTokenAuth: []
       summary: Generate sales report by date range
       tags:
-      - Admin
+      - Admin Dashboard
   /admin/users:
     get:
       consumes:
@@ -711,7 +710,7 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve users with pagination
       tags:
-      - admin
+      - Admin User Management
   /admin/users/unblock:
     patch:
       consumes:
@@ -738,7 +737,7 @@ paths:
       - BearerTokenAuth: []
       summary: Unblock a user
       tags:
-      - admin
+      - Admin User Management
   /cart/list:
     get:
       consumes:
@@ -774,7 +773,7 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve cart items
       tags:
-      - Cart
+      - User Cart Management
   /cart/remove:
     delete:
       consumes:
@@ -816,7 +815,7 @@ paths:
       - BearerTokenAuth: []
       summary: Remove product from cart
       tags:
-      - Cart
+      - User Cart Management
   /categories/delete:
     delete:
       consumes:
@@ -880,7 +879,7 @@ paths:
       - BearerTokenAuth: []
       summary: Update product stock
       tags:
-      - Product
+      - Admin Product Management
   /user/cart:
     patch:
       consumes:
@@ -923,7 +922,7 @@ paths:
       - BearerTokenAuth: []
       summary: Update product quantity in cart
       tags:
-      - Cart
+      - User Cart Management
     post:
       consumes:
       - application/json
@@ -963,7 +962,7 @@ paths:
       - BearerTokenAuth: []
       summary: Add item to cart
       tags:
-      - Cart
+      - User Cart Management
   /user/login:
     post:
       consumes:
@@ -991,7 +990,7 @@ paths:
       - BearerTokenAuth: []
       summary: Handle user login
       tags:
-      - users
+      - User
   /user/orders:
     delete:
       consumes:
@@ -1032,7 +1031,7 @@ paths:
       - BearerTokenAuth: []
       summary: Cancel order
       tags:
-      - Order
+      - User Order Management
     get:
       consumes:
       - application/json
@@ -1075,7 +1074,7 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve order details
       tags:
-      - Order
+      - User Order Management
     patch:
       consumes:
       - application/json
@@ -1111,7 +1110,7 @@ paths:
       - BearerTokenAuth: []
       summary: Initiate order return
       tags:
-      - Order
+      - User Order Management
     post:
       consumes:
       - application/json
@@ -1152,7 +1151,7 @@ paths:
       - BearerTokenAuth: []
       summary: Place order from cart
       tags:
-      - Order
+      - User Order Management
   /user/orders/checkout:
     post:
       consumes:
@@ -1187,7 +1186,7 @@ paths:
       - BearerTokenAuth: []
       summary: Process checkout
       tags:
-      - Order
+      - User Order Management
   /user/otplogin:
     post:
       consumes:
@@ -1214,7 +1213,35 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Send OTP
       tags:
-      - OTP
+      - User
+  /user/product:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of products available for users.
+      parameters:
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Number of products per page (default: 5)'
+        in: query
+        name: per_page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Products for users displayed successfully'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 'Bad request: Product display error'
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: List products for users
+      tags:
+      - User Product Management
   /user/profile:
     get:
       consumes:
@@ -1242,7 +1269,7 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve user details
       tags:
-      - users
+      - User Profile Management
     patch:
       consumes:
       - application/json
@@ -1275,7 +1302,7 @@ paths:
       - BearerTokenAuth: []
       summary: Update user profile
       tags:
-      - users
+      - User Profile Management
   /user/profile/address:
     post:
       consumes:
@@ -1309,7 +1336,7 @@ paths:
       - BearerTokenAuth: []
       summary: Add user address
       tags:
-      - user
+      - User Profile Management
   /user/profile/alladdress:
     get:
       consumes:
@@ -1337,7 +1364,7 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve all user addresses
       tags:
-      - users
+      - User Profile Management
   /user/profile/password:
     patch:
       consumes:
@@ -1371,7 +1398,7 @@ paths:
       - BearerTokenAuth: []
       summary: Change user password
       tags:
-      - users
+      - User Profile Management
   /user/signup:
     post:
       consumes:
@@ -1399,7 +1426,7 @@ paths:
       - BearerTokenAuth: []
       summary: Register a new user
       tags:
-      - user
+      - User
   /user/verifyotp:
     post:
       consumes:
@@ -1426,7 +1453,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Verify OTP
       tags:
-      - OTP
+      - User
   /wallet:
     get:
       consumes:
@@ -1451,7 +1478,7 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve wallet details
       tags:
-      - Wallet
+      - User Wallet
 securityDefinitions:
   BearerTokenAuth:
     in: header

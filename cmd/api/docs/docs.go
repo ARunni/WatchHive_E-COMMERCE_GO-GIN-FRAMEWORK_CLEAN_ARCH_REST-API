@@ -27,7 +27,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin"
                 ],
                 "summary": "Admin login",
                 "parameters": [
@@ -78,13 +78,12 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin User Management"
                 ],
                 "summary": "Block a user",
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "uuid",
                         "description": "User ID to block",
                         "name": "id",
                         "in": "query",
@@ -278,7 +277,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin Dashboard"
                 ],
                 "summary": "Retrieve sales report for a specific time period",
                 "parameters": [
@@ -321,7 +320,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin Dashboard"
                 ],
                 "summary": "Retrieve admin dashboard information",
                 "responses": {
@@ -355,7 +354,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Order Management"
                 ],
                 "summary": "Retrieve all order details for admin",
                 "parameters": [
@@ -413,7 +412,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Order Management"
                 ],
                 "summary": "Cancel order from admin",
                 "parameters": [
@@ -454,7 +453,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "Admin Order Management"
                 ],
                 "summary": "Approve order",
                 "parameters": [
@@ -509,7 +508,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin Payment Methods"
+                    "Admin Payment Management"
                 ],
                 "summary": "Add payment method",
                 "parameters": [
@@ -554,7 +553,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Admin Product Management"
                 ],
                 "summary": "List products",
                 "parameters": [
@@ -600,7 +599,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Admin Product Management"
                 ],
                 "summary": "Add product",
                 "parameters": [
@@ -676,7 +675,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Admin Product Management"
                 ],
                 "summary": "Delete product",
                 "parameters": [
@@ -717,7 +716,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Admin Product Management"
                 ],
                 "summary": "Edit product",
                 "parameters": [
@@ -762,7 +761,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin Dashboard"
                 ],
                 "summary": "Generate sales report by date range",
                 "parameters": [
@@ -820,7 +819,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin User Management"
                 ],
                 "summary": "Retrieve users with pagination",
                 "parameters": [
@@ -863,7 +862,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "Admin User Management"
                 ],
                 "summary": "Unblock a user",
                 "parameters": [
@@ -906,7 +905,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart Management"
                 ],
                 "summary": "Retrieve cart items",
                 "parameters": [
@@ -961,7 +960,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart Management"
                 ],
                 "summary": "Remove product from cart",
                 "parameters": [
@@ -1080,7 +1079,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Admin Product Management"
                 ],
                 "summary": "Update product stock",
                 "parameters": [
@@ -1125,7 +1124,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart Management"
                 ],
                 "summary": "Add item to cart",
                 "parameters": [
@@ -1187,7 +1186,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart"
+                    "User Cart Management"
                 ],
                 "summary": "Update product quantity in cart",
                 "parameters": [
@@ -1251,7 +1250,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "User"
                 ],
                 "summary": "Handle user login",
                 "parameters": [
@@ -1296,7 +1295,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "User Order Management"
                 ],
                 "summary": "Retrieve order details",
                 "parameters": [
@@ -1361,7 +1360,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "User Order Management"
                 ],
                 "summary": "Place order from cart",
                 "parameters": [
@@ -1423,7 +1422,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "User Order Management"
                 ],
                 "summary": "Cancel order",
                 "parameters": [
@@ -1483,7 +1482,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "User Order Management"
                 ],
                 "summary": "Initiate order return",
                 "parameters": [
@@ -1539,7 +1538,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "User Order Management"
                 ],
                 "summary": "Process checkout",
                 "parameters": [
@@ -1589,7 +1588,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "OTP"
+                    "User"
                 ],
                 "summary": "Send OTP",
                 "parameters": [
@@ -1619,6 +1618,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/product": {
+            "get": {
+                "description": "Retrieves a paginated list of products available for users.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Product Management"
+                ],
+                "summary": "List products for users",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number (default: 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of products per page (default: 5)",
+                        "name": "per_page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Products for users displayed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: Product display error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/user/profile": {
             "get": {
                 "security": [
@@ -1634,7 +1676,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "User Profile Management"
                 ],
                 "summary": "Retrieve user details",
                 "parameters": [
@@ -1676,7 +1718,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "User Profile Management"
                 ],
                 "summary": "Update user profile",
                 "parameters": [
@@ -1729,7 +1771,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "User Profile Management"
                 ],
                 "summary": "Add user address",
                 "parameters": [
@@ -1782,7 +1824,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "User Profile Management"
                 ],
                 "summary": "Retrieve all user addresses",
                 "parameters": [
@@ -1826,7 +1868,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "User Profile Management"
                 ],
                 "summary": "Change user password",
                 "parameters": [
@@ -1879,7 +1921,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "User"
                 ],
                 "summary": "Register a new user",
                 "parameters": [
@@ -1919,7 +1961,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "OTP"
+                    "User"
                 ],
                 "summary": "Verify OTP",
                 "parameters": [
@@ -1964,7 +2006,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Wallet"
+                    "User Wallet"
                 ],
                 "summary": "Retrieve wallet details",
                 "responses": {
