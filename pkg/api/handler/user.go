@@ -33,7 +33,6 @@ func NewUserHandler(usecase interfaces.UserUseCase) *UserHandler {
 // @Tags User
 // @Accept json
 // @Produce json
-// @security BearerTokenAuth
 // @Param body body models.UserDetails true "User details for sign-up"
 // @Success 201 {object} response.Response "User signed up successfully"
 // @Failure 400 {object} response.Response "Invalid request or constraints not satisfied"
