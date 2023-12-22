@@ -104,7 +104,7 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param id query string true "User ID to block" Format(uuid)
+// @Param id query string true "User ID to block"
 // @Success 200 {object} response.Response "User blocked successfully"
 // @Failure 400 {object} response.Response "Failed to block user"
 // @Router /admin/block [put]
