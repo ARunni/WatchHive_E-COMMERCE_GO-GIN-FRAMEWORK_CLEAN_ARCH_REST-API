@@ -119,10 +119,10 @@ func (Cat *CategoryHandler) UpdateCategory(c *gin.Context) {
 // @Produce json
 // @Security BearerTokenAuth
 // @Param id query string true "Category ID to delete"
-// @Success 200 {object} YourResponseObject "Success: Category deleted successfully"
-// @Failure 400 {object} YourResponseObject "Bad request: Fields are not provided in the correct format"
-// @Failure 401 {object} YourResponseObject "Unauthorized: Invalid or missing authentication"
-// @Failure 500 {object} YourResponseObject "Internal server error: Could not delete the category"
+// @Success 200 {object} response.Response  "Success: Category deleted successfully"
+// @Failure 400 {object} response.Response  "Bad request: Fields are not provided in the correct format"
+// @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
+// @Failure 500 {object} response.Response  "Internal server error: Could not delete the category"
 // @Router /categories/delete [delete]
 func (Cat *CategoryHandler) DeleteCategory(c *gin.Context) {
 
