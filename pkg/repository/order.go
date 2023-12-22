@@ -235,7 +235,13 @@ func (or *orderRepository) UserOrderRelationship(orderID int, userID int) (int, 
 	}
 	return testUserID, nil
 }
-
+func (or *orderRepository) GetPaymentStatus(orderID int) (string, error) {
+	var paymentStatus string
+	if err := or.DB.Raw("select payment_status from orders where id = ?", orderID).Scan(&paymentStatus).Error; err != nil {
+		return "", errors.New("retriving data from database failed")
+	}
+	return paymentStatus, nil
+}
 func (or *orderRepository) GetProductDetailsFromOrders(orderID int) ([]models.OrderProducts, error) {
 	var OrderProductDetails []models.OrderProducts
 	if err := or.DB.Raw("SELECT product_id,quantity as stock FROM order_items WHERE order_id = ?", orderID).Scan(&OrderProductDetails).Error; err != nil {
@@ -291,7 +297,6 @@ func (or *orderRepository) ReturnOrderRazorPay(orderId int) error {
 	return nil
 
 }
-
 
 func (or *orderRepository) UpdateQuantityOfProduct(orderProducts []models.OrderProducts) error {
 
@@ -419,4 +424,13 @@ ON orders.address_id = addresses.id WHERE orders.id =?
 	}
 	fmt.Println("body in repo", body.OrderId)
 	return body, nil
+}
+
+func (or *orderRepository) GetFinalPriceOrder(orderID int) (float64, error) {
+	var final_price float64
+	err := or.DB.Raw("select final_price from orders where id = ?", orderID).Scan(&final_price).Error
+	if err != nil {
+		return 0.0, errors.New("getting final price is failed at db")
+	}
+	return final_price, nil
 }

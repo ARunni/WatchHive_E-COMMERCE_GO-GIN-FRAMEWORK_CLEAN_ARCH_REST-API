@@ -38,4 +38,6 @@ type OrderRepository interface {
 	ApproveRazorPaid(orderID int) error 
 	GetPaymentType(orderID int) (int, error) 
 	ApproveRazorDelivered(orderID int) error 
+	GetPaymentStatus(orderID int) (string,error)
+	GetFinalPriceOrder(orderID int) (float64,error)
 }

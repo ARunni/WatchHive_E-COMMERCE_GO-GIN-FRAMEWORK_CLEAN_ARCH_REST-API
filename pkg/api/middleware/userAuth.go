@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"WatchHive/pkg/config"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -20,6 +21,7 @@ func UserAuthMiddleware(c *gin.Context) {
 
 	cfg, _ := config.LoadConfig()
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+	fmt.Println("..............................", tokenString)
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(cfg.UserAccessKey), nil

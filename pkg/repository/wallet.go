@@ -28,19 +28,28 @@ func (wr *WalletDB) CreateWallet(userID int) error {
 	return nil
 }
 
-func (w *WalletDB) GetWallet(userID int) (models.WalletAmount, error) {
+func (wr *WalletDB) GetWallet(userID int) (models.WalletAmount, error) {
 	var walletAmount models.WalletAmount
-	if err := w.Db.Raw("select amount from wallets where user_id = ?", userID).Scan(&walletAmount).Error; err != nil {
+	if err := wr.Db.Raw("select amount from wallets where user_id = ?", userID).Scan(&walletAmount).Error; err != nil {
 		return models.WalletAmount{}, err
 	}
 	return walletAmount, nil
 }
 
-func (w *WalletDB) IsWalletExist(userID int) (bool, error) {
+func (wr *WalletDB) IsWalletExist(userID int) (bool, error) {
 	var count int
-	err := w.Db.Raw("select count(*) from wallets where user_id=?", userID).Scan(&count).Error
+	err := wr.Db.Raw("select count(*) from wallets where user_id=?", userID).Scan(&count).Error
 	if err != nil {
 		return false, errors.New("cannot get wallet details")
 	}
 	return count >= 1, nil
+}
+
+func (wr *WalletDB) AddToWallet(userID int, Amount float64) error {
+	err := wr.Db.Exec("update wallets set amount = amount+? where user_id = ? returning amount", Amount, userID).Error
+	if err != nil {
+		return errors.New("inserting into wallet failed at db")
+	}
+	return nil
+
 }

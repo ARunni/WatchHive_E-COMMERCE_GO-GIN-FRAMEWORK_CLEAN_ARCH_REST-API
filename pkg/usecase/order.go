@@ -16,14 +16,16 @@ type orderUseCase struct {
 	cartRepository    repo_interface.CartRepository
 	userRepository    repo_interface.UserRepository
 	paymentRepository repo_interface.PaymentRepository
+	walletRepo repo_interface.WalletRepository
 }
 
-func NewOrderUseCase(orderRepo repo_interface.OrderRepository, cartRepo repo_interface.CartRepository, userRepo repo_interface.UserRepository, paymentRepo repo_interface.PaymentRepository) usecase_interfaces.OrderUseCase {
+func NewOrderUseCase(orderRepo repo_interface.OrderRepository,walletRepo repo_interface.WalletRepository, cartRepo repo_interface.CartRepository, userRepo repo_interface.UserRepository, paymentRepo repo_interface.PaymentRepository) usecase_interfaces.OrderUseCase {
 	return &orderUseCase{
 		orderRepository:   orderRepo,
 		cartRepository:    cartRepo,
 		userRepository:    userRepo,
 		paymentRepository: paymentRepo,
+		walletRepo: walletRepo,
 	}
 
 }
@@ -171,6 +173,10 @@ func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
 	if err != nil {
 		return err
 	}
+paymentStatus,err := ou.orderRepository.GetPaymentStatus(orderID)
+if err != nil {
+	return err
+}
 
 	if shipmentStatus == "pending" || shipmentStatus == "returned" {
 		message := fmt.Sprint(shipmentStatus)
@@ -188,6 +194,16 @@ func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
 	err = ou.orderRepository.CancelOrders(orderID)
 	if err != nil {
 		return err
+	}
+	if paymentStatus == "paid" || paymentStatus == "PAID" {
+		amount,err := ou.orderRepository.GetFinalPriceOrder(orderID)
+		if err!= nil{
+			return err
+		}
+		err = ou.walletRepo.AddToWallet(userId,amount)
+		if err != nil {
+			return err
+		}
 	}
 	err = ou.orderRepository.UpdateQuantityOfProduct(orderProductDetails)
 	if err != nil {
