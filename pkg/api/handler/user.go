@@ -115,7 +115,6 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param id header int true "User ID"
 // @Param body body models.AddressInfoResponse true "Address details for addition"
 // @Success 200 {object} response.Response "Address added successfully"
 // @Failure 400 {object} response.Response "Invalid request or constraints not satisfied"
@@ -163,7 +162,6 @@ func (u *UserHandler) AddAddress(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param id header int true "User ID" Format(int64)
 // @Success 200 {object} response.Response "User details retrieved successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to get user details"
 // @Router /user/profile [get]
@@ -192,7 +190,6 @@ func (u *UserHandler) ShowUserDetails(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param id header int true "User ID" Format(int64)
 // @Success 200 {object} response.Response "All user addresses retrieved successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to get user addresses"
 // @Router /user/profile/alladdress [get]
@@ -220,7 +217,6 @@ func (u *UserHandler) GetAllAddress(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param id header int true "User ID" Format(int64)
 // @Param body body models.UsersProfileDetails true "User profile details for update"
 // @Success 200 {object} response.Response "User profile updated successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to update user profile"
@@ -272,7 +268,6 @@ func (u *UserHandler) EditProfile(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param id header int true "User ID" Format(int64)
 // @Param body body models.ChangePassword true "Password details for change"
 // @Success 200 {object} response.Response "Password changed successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to change password"

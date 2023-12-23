@@ -30,7 +30,6 @@ func NewOrderHandler(oUsecase interfaces.OrderUseCase, pUsecase interfaces.Payme
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
-// @Param id header string true "User ID"
 // @Success 200 {object} response.Response  "Success: Checkout completed successfully"
 // @Failure 400 {object} response.Response  "Bad request: Getting user ID failed"
 // @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
@@ -63,7 +62,6 @@ func (oh *OrderHandler) CheckOut(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
-// @Param id header string true "User ID"
 // @Param OrderFromCart body models.OrderFromCart true "Order details from cart"
 // @Success 200 {object} response.Response  "Success: Order placed successfully"
 // @Failure 400 {object} response.Response  "Bad request: Error in getting ID or bad request"
@@ -106,7 +104,6 @@ func (oh *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
-// @Param id header string true "User ID"
 // @Param page query integer false "Page number (default: 1)"
 // @Param count query integer false "Number of items per page (default: 10)"
 // @Success 200 {object} response.Response  "Success: Retrieved order details successfully"
@@ -159,7 +156,6 @@ func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 // @Produce json
 // @Security BearerTokenAuth
 // @Param id query integer true "Order ID to cancel"
-// @Param id header string true "User ID"
 // @Success 200 {object} response.Response  "Success: Order canceled successfully"
 // @Failure 400 {object} response.Response  "Bad request: Error from orderID or error from userid"
 // @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
@@ -298,7 +294,6 @@ func (oh *OrderHandler) CancelOrderFromAdmin(c *gin.Context) {
 // @Produce json
 // @Security BearerTokenAuth
 // @Param order_id query integer true "Order ID to initiate return"
-// @Param id header string true "User ID"
 // @Success 200 {object} response.Response  "Success: Order returned successfully"
 // @Failure 400 {object} response.Response  "Bad request: Error from orderID or error from userid"
 // @Failure 500 {object} response.Response  "Internal server error: Couldn't initiate the order return"
