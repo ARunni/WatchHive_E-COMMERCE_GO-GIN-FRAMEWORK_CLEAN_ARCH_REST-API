@@ -32,14 +32,12 @@ definitions:
       quantity:
         type: number
     type: object
-  models.AddressInfoResponse:
+  models.AddressInfo:
     properties:
       city:
         type: string
       house_name:
         type: string
-      id:
-        type: integer
       name:
         type: string
       phone:
@@ -1252,7 +1250,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.AddressInfoResponse'
+          $ref: '#/definitions/models.AddressInfo'
       produces:
       - application/json
       responses:

@@ -59,6 +59,7 @@ type AddressInfo struct {
 	HouseName string `json:"house_name" validate:"required"`
 	Street    string `json:"street"`
 	City      string `json:"city"`
+	Phone     string `json:"phone" gorm:"phone,unique"`
 	State     string `json:"state" validate:"required"`
 	Pin       string `json:"pin" validate:"required"`
 }
@@ -69,14 +70,6 @@ type UsersProfileDetails struct {
 	Phone string `json:"phone" `
 	// ReferralCode string `json:"referral_code"`
 }
-
-// type UsersProfileDetailsEdit struct {
-// 	ID    uint   `json:"id" gorm:"unique;not null"`
-// 	Name  string `json:"name" gorm:"not null"`
-// 	Email string `json:"email" validate:"email" `
-// 	Phone string `json:"phone" `
-// 	// ReferralCode string `json:"referral_code"`
-// }
 
 type ChangePassword struct {
 	UserID          uint   `json:"id"`

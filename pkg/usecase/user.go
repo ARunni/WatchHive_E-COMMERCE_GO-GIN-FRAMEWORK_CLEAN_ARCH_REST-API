@@ -117,7 +117,7 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 		Token: tokenString,
 	}, nil
 }
-func (u *userUseCase) AddAddress(userID int, address models.AddressInfoResponse) ([]models.AddressInfoResponse, error) {
+func (u *userUseCase) AddAddress(userID int, address models.AddressInfo) ([]models.AddressInfoResponse, error) {
 
 	ok, err := u.helper.ValidateAlphabets(address.Name)
 	if err != nil {

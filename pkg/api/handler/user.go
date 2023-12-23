@@ -115,12 +115,12 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param body body models.AddressInfoResponse true "Address details for addition"
+// @Param body body models.AddressInfo true "Address details for addition"
 // @Success 200 {object} response.Response "Address added successfully"
 // @Failure 400 {object} response.Response "Invalid request or constraints not satisfied"
 // @Router /user/profile/address [post]
 func (u *UserHandler) AddAddress(c *gin.Context) {
-	var address models.AddressInfoResponse
+	var address models.AddressInfo
 
 	userIdstring, _ := c.Get("id")
 	userId, strErr := userIdstring.(int)

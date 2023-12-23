@@ -1683,7 +1683,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.AddressInfoResponse"
+                            "$ref": "#/definitions/models.AddressInfo"
                         }
                     }
                 ],
@@ -1955,7 +1955,7 @@
                 }
             }
         },
-        "models.AddressInfoResponse": {
+        "models.AddressInfo": {
             "type": "object",
             "required": [
                 "house_name",
@@ -1969,9 +1969,6 @@
                 },
                 "house_name": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"

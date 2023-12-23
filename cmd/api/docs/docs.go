@@ -1691,7 +1691,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.AddressInfoResponse"
+                            "$ref": "#/definitions/models.AddressInfo"
                         }
                     }
                 ],
@@ -1963,7 +1963,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.AddressInfoResponse": {
+        "models.AddressInfo": {
             "type": "object",
             "required": [
                 "house_name",
@@ -1977,9 +1977,6 @@ const docTemplate = `{
                 },
                 "house_name": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"

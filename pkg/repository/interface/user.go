@@ -7,7 +7,7 @@ type UserRepository interface {
 	CheckUserAvilability(email string) bool
 	FindUserByEmail(user models.UserLogin) (models.UserSignInResponse, error)
 	UserBlockStatus(email string) (bool, error)
-	AddAddress(userID int, address models.AddressInfoResponse) error
+	AddAddress(userID int, address models.AddressInfo) error
 	CheckIfUserAddress(userID int) bool
 	CheckUserById(userID int) bool
 	ShowUserDetails(userID int) (models.UsersProfileDetails, error)
