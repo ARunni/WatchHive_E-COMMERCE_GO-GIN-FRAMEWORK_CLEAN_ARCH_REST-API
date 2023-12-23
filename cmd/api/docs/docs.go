@@ -64,7 +64,7 @@ const docTemplate = `{
             }
         },
         "/admin/block": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "BearerTokenAuth": []
@@ -279,7 +279,7 @@ const docTemplate = `{
                 "tags": [
                     "Admin Dashboard"
                 ],
-                "summary": "Retrieve sales report for a specific time period",
+                "summary": "Retrieve current sales report for a specific time period",
                 "parameters": [
                     {
                         "type": "string",

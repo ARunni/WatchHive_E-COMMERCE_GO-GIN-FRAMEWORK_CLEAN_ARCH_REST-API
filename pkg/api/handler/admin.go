@@ -107,7 +107,7 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 // @Param id query string true "User ID to block"
 // @Success 200 {object} response.Response "User blocked successfully"
 // @Failure 400 {object} response.Response "Failed to block user"
-// @Router /admin/block [put]
+// @Router /admin/block [patch]
 func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	id := c.Query("id")
 	err := ad.adminUseCase.BlockUser(id)
@@ -204,8 +204,8 @@ func (ah *AdminHandler) AdminDashBoard(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
-// FilteredSalesReport retrieves the sales report for a specified time period.
-// @Summary Retrieve sales report for a specific time period
+// FilteredSalesReport retrieves the  current sales report for a specified time period.
+// @Summary Retrieve current sales report for a specific time period
 // @Description Retrieves sales report for the specified time period
 // @Tags Admin Dashboard
 // @Accept json

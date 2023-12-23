@@ -192,7 +192,7 @@ paths:
       tags:
       - Admin
   /admin/block:
-    put:
+    patch:
       consumes:
       - application/json
       description: Blocks a user based on the provided ID
@@ -342,7 +342,7 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - BearerTokenAuth: []
-      summary: Retrieve sales report for a specific time period
+      summary: Retrieve current sales report for a specific time period
       tags:
       - Admin Dashboard
   /admin/dashboard:
