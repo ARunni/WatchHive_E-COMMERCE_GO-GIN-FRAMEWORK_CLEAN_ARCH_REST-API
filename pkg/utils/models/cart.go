@@ -45,3 +45,11 @@ type RemoveFromCart struct {
 	UserID    int `json:"id"`
 	ProductID int `json:"product_id"`
 }
+type RemoveFromCartR struct {
+	ProductID int `json:"product_id"`
+}
+
+type AddCartR struct {
+    ProductID int     `json:"product_id"`
+    Quantity  float64 `json:"quantity"`
+}

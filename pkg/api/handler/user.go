@@ -217,7 +217,7 @@ func (u *UserHandler) GetAllAddress(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param body body models.UsersProfileDetails true "User profile details for update"
+// @Param body body models.UsersProfileDetailsR true "User profile details for update"
 // @Success 200 {object} response.Response "User profile updated successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to update user profile"
 // @Router /user/profile [patch]
@@ -268,7 +268,7 @@ func (u *UserHandler) EditProfile(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param body body models.ChangePassword true "Password details for change"
+// @Param body body models.ChangePasswordR true "Password details for change"
 // @Success 200 {object} response.Response "Password changed successfully"
 // @Failure 400 {object} response.Response "Invalid request or unable to change password"
 // @Router /user/profile/password [patch]

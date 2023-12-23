@@ -239,8 +239,8 @@ func (ah *AdminHandler) FilteredSalesReport(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param start query string true "Start date (format: 'YYYY-MM-DD')" Format(YYYY-MM-DD)
-// @Param end query string true "End date (format: 'YYYY-MM-DD')" Format(YYYY-MM-DD)
+// @Param start query string true "Start date (format: 'DD-MM-YYYY')" Format(DD-MM-YYYY)
+// @Param end query string true "End date (format: 'DD-MM-YYYY')" Format(DD-MM-YYYY)
 // @Failure 400 {object} response.Response "Bad request: Start or end date is empty"
 // @Failure 500 {object} response.Response "Internal server error: Sales report could not be retrieved"
 // @Success 200 {object} response.Response "Success: Sales report retrieved successfully"

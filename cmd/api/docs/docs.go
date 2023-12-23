@@ -175,7 +175,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.Category"
+                            "$ref": "#/definitions/models.CategoryAdd"
                         }
                     }
                 ],
@@ -726,7 +726,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.Product"
+                            "$ref": "#/definitions/models.ProductEdit"
                         }
                     }
                 ],
@@ -767,16 +767,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "YYYY-MM-DD",
-                        "description": "Start date (format: 'YYYY-MM-DD')",
+                        "format": "DD-MM-YYYY",
+                        "description": "Start date (format: 'DD-MM-YYYY')",
                         "name": "start",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "format": "YYYY-MM-DD",
-                        "description": "End date (format: 'YYYY-MM-DD')",
+                        "format": "DD-MM-YYYY",
+                        "description": "End date (format: 'DD-MM-YYYY')",
                         "name": "end",
                         "in": "query",
                         "required": true
@@ -961,7 +961,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.RemoveFromCart"
+                            "$ref": "#/definitions/models.RemoveFromCartR"
                         }
                     }
                 ],
@@ -1118,7 +1118,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.AddCart"
+                            "$ref": "#/definitions/models.AddCartR"
                         }
                     }
                 ],
@@ -1173,7 +1173,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.AddCart"
+                            "$ref": "#/definitions/models.AddCartR"
                         }
                     }
                 ],
@@ -1646,7 +1646,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UsersProfileDetails"
+                            "$ref": "#/definitions/models.UsersProfileDetailsR"
                         }
                     }
                 ],
@@ -1770,7 +1770,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ChangePassword"
+                            "$ref": "#/definitions/models.ChangePasswordR"
                         }
                     }
                 ],
@@ -1912,49 +1912,9 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.Category": {
+        "models.AddCartR": {
             "type": "object",
             "properties": {
-                "category": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "domain.Product": {
-            "type": "object",
-            "properties": {
-                "category": {
-                    "$ref": "#/definitions/domain.Category"
-                },
-                "category_id": {
-                    "type": "integer"
-                },
-                "color": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "product_name": {
-                    "type": "string"
-                },
-                "stock": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.AddCart": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "product_id": {
                     "type": "integer"
                 },
@@ -2011,7 +1971,15 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ChangePassword": {
+        "models.CategoryAdd": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ChangePasswordR": {
             "type": "object",
             "properties": {
                 "confirm_password": {
@@ -2019,9 +1987,6 @@ const docTemplate = `{
                 },
                 "current_password": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "new_password": {
                     "type": "string"
@@ -2059,6 +2024,29 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ProductEdit": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "product_name": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.ProductUpdate": {
             "type": "object",
             "properties": {
@@ -2070,12 +2058,9 @@ const docTemplate = `{
                 }
             }
         },
-        "models.RemoveFromCart": {
+        "models.RemoveFromCartR": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "product_id": {
                     "type": "integer"
                 }
@@ -2123,14 +2108,11 @@ const docTemplate = `{
                 }
             }
         },
-        "models.UsersProfileDetails": {
+        "models.UsersProfileDetailsR": {
             "type": "object",
             "properties": {
                 "email": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"

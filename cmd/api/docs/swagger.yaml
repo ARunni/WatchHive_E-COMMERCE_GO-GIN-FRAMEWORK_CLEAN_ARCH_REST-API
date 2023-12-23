@@ -1,32 +1,6 @@
 definitions:
-  domain.Category:
+  models.AddCartR:
     properties:
-      category:
-        type: string
-      id:
-        type: integer
-    type: object
-  domain.Product:
-    properties:
-      category:
-        $ref: '#/definitions/domain.Category'
-      category_id:
-        type: integer
-      color:
-        type: string
-      id:
-        type: integer
-      price:
-        type: number
-      product_name:
-        type: string
-      stock:
-        type: integer
-    type: object
-  models.AddCart:
-    properties:
-      id:
-        type: integer
       product_id:
         type: integer
       quantity:
@@ -65,14 +39,17 @@ definitions:
     required:
     - email
     type: object
-  models.ChangePassword:
+  models.CategoryAdd:
+    properties:
+      category:
+        type: string
+    type: object
+  models.ChangePasswordR:
     properties:
       confirm_password:
         type: string
       current_password:
         type: string
-      id:
-        type: integer
       new_password:
         type: string
     type: object
@@ -96,6 +73,21 @@ definitions:
     - address_id
     - payment_id
     type: object
+  models.ProductEdit:
+    properties:
+      category_id:
+        type: integer
+      color:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      product_name:
+        type: string
+      stock:
+        type: integer
+    type: object
   models.ProductUpdate:
     properties:
       product_id:
@@ -103,10 +95,8 @@ definitions:
       stock:
         type: integer
     type: object
-  models.RemoveFromCart:
+  models.RemoveFromCartR:
     properties:
-      id:
-        type: integer
       product_id:
         type: integer
     type: object
@@ -137,12 +127,10 @@ definitions:
       password:
         type: string
     type: object
-  models.UsersProfileDetails:
+  models.UsersProfileDetailsR:
     properties:
       email:
         type: string
-      id:
-        type: integer
       name:
         type: string
       phone:
@@ -305,7 +293,7 @@ paths:
         name: AddCategory
         required: true
         schema:
-          $ref: '#/definitions/domain.Category'
+          $ref: '#/definitions/models.CategoryAdd'
       produces:
       - application/json
       responses:
@@ -574,7 +562,7 @@ paths:
         name: Product
         required: true
         schema:
-          $ref: '#/definitions/domain.Product'
+          $ref: '#/definitions/models.ProductEdit'
       produces:
       - application/json
       responses:
@@ -650,14 +638,14 @@ paths:
       description: Retrieves sales report data between the provided start and end
         dates.
       parameters:
-      - description: 'Start date (format: ''YYYY-MM-DD'')'
-        format: YYYY-MM-DD
+      - description: 'Start date (format: ''DD-MM-YYYY'')'
+        format: DD-MM-YYYY
         in: query
         name: start
         required: true
         type: string
-      - description: 'End date (format: ''YYYY-MM-DD'')'
-        format: YYYY-MM-DD
+      - description: 'End date (format: ''DD-MM-YYYY'')'
+        format: DD-MM-YYYY
         in: query
         name: end
         required: true
@@ -777,7 +765,7 @@ paths:
         name: RemoveFromCart
         required: true
         schema:
-          $ref: '#/definitions/models.RemoveFromCart'
+          $ref: '#/definitions/models.RemoveFromCartR'
       produces:
       - application/json
       responses:
@@ -879,7 +867,7 @@ paths:
         name: UpdateCart
         required: true
         schema:
-          $ref: '#/definitions/models.AddCart'
+          $ref: '#/definitions/models.AddCartR'
       produces:
       - application/json
       responses:
@@ -915,7 +903,7 @@ paths:
         name: AddCart
         required: true
         schema:
-          $ref: '#/definitions/models.AddCart'
+          $ref: '#/definitions/models.AddCartR'
       produces:
       - application/json
       responses:
@@ -1222,7 +1210,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.UsersProfileDetails'
+          $ref: '#/definitions/models.UsersProfileDetailsR'
       produces:
       - application/json
       responses:
@@ -1299,7 +1287,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.ChangePassword'
+          $ref: '#/definitions/models.ChangePasswordR'
       produces:
       - application/json
       responses:

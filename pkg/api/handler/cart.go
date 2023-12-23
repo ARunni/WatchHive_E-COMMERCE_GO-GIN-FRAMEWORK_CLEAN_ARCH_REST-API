@@ -27,7 +27,7 @@ func NewCartHandler(useCase interfaces.CartUseCase) *CartHandler {
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
-// @Param AddCart body models.AddCart true "Item details to add to the cart"
+// @Param AddCart body models.AddCartR true "Item details to add to the cart"
 // @Success 200 {object} response.Response "Success: Item added to cart successfully"
 // @Failure 400 {object} response.Response "Bad request: Fields are provided in the wrong format"
 // @Failure 401 {object} response.Response "Unauthorized: Invalid or missing authentication"
@@ -97,7 +97,7 @@ func (ch *CartHandler) ListCartItems(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
-// @Param UpdateCart body models.AddCart true "Product details to update quantity"
+// @Param UpdateCart body models.AddCartR true "Product details to update quantity"
 // @Success 200 {object} response.Response  "Success: Quantity updated successfully"
 // @Failure 400 {object} response.Response  "Bad request: Cannot update quantity or fields are provided in the wrong format"
 // @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
@@ -139,7 +139,7 @@ func (ch *CartHandler) UpdateProductQuantityCart(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
-// @Param RemoveFromCart body models.RemoveFromCart true "Product details to remove from cart"
+// @Param RemoveFromCart body models.RemoveFromCartR true "Product details to remove from cart"
 // @Success 200 {object} response.Response  "Success: Product removed from cart successfully"
 // @Failure 400 {object} response.Response  "Bad request: Cannot remove product or fields are provided in the wrong format"
 // @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"

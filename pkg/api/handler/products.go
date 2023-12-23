@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
@@ -155,12 +154,12 @@ func (i *ProductHandler) ListProductsAdmin(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
-// @Param Product body domain.Product true "Product details to be updated"
+// @Param Product body models.ProductEdit true "Product details to be updated"
 // @Success 200 {object} response.Response  "Success: Product edited successfully"
 // @Failure 400 {object} response.Response  "Bad request: Fields are in the wrong format or could not edit the product"
 // @Router /admin/product [patch]
 func (u *ProductHandler) EditProduct(c *gin.Context) {
-	var product domain.Product
+	var product models.ProductEdit
 
 	if err := c.BindJSON(&product); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "fields are in the wrong format", nil, err.Error())

@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"WatchHive/pkg/domain"
 	helper "WatchHive/pkg/helper/interface"
 	rep "WatchHive/pkg/repository/interface"
 	interfaces "WatchHive/pkg/usecase/interface"
@@ -76,7 +75,7 @@ func (i *productUseCase) ListProducts(pageNo, pageList int) ([]models.ProductUse
 	return productList, nil
 }
 
-func (usecase *productUseCase) EditProduct(product domain.Product) (models.ProductUserResponse, error) {
+func (usecase *productUseCase) EditProduct(product models.ProductEdit) (models.ProductUserResponse, error) {
 
 	if product.ID <= 0 || product.CategoryID <= 0 || product.Price <= 0 || product.Stock <= 0 {
 		err := errors.New("enter valid values")

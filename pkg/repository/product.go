@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
@@ -83,7 +82,7 @@ func (prod *productRepository) ListProducts(pageList, offset int) ([]models.Prod
 	return product_list, nil
 }
 
-func (db *productRepository) EditProduct(product domain.Product) (models.ProductUserResponse, error) {
+func (db *productRepository) EditProduct(product models.ProductEdit) (models.ProductUserResponse, error) {
 
 	var modProduct models.ProductUserResponse
 

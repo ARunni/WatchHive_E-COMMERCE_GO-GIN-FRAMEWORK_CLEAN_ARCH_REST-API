@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
@@ -27,7 +26,7 @@ func NewCategoryHandler(usecase interfaces.CategoryUseCase) *CategoryHandler {
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
-// @Param AddCategory body domain.Category true "Category details to add"
+// @Param AddCategory body models.CategoryAdd true "Category details to add"
 // @Success 200 {object} response.Response  "Success: Category added successfully"
 // @Failure 400 {object} response.Response  "Bad request: Fields are provided in the wrong format"
 // @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
