@@ -4,6 +4,7 @@ import (
 	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
 	services "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/models"
 	"errors"
 	"strconv"
 )
@@ -18,7 +19,7 @@ func NewCategoryUseCase(repo interfaces.CategoryRepository) services.CategoryUse
 	}
 
 }
-func (cu *categoryUseCase) AddCategory(category domain.Category) (domain.Category, error) {
+func (cu *categoryUseCase) AddCategory(category models.CategoryAdd) (domain.Category, error) {
 	if category.Category == "" {
 		return domain.Category{}, errors.New("invalid category")
 	}

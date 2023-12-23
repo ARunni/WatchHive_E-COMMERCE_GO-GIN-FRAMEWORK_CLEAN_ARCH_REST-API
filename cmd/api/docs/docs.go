@@ -1461,7 +1461,7 @@ const docTemplate = `{
             }
         },
         "/user/orders/checkout": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "BearerTokenAuth": []

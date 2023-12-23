@@ -3,6 +3,7 @@ package repository
 import (
 	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/models"
 	"errors"
 	"strconv"
 
@@ -18,7 +19,7 @@ func NewCategoryRepository(DB *gorm.DB) interfaces.CategoryRepository {
 	return &categoryRepository{DB}
 }
 
-func (cr *categoryRepository) AddCategory(c domain.Category) (domain.Category, error) {
+func (cr *categoryRepository) AddCategory(c models.CategoryAdd) (domain.Category, error) {
 
 	var b domain.Category
 	err := cr.DB.Raw("INSERT INTO categories (category) VALUES (?) RETURNING *", c.Category).Scan(&b).Error

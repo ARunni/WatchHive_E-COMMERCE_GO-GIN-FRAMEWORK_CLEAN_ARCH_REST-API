@@ -35,7 +35,7 @@ func NewCategoryHandler(usecase interfaces.CategoryUseCase) *CategoryHandler {
 // @Router /admin/category [post]
 func (cat *CategoryHandler) AddCategory(c *gin.Context) {
 
-	var category domain.Category
+	var category models.CategoryAdd
 	if err := c.BindJSON(&category); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)

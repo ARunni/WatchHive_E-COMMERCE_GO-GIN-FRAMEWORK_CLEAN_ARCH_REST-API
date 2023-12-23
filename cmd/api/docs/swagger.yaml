@@ -1108,7 +1108,7 @@ paths:
       tags:
       - User Order Management
   /user/orders/checkout:
-    post:
+    get:
       consumes:
       - application/json
       description: Processes the checkout for the user's order.

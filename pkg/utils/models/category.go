@@ -9,3 +9,6 @@ type SetNewName struct {
 	CurrentId int    `json:"current_id"`
 	New       string `json:"new"`
 }
+ type CategoryAdd struct {
+	Category string `json:"category" gorm:"unique"`
+ }

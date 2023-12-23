@@ -1453,7 +1453,7 @@
             }
         },
         "/user/orders/checkout": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "BearerTokenAuth": []
