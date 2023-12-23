@@ -115,7 +115,7 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @security BearerTokenAuth
-// @Param id header int true "User ID" Format(int64)
+// @Param id header int true "User ID"
 // @Param body body models.AddressInfoResponse true "Address details for addition"
 // @Success 200 {object} response.Response "Address added successfully"
 // @Failure 400 {object} response.Response "Invalid request or constraints not satisfied"

@@ -1772,7 +1772,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "format": "int64",
                         "description": "User ID",
                         "name": "id",
                         "in": "header",

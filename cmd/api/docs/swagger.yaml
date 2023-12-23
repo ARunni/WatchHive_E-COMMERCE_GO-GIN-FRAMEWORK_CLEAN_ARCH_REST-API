@@ -1308,7 +1308,6 @@ paths:
       description: Adds an address for the user identified by ID
       parameters:
       - description: User ID
-        format: int64
         in: header
         name: id
         required: true
