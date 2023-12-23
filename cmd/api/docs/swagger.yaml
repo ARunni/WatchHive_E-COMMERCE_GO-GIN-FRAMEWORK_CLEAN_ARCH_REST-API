@@ -744,12 +744,6 @@ paths:
       - application/json
       description: Retrieves the list of items in the user's cart based on the user
         ID.
-      parameters:
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -780,11 +774,6 @@ paths:
       - application/json
       description: Removes a product from the user's cart based on the provided details.
       parameters:
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: string
       - description: Product details to remove from cart
         in: body
         name: RemoveFromCart
@@ -887,11 +876,6 @@ paths:
       description: Updates the quantity of a product in the user's cart based on the
         provided details.
       parameters:
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: string
       - description: Product details to update quantity
         in: body
         name: UpdateCart
@@ -928,11 +912,6 @@ paths:
       - application/json
       description: Adds an item to the user's cart based on the provided details.
       parameters:
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: string
       - description: Item details to add to the cart
         in: body
         name: AddCart
@@ -1001,11 +980,6 @@ paths:
         name: id
         required: true
         type: integer
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -1036,11 +1010,6 @@ paths:
       description: Retrieves order details for a user based on the provided pagination
         parameters.
       parameters:
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: string
       - description: 'Page number (default: 1)'
         in: query
         name: page
@@ -1084,11 +1053,6 @@ paths:
         name: order_id
         required: true
         type: integer
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -1115,11 +1079,6 @@ paths:
       description: Places an order with items from the user's cart based on the provided
         details.
       parameters:
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: string
       - description: Order details from cart
         in: body
         name: OrderFromCart
@@ -1155,12 +1114,6 @@ paths:
       consumes:
       - application/json
       description: Processes the checkout for the user's order.
-      parameters:
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -1245,13 +1198,6 @@ paths:
       consumes:
       - application/json
       description: Retrieves details of the user identified by ID
-      parameters:
-      - description: User ID
-        format: int64
-        in: header
-        name: id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
@@ -1273,12 +1219,6 @@ paths:
       - application/json
       description: Updates user profile details based on provided information
       parameters:
-      - description: User ID
-        format: int64
-        in: header
-        name: id
-        required: true
-        type: integer
       - description: User profile details for update
         in: body
         name: body
@@ -1307,11 +1247,6 @@ paths:
       - application/json
       description: Adds an address for the user identified by ID
       parameters:
-      - description: User ID
-        in: header
-        name: id
-        required: true
-        type: integer
       - description: Address details for addition
         in: body
         name: body
@@ -1339,13 +1274,6 @@ paths:
       consumes:
       - application/json
       description: Retrieves all addresses of the user identified by ID
-      parameters:
-      - description: User ID
-        format: int64
-        in: header
-        name: id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
@@ -1368,12 +1296,6 @@ paths:
       - application/json
       description: Changes the password for the user identified by ID
       parameters:
-      - description: User ID
-        format: int64
-        in: header
-        name: id
-        required: true
-        type: integer
       - description: Password details for change
         in: body
         name: body

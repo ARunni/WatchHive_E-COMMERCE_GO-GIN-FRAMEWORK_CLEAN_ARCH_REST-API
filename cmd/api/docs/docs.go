@@ -908,15 +908,6 @@ const docTemplate = `{
                     "User Cart Management"
                 ],
                 "summary": "Retrieve cart items",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success: Retrieved cart items successfully",
@@ -964,13 +955,6 @@ const docTemplate = `{
                 ],
                 "summary": "Remove product from cart",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Product details to remove from cart",
                         "name": "RemoveFromCart",
@@ -1129,13 +1113,6 @@ const docTemplate = `{
                 "summary": "Add item to cart",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "Item details to add to the cart",
                         "name": "AddCart",
                         "in": "body",
@@ -1190,13 +1167,6 @@ const docTemplate = `{
                 ],
                 "summary": "Update product quantity in cart",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Product details to update quantity",
                         "name": "UpdateCart",
@@ -1295,13 +1265,6 @@ const docTemplate = `{
                 "summary": "Retrieve order details",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "description": "Page number (default: 1)",
                         "name": "page",
@@ -1359,13 +1322,6 @@ const docTemplate = `{
                 ],
                 "summary": "Place order from cart",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Order details from cart",
                         "name": "OrderFromCart",
@@ -1427,13 +1383,6 @@ const docTemplate = `{
                         "name": "id",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -1487,13 +1436,6 @@ const docTemplate = `{
                         "name": "order_id",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -1536,15 +1478,6 @@ const docTemplate = `{
                     "User Order Management"
                 ],
                 "summary": "Process checkout",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success: Checkout completed successfully",
@@ -1674,16 +1607,6 @@ const docTemplate = `{
                     "User Profile Management"
                 ],
                 "summary": "Retrieve user details",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "User details retrieved successfully",
@@ -1717,14 +1640,6 @@ const docTemplate = `{
                 ],
                 "summary": "Update user profile",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "User profile details for update",
                         "name": "body",
@@ -1771,13 +1686,6 @@ const docTemplate = `{
                 "summary": "Add user address",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "Address details for addition",
                         "name": "body",
                         "in": "body",
@@ -1821,16 +1729,6 @@ const docTemplate = `{
                     "User Profile Management"
                 ],
                 "summary": "Retrieve all user addresses",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "All user addresses retrieved successfully",
@@ -1866,14 +1764,6 @@ const docTemplate = `{
                 ],
                 "summary": "Change user password",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Password details for change",
                         "name": "body",

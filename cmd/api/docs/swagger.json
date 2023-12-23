@@ -900,15 +900,6 @@
                     "User Cart Management"
                 ],
                 "summary": "Retrieve cart items",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success: Retrieved cart items successfully",
@@ -956,13 +947,6 @@
                 ],
                 "summary": "Remove product from cart",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Product details to remove from cart",
                         "name": "RemoveFromCart",
@@ -1121,13 +1105,6 @@
                 "summary": "Add item to cart",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "Item details to add to the cart",
                         "name": "AddCart",
                         "in": "body",
@@ -1182,13 +1159,6 @@
                 ],
                 "summary": "Update product quantity in cart",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Product details to update quantity",
                         "name": "UpdateCart",
@@ -1287,13 +1257,6 @@
                 "summary": "Retrieve order details",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "description": "Page number (default: 1)",
                         "name": "page",
@@ -1351,13 +1314,6 @@
                 ],
                 "summary": "Place order from cart",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Order details from cart",
                         "name": "OrderFromCart",
@@ -1419,13 +1375,6 @@
                         "name": "id",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -1479,13 +1428,6 @@
                         "name": "order_id",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -1528,15 +1470,6 @@
                     "User Order Management"
                 ],
                 "summary": "Process checkout",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success: Checkout completed successfully",
@@ -1666,16 +1599,6 @@
                     "User Profile Management"
                 ],
                 "summary": "Retrieve user details",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "User details retrieved successfully",
@@ -1709,14 +1632,6 @@
                 ],
                 "summary": "Update user profile",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "User profile details for update",
                         "name": "body",
@@ -1763,13 +1678,6 @@
                 "summary": "Add user address",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "Address details for addition",
                         "name": "body",
                         "in": "body",
@@ -1813,16 +1721,6 @@
                     "User Profile Management"
                 ],
                 "summary": "Retrieve all user addresses",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "All user addresses retrieved successfully",
@@ -1858,14 +1756,6 @@
                 ],
                 "summary": "Change user password",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Password details for change",
                         "name": "body",
