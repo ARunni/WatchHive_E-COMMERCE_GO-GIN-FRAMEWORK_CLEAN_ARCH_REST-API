@@ -638,6 +638,35 @@ paths:
       summary: Add product
       tags:
       - Admin Product Management
+  /admin/product/stock:
+    patch:
+      consumes:
+      - application/json
+      description: Updates the stock of an existing product using the provided details.
+      parameters:
+      - description: Product details for stock update
+        in: body
+        name: ProductUpdate
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProductUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Product stock updated successfully'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 'Bad request: Fields provided in wrong format or could not
+            update the product stock'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Update product stock
+      tags:
+      - Admin Product Management
   /admin/salesreport:
     get:
       consumes:
@@ -795,35 +824,6 @@ paths:
       summary: Remove product from cart
       tags:
       - User Cart Management
-  /product/stock:
-    patch:
-      consumes:
-      - application/json
-      description: Updates the stock of an existing product using the provided details.
-      parameters:
-      - description: Product details for stock update
-        in: body
-        name: ProductUpdate
-        required: true
-        schema:
-          $ref: '#/definitions/models.ProductUpdate'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 'Success: Product stock updated successfully'
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: 'Bad request: Fields provided in wrong format or could not
-            update the product stock'
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
-      summary: Update product stock
-      tags:
-      - Admin Product Management
   /user/cart:
     get:
       consumes:

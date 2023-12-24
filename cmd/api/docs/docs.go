@@ -756,6 +756,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/product/stock": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Updates the stock of an existing product using the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Product Management"
+                ],
+                "summary": "Update product stock",
+                "parameters": [
+                    {
+                        "description": "Product details for stock update",
+                        "name": "ProductUpdate",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ProductUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Product stock updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: Fields provided in wrong format or could not update the product stock",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/salesreport": {
             "get": {
                 "security": [
@@ -993,51 +1038,6 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error: Removing from cart failed",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/product/stock": {
-            "patch": {
-                "security": [
-                    {
-                        "BearerTokenAuth": []
-                    }
-                ],
-                "description": "Updates the stock of an existing product using the provided details.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin Product Management"
-                ],
-                "summary": "Update product stock",
-                "parameters": [
-                    {
-                        "description": "Product details for stock update",
-                        "name": "ProductUpdate",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.ProductUpdate"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success: Product stock updated successfully",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request: Fields provided in wrong format or could not update the product stock",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }

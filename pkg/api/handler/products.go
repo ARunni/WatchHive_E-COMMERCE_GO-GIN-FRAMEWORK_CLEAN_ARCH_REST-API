@@ -213,7 +213,7 @@ func (u *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Param ProductUpdate body models.ProductUpdate true "Product details for stock update"
 // @Success 200 {object} response.Response  "Success: Product stock updated successfully"
 // @Failure 400 {object} response.Response  "Bad request: Fields provided in wrong format or could not update the product stock"
-// @Router /product/stock [patch]
+// @Router /admin/product/stock [patch]
 func (i *ProductHandler) UpdateProduct(c *gin.Context) {
 
 	var p models.ProductUpdate
