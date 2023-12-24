@@ -144,7 +144,7 @@ func (ch *CartHandler) UpdateProductQuantityCart(c *gin.Context) {
 // @Failure 400 {object} response.Response  "Bad request: Cannot remove product or fields are provided in the wrong format"
 // @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
 // @Failure 500 {object} response.Response  "Internal server error: Removing from cart failed"
-// @Router /cart/remove [delete]
+// @Router /user/cart [delete]
 func (ch *CartHandler) RemoveFromCart(c *gin.Context) {
 	var cart models.RemoveFromCart
 
