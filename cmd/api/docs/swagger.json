@@ -980,63 +980,6 @@
                 }
             }
         },
-        "/cart/remove": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerTokenAuth": []
-                    }
-                ],
-                "description": "Removes a product from the user's cart based on the provided details.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Cart Management"
-                ],
-                "summary": "Remove product from cart",
-                "parameters": [
-                    {
-                        "description": "Product details to remove from cart",
-                        "name": "RemoveFromCart",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.RemoveFromCartR"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success: Product removed from cart successfully",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request: Cannot remove product or fields are provided in the wrong format",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized: Invalid or missing authentication",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error: Removing from cart failed",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/user/cart": {
             "get": {
                 "security": [
@@ -1131,6 +1074,61 @@
                     },
                     "500": {
                         "description": "Internal server error: Cannot add item to cart",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Removes a product from the user's cart based on the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Cart Management"
+                ],
+                "summary": "Remove product from cart",
+                "parameters": [
+                    {
+                        "description": "Product details to remove from cart",
+                        "name": "RemoveFromCart",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RemoveFromCartR"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Product removed from cart successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: Cannot remove product or fields are provided in the wrong format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: Invalid or missing authentication",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error: Removing from cart failed",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }

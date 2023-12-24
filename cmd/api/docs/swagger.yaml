@@ -787,7 +787,7 @@ paths:
       summary: Unblock a user
       tags:
       - Admin User Management
-  /cart/remove:
+  /user/cart:
     delete:
       consumes:
       - application/json
@@ -824,7 +824,6 @@ paths:
       summary: Remove product from cart
       tags:
       - User Cart Management
-  /user/cart:
     get:
       consumes:
       - application/json
