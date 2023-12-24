@@ -107,7 +107,7 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 // @Param id query string true "User ID to block"
 // @Success 200 {object} response.Response "User blocked successfully"
 // @Failure 400 {object} response.Response "Failed to block user"
-// @Router /admin/block [patch]
+// @Router /admin/users/block [patch]
 func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	id := c.Query("id")
 	err := ad.adminUseCase.BlockUser(id)

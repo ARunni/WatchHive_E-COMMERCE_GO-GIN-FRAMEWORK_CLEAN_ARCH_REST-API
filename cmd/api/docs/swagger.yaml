@@ -191,33 +191,6 @@ paths:
       summary: Admin login
       tags:
       - Admin
-  /admin/block:
-    patch:
-      consumes:
-      - application/json
-      description: Blocks a user based on the provided ID
-      parameters:
-      - description: User ID to block
-        in: query
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User blocked successfully
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Failed to block user
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
-      summary: Block a user
-      tags:
-      - Admin User Management
   /admin/category:
     get:
       consumes:
@@ -695,6 +668,33 @@ paths:
       security:
       - BearerTokenAuth: []
       summary: Retrieve users with pagination
+      tags:
+      - Admin User Management
+  /admin/users/block:
+    patch:
+      consumes:
+      - application/json
+      description: Blocks a user based on the provided ID
+      parameters:
+      - description: User ID to block
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User blocked successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Failed to block user
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Block a user
       tags:
       - Admin User Management
   /admin/users/unblock:
