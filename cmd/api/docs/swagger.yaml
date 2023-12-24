@@ -192,6 +192,40 @@ paths:
       tags:
       - Admin
   /admin/category:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a category based on the provided category ID.
+      parameters:
+      - description: Category ID to delete
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Category deleted successfully'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 'Bad request: Fields are not provided in the correct format'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: 'Unauthorized: Invalid or missing authentication'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: 'Internal server error: Could not delete the category'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Delete category
+      tags:
+      - Admin Category Management
     get:
       consumes:
       - application/json
@@ -761,41 +795,6 @@ paths:
       summary: Remove product from cart
       tags:
       - User Cart Management
-  /categories/delete:
-    delete:
-      consumes:
-      - application/json
-      description: Deletes a category based on the provided category ID.
-      parameters:
-      - description: Category ID to delete
-        in: query
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 'Success: Category deleted successfully'
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: 'Bad request: Fields are not provided in the correct format'
-          schema:
-            $ref: '#/definitions/response.Response'
-        "401":
-          description: 'Unauthorized: Invalid or missing authentication'
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: 'Internal server error: Could not delete the category'
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
-      summary: Delete category
-      tags:
-      - Admin Category Management
   /product/stock:
     patch:
       consumes:
