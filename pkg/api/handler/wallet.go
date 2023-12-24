@@ -27,7 +27,7 @@ func NewWalletHandler(usecase interfaces.WalletUsecase) *WalletHandler {
 // @Success 200 {object} response.Response  "Success: Wallet details retrieved successfully"
 // @Failure 400 {object} response.Response  "Bad request: User ID not found or invalid user ID type"
 // @Failure 500 {object} response.Response  "Internal server error: Failed to retrieve wallet details"
-// @Router /wallet [get]
+// @Router /user/wallet [get]
 func (wh *WalletHandler) GetWallet(c *gin.Context) {
 	userId, exists := c.Get("id")
 	fmt.Println("userid", userId)

@@ -1354,7 +1354,7 @@ paths:
       summary: Verify OTP
       tags:
       - User
-  /wallet:
+  /user/wallet:
     get:
       consumes:
       - application/json

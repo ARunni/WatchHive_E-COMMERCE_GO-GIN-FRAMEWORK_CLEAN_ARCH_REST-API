@@ -1856,7 +1856,7 @@
                 }
             }
         },
-        "/wallet": {
+        "/user/wallet": {
             "get": {
                 "security": [
                     {

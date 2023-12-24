@@ -1864,7 +1864,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/wallet": {
+        "/user/wallet": {
             "get": {
                 "security": [
                     {
