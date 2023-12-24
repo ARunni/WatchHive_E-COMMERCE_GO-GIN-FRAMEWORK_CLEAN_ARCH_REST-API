@@ -890,52 +890,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/cart/list": {
-            "get": {
-                "security": [
-                    {
-                        "BearerTokenAuth": []
-                    }
-                ],
-                "description": "Retrieves the list of items in the user's cart based on the user ID.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Cart Management"
-                ],
-                "summary": "Retrieve cart items",
-                "responses": {
-                    "200": {
-                        "description": "Success: Retrieved cart items successfully",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request: Cannot list products",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized: Invalid or missing authentication",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error: Could not get the cart list",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/cart/remove": {
             "delete": {
                 "security": [
@@ -1094,6 +1048,50 @@ const docTemplate = `{
             }
         },
         "/user/cart": {
+            "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Retrieves the list of items in the user's cart based on the user ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Cart Management"
+                ],
+                "summary": "Retrieve cart items",
+                "responses": {
+                    "200": {
+                        "description": "Success: Retrieved cart items successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: Cannot list products",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: Invalid or missing authentication",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error: Could not get the cart list",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {

@@ -724,36 +724,6 @@ paths:
       summary: Unblock a user
       tags:
       - Admin User Management
-  /cart/list:
-    get:
-      consumes:
-      - application/json
-      description: Retrieves the list of items in the user's cart based on the user
-        ID.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 'Success: Retrieved cart items successfully'
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: 'Bad request: Cannot list products'
-          schema:
-            $ref: '#/definitions/response.Response'
-        "401":
-          description: 'Unauthorized: Invalid or missing authentication'
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: 'Internal server error: Could not get the cart list'
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
-      summary: Retrieve cart items
-      tags:
-      - User Cart Management
   /cart/remove:
     delete:
       consumes:
@@ -856,6 +826,35 @@ paths:
       tags:
       - Admin Product Management
   /user/cart:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the list of items in the user's cart based on the user
+        ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Retrieved cart items successfully'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 'Bad request: Cannot list products'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: 'Unauthorized: Invalid or missing authentication'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: 'Internal server error: Could not get the cart list'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Retrieve cart items
+      tags:
+      - User Cart Management
     patch:
       consumes:
       - application/json

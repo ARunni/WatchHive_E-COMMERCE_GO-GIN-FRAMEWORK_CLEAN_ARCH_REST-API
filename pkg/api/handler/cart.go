@@ -71,7 +71,7 @@ func (ch *CartHandler) AddToCart(c *gin.Context) {
 // @Failure 400 {object} response.Response  "Bad request: Cannot list products"
 // @Failure 401 {object} response.Response  "Unauthorized: Invalid or missing authentication"
 // @Failure 500 {object} response.Response  "Internal server error: Could not get the cart list"
-// @Router /cart/list [get]
+// @Router /user/cart [get]
 func (ch *CartHandler) ListCartItems(c *gin.Context) {
 	userID, errs := c.Get("id")
 	if !errs {
