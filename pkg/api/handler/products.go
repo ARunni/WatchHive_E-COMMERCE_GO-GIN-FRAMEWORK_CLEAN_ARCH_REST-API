@@ -74,7 +74,7 @@ func (i *ProductHandler) AddProduct(c *gin.Context) {
 // @Param per_page query integer false "Number of products per page (default: 5)"
 // @Success 200 {object} response.Response  "Success: Products for users displayed successfully"
 // @Failure 400 {object} response.Response  "Bad request: Product display error"
-// @Router /user/product [get]
+// @Router /user/products [get]
 func (i *ProductHandler) ListProductsUser(c *gin.Context) {
 
 	pageNo := c.DefaultQuery("page", "1")

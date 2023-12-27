@@ -1540,7 +1540,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/product": {
+        "/user/products": {
             "get": {
                 "description": "Retrieves a paginated list of products available for users.",
                 "consumes": [

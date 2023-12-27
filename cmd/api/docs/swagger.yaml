@@ -1148,7 +1148,7 @@ paths:
       summary: Send OTP
       tags:
       - User
-  /user/product:
+  /user/products:
     get:
       consumes:
       - application/json
