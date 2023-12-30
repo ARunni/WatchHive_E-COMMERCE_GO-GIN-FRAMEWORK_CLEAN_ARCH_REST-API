@@ -31,7 +31,7 @@ func NewOfferHandler(usecase interfaces.OfferUsecase) *OfferHandler {
 // @Success 201 {object} response.Response "Successfully added offer"
 // @Failure 400 {object} response.Response "Invalid request format or constraints not satisfied"
 // @Failure 500 {object} response.Response "Failed to add offer"
-// @Router /admin/offer/product-offer [post]
+// @Router /admin/offer/product_offer [post]
 func (of *OfferHandler) AddProductOffer(c *gin.Context) {
 
 	var productOffer models.ProductOfferResp
@@ -69,7 +69,7 @@ func (of *OfferHandler) AddProductOffer(c *gin.Context) {
 // @Success 201 {object} response.Response "Successfully added offer"
 // @Failure 400 {object} response.Response "Invalid request format or constraints not satisfied"
 // @Failure 500 {object} response.Response "Failed to add offer"
-// @Router /admin/offer/category-offer [post]
+// @Router /admin/offer/category_offer [post]
 func (of *OfferHandler) AddCategoryOffer(c *gin.Context) {
 
 	var categoryOffer models.CategorytOfferResp
@@ -106,7 +106,7 @@ func (of *OfferHandler) AddCategoryOffer(c *gin.Context) {
 // @Success 200 {object} response.Response "Successfully got all offers"
 // @Failure 400 {object} response.Response "Invalid request format or fields provided in the wrong format"
 // @Failure 500 {object} response.Response "Failed to retrieve offers"
-// @Router /admin/offer/get-product-offer [get]
+// @Router /admin/offer/product_offer [get]
 func (of *OfferHandler) GetProductOffer(c *gin.Context) {
 
 	products, err := of.OfferUsecase.GetProductOffer()
@@ -130,7 +130,7 @@ func (of *OfferHandler) GetProductOffer(c *gin.Context) {
 // @Success 200 {object} response.Response "Successfully got all offers"
 // @Failure 400 {object} response.Response "Invalid request format or fields provided in the wrong format"
 // @Failure 500 {object} response.Response "Failed to retrieve offers"
-// @Router /admin/offer/get-category-offer [get]
+// @Router /admin/offer/category_offer [get]
 func (of *OfferHandler) GetCategoryOffer(c *gin.Context) {
 
 	categories, err := of.OfferUsecase.GetCategoryOffer()
@@ -155,7 +155,7 @@ func (of *OfferHandler) GetCategoryOffer(c *gin.Context) {
 // @Success 200 {object} response.Response "Successfully made product offer invalid"
 // @Failure 400 {object} response.Response "Invalid request format or fields provided in the wrong format"
 // @Failure 500 {object} response.Response "Failed to expire product offer"
-// @Router /admin/offer/expire-product-offer [delete]
+// @Router /admin/offer/product_offer [delete]
 func (of *OfferHandler) ExpireProductOffer(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
@@ -184,7 +184,7 @@ func (of *OfferHandler) ExpireProductOffer(c *gin.Context) {
 // @Success 200 {object} response.Response "Successfully made category offer invalid"
 // @Failure 400 {object} response.Response "Invalid request format or fields provided in the wrong format"
 // @Failure 500 {object} response.Response "Failed to expire category offer"
-// @Router /admin/offer/expire-category-offer [delete]
+// @Router /admin/offer/category_offer [delete]
 func (of *OfferHandler) ExpireCategoryOffer(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {

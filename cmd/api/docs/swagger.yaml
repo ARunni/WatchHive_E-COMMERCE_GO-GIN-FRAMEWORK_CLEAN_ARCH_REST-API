@@ -399,7 +399,61 @@ paths:
       summary: Retrieve admin dashboard information
       tags:
       - Admin Dashboard
-  /admin/offer/category-offer:
+  /admin/offer/category_offer:
+    delete:
+      consumes:
+      - application/json
+      description: Expire a category offer by providing its ID.
+      parameters:
+      - description: ID of the category offer to expire
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully made category offer invalid
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request format or fields provided in the wrong format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Failed to expire category offer
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Expire Category Offer
+      tags:
+      - Admin Offer Management
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all category offers.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully got all offers
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request format or fields provided in the wrong format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Failed to retrieve offers
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get Category Offer
+      tags:
+      - Admin Offer Management
     post:
       consumes:
       - application/json
@@ -431,38 +485,7 @@ paths:
       summary: Add Category Offer
       tags:
       - Admin Offer Management
-  /admin/offer/expire-category-offer:
-    delete:
-      consumes:
-      - application/json
-      description: Expire a category offer by providing its ID.
-      parameters:
-      - description: ID of the category offer to expire
-        in: query
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successfully made category offer invalid
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Invalid request format or fields provided in the wrong format
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Failed to expire category offer
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
-      summary: Expire Category Offer
-      tags:
-      - Admin Offer Management
-  /admin/offer/expire-product-offer:
+  /admin/offer/product_offer:
     delete:
       consumes:
       - application/json
@@ -493,32 +516,6 @@ paths:
       summary: Expire Product Offer
       tags:
       - Admin Offer Management
-  /admin/offer/get-category-offer:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve all category offers.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successfully got all offers
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Invalid request format or fields provided in the wrong format
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Failed to retrieve offers
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
-      summary: Get Category Offer
-      tags:
-      - Admin Offer Management
-  /admin/offer/get-product-offer:
     get:
       consumes:
       - application/json
@@ -543,7 +540,6 @@ paths:
       summary: Get Product Offer
       tags:
       - Admin Offer Management
-  /admin/offer/product-offer:
     post:
       consumes:
       - application/json
