@@ -829,7 +829,7 @@ const docTemplate = `{
                 ],
                 "description": "Get sales details for a specific date and download the report in PDF or Excel format",
                 "tags": [
-                    "Admin DashBoard"
+                    "Admin Dashboard"
                 ],
                 "summary": "Get sales details by date",
                 "parameters": [

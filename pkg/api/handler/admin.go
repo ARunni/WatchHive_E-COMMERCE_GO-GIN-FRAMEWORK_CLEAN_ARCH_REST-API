@@ -271,7 +271,7 @@ func (ah *AdminHandler) SalesReportByDate(c *gin.Context) {
 //
 // @Summary Get sales details by date
 // @Description Get sales details for a specific date and download the report in PDF or Excel format
-// @Tags Admin DashBoard
+// @Tags Admin Dashboard
 // @security BearerTokenAuth
 // @Param year query integer true "Year for sales data"
 // @Param month query integer true "Month for sales data"

@@ -741,7 +741,7 @@ paths:
       - BearerTokenAuth: []
       summary: Get sales details by date
       tags:
-      - Admin DashBoard
+      - Admin Dashboard
   /admin/product:
     delete:
       consumes:
