@@ -14,8 +14,9 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 	engine.Use(middleware.AdminAuthMiddleware)
 	{
 		engine.GET("/dashboard", adminHandler.AdminDashBoard)
+		engine.GET("/printsales", adminHandler.PrintSalesByDate)
 		engine.GET("/currentsalesreport", adminHandler.FilteredSalesReport)
-		engine.GET("/salesreport",adminHandler.SalesReportByDate)
+		engine.GET("/salesreport", adminHandler.SalesReportByDate)
 
 		userManagement := engine.Group("/users")
 		{

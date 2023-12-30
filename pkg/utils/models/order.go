@@ -66,3 +66,7 @@ type Page struct {
 	Size int `json:"size"`
 }
 
+type OrderDetailsAdmin struct {
+	TotalAmount float64 `gorm:"column:total_amount"`
+	ProductName string  `gorm:"column:product_name"`
+}

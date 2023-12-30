@@ -4,6 +4,8 @@ import (
 	"WatchHive/pkg/utils/models"
 	"mime/multipart"
 	"time"
+
+	"github.com/360EntSecGroup-Skylar/excelize"
 )
 
 type Helper interface {
@@ -24,8 +26,8 @@ type Helper interface {
 	AddImageToAwsS3(file *multipart.FileHeader) (string, error)
 
 	GetTimeFromPeriod(timePeriod string) (time.Time, time.Time)
-	ValidateDate(dateString string) bool 
+	ValidateDate(dateString string) bool
 
-	ValidateAlphabets(data string) (bool, error) 
+	ValidateAlphabets(data string) (bool, error)
+	ConvertToExel(sales []models.OrderDetailsAdmin) (*excelize.File, error)
 }
-

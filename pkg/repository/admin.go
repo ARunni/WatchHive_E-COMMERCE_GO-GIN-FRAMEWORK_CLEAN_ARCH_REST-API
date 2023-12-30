@@ -5,6 +5,7 @@ import (
 	interfaces "WatchHive/pkg/repository/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -279,3 +280,65 @@ func (ar *adminRepository) FilteredSalesReport(startTime time.Time, endTime time
 	return salesReport, nil
 }
 
+func (ad *adminRepository) SalesByYear(yearInt int) ([]models.OrderDetailsAdmin, error) {
+	var orderDetails []models.OrderDetailsAdmin
+
+	query := `SELECT i.product_name, SUM(oi.total_price) AS total_amount
+              FROM orders o
+              JOIN order_items oi ON o.id = oi.order_id
+              JOIN inventories i ON oi.inventory_id = i.id
+              WHERE o.payment_status = 'PAID'
+                AND EXTRACT(YEAR FROM o.created_at) = ?
+              GROUP BY i.product_name`
+
+	if err := ad.DB.Raw(query, yearInt).Scan(&orderDetails).Error; err != nil {
+		return []models.OrderDetailsAdmin{}, err
+	}
+
+	fmt.Println("body at repo year", orderDetails)
+
+	return orderDetails, nil
+}
+
+func (ad *adminRepository) SalesByMonth(yearInt int, monthInt int) ([]models.OrderDetailsAdmin, error) {
+	var orderDetails []models.OrderDetailsAdmin
+
+	query := `SELECT i.product_name, SUM(oi.total_price) AS total_amount
+              FROM orders o
+              JOIN order_items oi ON o.id = oi.order_id
+              JOIN inventories i ON oi.inventory_id = i.id
+              WHERE o.payment_status = 'PAID'
+			  AND EXTRACT(YEAR FROM o.created_at) = ?
+			  AND EXTRACT(MONTH FROM o.created_at) = ?
+              GROUP BY i.product_name`
+
+	if err := ad.DB.Raw(query, yearInt, monthInt).Scan(&orderDetails).Error; err != nil {
+		return []models.OrderDetailsAdmin{}, err
+	}
+
+	fmt.Println("body at repo month", orderDetails)
+
+	return orderDetails, nil
+}
+
+func (ad *adminRepository) SalesByDay(yearInt int, monthInt int, dayInt int) ([]models.OrderDetailsAdmin, error) {
+	var orderDetails []models.OrderDetailsAdmin
+
+	query := `SELECT i.product_name, SUM(oi.total_price) AS total_amount
+              FROM orders o
+              JOIN order_items oi ON o.id = oi.order_id
+              JOIN inventories i ON oi.inventory_id = i.id
+              WHERE o.payment_status = 'PAID'
+			  AND EXTRACT(YEAR FROM o.created_at) = ?
+			  AND EXTRACT(MONTH FROM o.created_at) = ?
+                AND EXTRACT(DAY FROM o.created_at) = ?
+              GROUP BY i.product_name`
+
+	if err := ad.DB.Raw(query, yearInt, monthInt, dayInt).Scan(&orderDetails).Error; err != nil {
+		return []models.OrderDetailsAdmin{}, err
+	}
+
+	fmt.Println("body at repo day", orderDetails)
+
+	return orderDetails, nil
+}

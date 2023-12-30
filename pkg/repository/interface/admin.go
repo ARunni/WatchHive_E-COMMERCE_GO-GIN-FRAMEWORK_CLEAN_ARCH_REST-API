@@ -20,5 +20,8 @@ type AdminRepository interface {
 	DashboardAmountDetails() (models.DashBoardAmount, error)
 
 	FilteredSalesReport(startTime time.Time, endTime time.Time) (models.SalesReport, error)
-	
+
+	SalesByDay(yearInt int, monthInt int, dayInt int) ([]models.OrderDetailsAdmin, error)
+	SalesByMonth(yearInt int, monthInt int) ([]models.OrderDetailsAdmin, error)
+	SalesByYear(yearInt int) ([]models.OrderDetailsAdmin, error)
 }
