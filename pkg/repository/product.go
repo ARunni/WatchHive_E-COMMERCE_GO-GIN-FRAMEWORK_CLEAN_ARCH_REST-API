@@ -4,7 +4,6 @@ import (
 	interfaces "WatchHive/pkg/repository/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
-	"fmt"
 	"strconv"
 
 	"gorm.io/gorm"
@@ -54,10 +53,10 @@ func (i *productRepository) AddProduct(product models.AddProducts, url string) (
 	//Adding url to image table
 
 	queryimage := "INSERT INTO product_images (product_id, url) VALUES (?, ?)"
-	fmt.Println("asdfghjkasdfghjk")
+
 	imgErr := i.DB.Exec(queryimage, productResponse.ID, url).Error
 	if err != nil {
-		fmt.Println("qwertyuiosdfghjk")
+
 		return models.ProductResponse{}, imgErr
 	}
 	return productResponse, nil

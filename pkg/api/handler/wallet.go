@@ -3,7 +3,6 @@ package handler
 import (
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/response"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,7 +29,7 @@ func NewWalletHandler(usecase interfaces.WalletUsecase) *WalletHandler {
 // @Router /user/wallet [get]
 func (wh *WalletHandler) GetWallet(c *gin.Context) {
 	userId, exists := c.Get("id")
-	fmt.Println("userid", userId)
+
 	if !exists {
 		errs := response.ClientResponse(http.StatusBadRequest, "user_id not found", nil, "user_id is required")
 		c.JSON(http.StatusBadRequest, errs)

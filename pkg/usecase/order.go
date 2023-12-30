@@ -331,7 +331,7 @@ func (ou *orderUseCase) CancelOrderFromAdmin(orderId int) error {
 		return errors.New("invalid order id")
 	}
 	ok, err := ou.orderRepository.CheckOrderID(orderId)
-	fmt.Println(err)
+
 	if !ok {
 		return errors.New("order does not exist")
 	}
@@ -367,7 +367,7 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 		return errors.New("invalid order id")
 	}
 	ok, err := ou.orderRepository.CheckOrderID(orderId)
-	fmt.Println(err)
+
 	if !ok {
 		return errors.New("order does not exist")
 	}

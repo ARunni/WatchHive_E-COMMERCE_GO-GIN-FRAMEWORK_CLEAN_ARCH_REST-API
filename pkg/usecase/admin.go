@@ -6,7 +6,6 @@ import (
 	usecase "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -232,7 +231,7 @@ func (ad *adminUseCase) SalesByDate(dayInt int, monthInt int, yearInt int) ([]mo
 			if err != nil {
 				return []models.OrderDetailsAdmin{}, err
 			}
-			fmt.Println("body at usecase year", body)
+
 			return body, nil
 		} else if monthInt > 0 && monthInt <= 12 && dayInt == 0 {
 
@@ -240,7 +239,7 @@ func (ad *adminUseCase) SalesByDate(dayInt int, monthInt int, yearInt int) ([]mo
 			if err != nil {
 				return []models.OrderDetailsAdmin{}, err
 			}
-			fmt.Println("body at usecase month", body)
+
 			return body, nil
 		} else if monthInt > 0 && monthInt <= 12 && dayInt > 0 && dayInt <= 31 {
 
@@ -248,7 +247,7 @@ func (ad *adminUseCase) SalesByDate(dayInt int, monthInt int, yearInt int) ([]mo
 			if err != nil {
 				return []models.OrderDetailsAdmin{}, err
 			}
-			fmt.Println("body at usecase day", body)
+
 			return body, nil
 		}
 	}

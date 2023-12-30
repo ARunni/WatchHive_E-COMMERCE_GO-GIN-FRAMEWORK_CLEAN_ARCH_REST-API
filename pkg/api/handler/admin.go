@@ -7,7 +7,6 @@ import (
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
 	"errors"
-	"fmt"
 
 	"net/http"
 	"strconv"
@@ -23,9 +22,10 @@ type AdminHandler struct {
 	helper       interfaces.Helper
 }
 
-func NewAdminHandler(usecase service.AdminUseCase) *AdminHandler {
+func NewAdminHandler(usecase service.AdminUseCase, helper interfaces.Helper) *AdminHandler {
 	return &AdminHandler{
 		adminUseCase: usecase,
+		helper:       helper,
 	}
 }
 
@@ -311,12 +311,6 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 
 	body, err := a.adminUseCase.SalesByDate(dayInt, monthInt, yearInt)
 
-	fmt.Println("body handler", dayInt)
-	fmt.Println("body handler", monthInt)
-	fmt.Println("body handler", yearInt)
-
-	fmt.Println("body ", body)
-
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "error in getting sales details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
@@ -356,7 +350,7 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 			return
 		}
 	} else {
-		fmt.Println("body ", body)
+
 		excel, err := a.helper.ConvertToExel(body)
 		if err != nil {
 			errRes := response.ClientResponse(http.StatusBadGateway, "error in printing sales report", nil, err)

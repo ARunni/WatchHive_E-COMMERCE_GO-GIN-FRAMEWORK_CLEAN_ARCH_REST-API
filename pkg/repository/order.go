@@ -5,7 +5,6 @@ import (
 	interfaces "WatchHive/pkg/repository/interface"
 	"WatchHive/pkg/utils/models"
 	"errors"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -400,7 +399,7 @@ func (repo *orderRepository) GetOrder(orderId int) (domain.Order, error) {
 	if err := repo.DB.Raw(query, orderId).Scan(&body).Error; err != nil {
 		return domain.Order{}, err
 	}
-	fmt.Println("amount", body.FinalPrice)
+
 	return body, nil
 }
 
@@ -422,7 +421,7 @@ ON orders.address_id = addresses.id WHERE orders.id =?
 		err = errors.New("error in getting detailed order through id in repository: " + err.Error())
 		return models.CombinedOrderDetails{}, err
 	}
-	fmt.Println("body in repo", body.OrderId)
+
 	return body, nil
 }
 
