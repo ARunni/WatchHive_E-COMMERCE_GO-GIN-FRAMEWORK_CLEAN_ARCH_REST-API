@@ -700,6 +700,48 @@ paths:
       summary: Add payment method
       tags:
       - Admin Payment Management
+  /admin/printsales:
+    get:
+      description: Get sales details for a specific date and download the report in
+        PDF or Excel format
+      parameters:
+      - description: Year for sales data
+        in: query
+        name: year
+        required: true
+        type: integer
+      - description: Month for sales data
+        in: query
+        name: month
+        required: true
+        type: integer
+      - description: Day for sales data
+        in: query
+        name: day
+        required: true
+        type: integer
+      - description: Download format (pdf or excel)
+        in: query
+        name: download
+        type: string
+      responses:
+        "200":
+          description: Successfully retrieved sales details
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request or incorrect format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get sales details by date
+      tags:
+      - Admin DashBoard
   /admin/product:
     delete:
       consumes:
