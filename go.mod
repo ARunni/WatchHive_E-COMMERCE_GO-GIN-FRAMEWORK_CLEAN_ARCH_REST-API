@@ -3,6 +3,7 @@ module WatchHive
 go 1.21.5
 
 require (
+	github.com/360EntSecGroup-Skylar/excelize v1.4.1
 	github.com/aws/aws-sdk-go v1.49.13
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/validator/v10 v10.16.0
@@ -11,6 +12,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/joho/godotenv v1.5.1
+	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/pkg/errors v0.9.1
 	github.com/razorpay/razorpay-go v1.3.1
 	github.com/spf13/viper v1.18.2
@@ -24,7 +26,6 @@ require (
 )
 
 require (
-	github.com/360EntSecGroup-Skylar/excelize v1.4.1 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
@@ -50,7 +51,6 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/jung-kurt/gofpdf v1.16.2 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
