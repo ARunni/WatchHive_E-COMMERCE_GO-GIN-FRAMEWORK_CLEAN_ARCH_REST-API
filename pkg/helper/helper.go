@@ -287,17 +287,40 @@ func (h *helper) ConvertToExel(sales []models.OrderDetailsAdmin) (*excelize.File
 	filename := "salesReport/sales_report.xlsx"
 	file := excelize.NewFile()
 
-	file.SetCellValue("Sheet1", "A1", "Item")
-	file.SetCellValue("Sheet1", "B1", "Total Amount Sold")
+	file.SetCellValue("Sheet1", "A1", "Product")
+	file.SetCellValue("Sheet1", "B1", "Amount Sold")
 
+	// Bold style for headings
+	boldStyle, err := file.NewStyle(`{"font":{"bold":true}}`)
+	if err != nil {
+		return nil, err
+	}
+
+	file.SetCellStyle("Sheet1", "A1", "B1", boldStyle)
+
+	var Total float64
+	var Limit int
 	for i, sale := range sales {
-		col1 := fmt.Sprintf("A%d", i+1)
-		col2 := fmt.Sprintf("B%d", i+1)
+		col1 := fmt.Sprintf("A%d", i+2)
+		col2 := fmt.Sprintf("B%d", i+2)
 
 		file.SetCellValue("Sheet1", col1, sale.ProductName)
 		file.SetCellValue("Sheet1", col2, sale.TotalAmount)
+		Limit = i + 3
+		Total += sale.TotalAmount
 
 	}
+	col1 := fmt.Sprintf("A%d", Limit)
+	file.SetCellValue("Sheet1", col1, "Final Total")
+	col2 := fmt.Sprintf("B%d", Limit)
+	file.SetCellValue("Sheet1", col2, Total)
+
+	// Larger font size for 'Final Total'
+	largerFontStyle, err := file.NewStyle(`{"font":{"size":10}}`)
+	if err != nil {
+		return nil, err
+	}
+	file.SetCellStyle("Sheet1", col1, col2, largerFontStyle)
 
 	if err := file.SaveAs(filename); err != nil {
 		return nil, err
