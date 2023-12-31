@@ -266,13 +266,18 @@ func (ad *adminUseCase) PrintSalesReport(sales []models.OrderDetailsAdmin) (*gof
 
 	pdf.SetFont("Arial", "", 16)
 	pdf.SetTextColor(0, 0, 0)
-
+	var FinalAmount float64
 	for _, item := range sales {
 		pdf.CellFormat(0, 10, "Product: "+item.ProductName, "0", 1, "L", false, 0, "")
 		amount := strconv.FormatFloat(item.TotalAmount, 'f', 2, 64)
 		pdf.CellFormat(0, 10, "Amount Sold: $"+amount, "0", 1, "L", false, 0, "")
 		pdf.Ln(5)
+		FinalAmount += item.TotalAmount
 	}
+	pdf.SetFont("Arial", "", 18)
+	pdf.SetTextColor(0, 0, 0)
+	FinalTotal := strconv.FormatFloat(FinalAmount, 'f', 2, 64)
+	pdf.CellFormat(0, 10, " Total Amount Sold: "+FinalTotal, "0", 1, "L", false, 0, "")
 
 	pdf.SetFont("Arial", "I", 12)
 	pdf.SetTextColor(150, 150, 150)
