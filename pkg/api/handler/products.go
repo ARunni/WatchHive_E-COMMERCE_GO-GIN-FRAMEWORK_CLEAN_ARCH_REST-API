@@ -2,6 +2,7 @@ package handler
 
 import (
 	interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
 	"net/http"
@@ -48,18 +49,18 @@ func (i *ProductHandler) AddProduct(c *gin.Context) {
 
 	file, err := c.FormFile("image")
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "retrieving image from the Form error", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGettingDataErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 	ProductResponse, err := i.ProductUseCase.AddProduct(products, file)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Could not add the product", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgAddErr+"product", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Successfully added Product", ProductResponse, nil)
+	successRes := response.ClientResponse(http.StatusOK, errmsg.MsgAddSuccess, ProductResponse, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
@@ -81,20 +82,20 @@ func (i *ProductHandler) ListProductsUser(c *gin.Context) {
 	pageList := c.DefaultQuery("per_page", "5")
 	pageNoInt, err := strconv.Atoi(pageNo)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Product cannot be displayed", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgListErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 	pageListInt, err := strconv.Atoi(pageList)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Product cannot be displayed", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgListingErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 	}
 
 	products_list, err := i.ProductUseCase.ListProducts(pageNoInt, pageListInt)
 
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Product cannot be displayed", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgListingErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -123,20 +124,20 @@ func (i *ProductHandler) ListProductsAdmin(c *gin.Context) {
 	pageList := c.DefaultQuery("per_page", "5")
 	pageNoInt, err := strconv.Atoi(pageNo)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Product cannot be displayed", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgListingErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 	pageListInt, err := strconv.Atoi(pageList)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Product cannot be displayed", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgListingErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 	}
 
 	products_list, err := i.ProductUseCase.ListProducts(pageNoInt, pageListInt)
 
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Product cannot be displayed", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgListingErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -162,19 +163,19 @@ func (u *ProductHandler) EditProduct(c *gin.Context) {
 	var product models.ProductEdit
 
 	if err := c.BindJSON(&product); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "fields are in the wrong format", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgFormatErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
 	modProduct, err := u.ProductUseCase.EditProduct(product)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "could not edit the product", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgEditErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "sucessfully edited products", modProduct, nil)
+	successRes := response.ClientResponse(http.StatusOK, errmsg.MsgSuccess, modProduct, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -195,11 +196,11 @@ func (u *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	err := u.ProductUseCase.DeleteProduct(productID)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided in wrong format", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgFormatErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	successRes := response.ClientResponse(http.StatusOK, "Sucessfully deleted the product", nil, nil)
+	successRes := response.ClientResponse(http.StatusOK, errmsg.MsgSuccess, nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -219,17 +220,17 @@ func (i *ProductHandler) UpdateProduct(c *gin.Context) {
 	var p models.ProductUpdate
 
 	if err := c.BindJSON(&p); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "fileds are provided in wrong format", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgFormatErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 	a, err := i.ProductUseCase.UpdateProduct(p.Productid, p.Stock)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Could  not update the product stock", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgStockUpdateErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Sucessfully upadated product stock", a, nil)
+	successRes := response.ClientResponse(http.StatusOK, errmsg.MsgSuccess, a, nil)
 	c.JSON(http.StatusOK, successRes)
 }

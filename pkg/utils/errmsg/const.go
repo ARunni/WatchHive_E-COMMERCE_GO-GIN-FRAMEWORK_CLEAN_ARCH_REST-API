@@ -20,7 +20,8 @@ const MsgServErr = "Error in serving the sales report"
 const MsgSuccess = "Success"
 const MsgAddSuccess = "Successfully Added"
 const MsgAddCartErr = "Cannot Add to Cart"
-const MsgListErr = "Cannot list products"
+const MsgListErr = "Cannot list data"
+const MsgListingErr = "Product cannot be displayed"
 const MsgUpdateQuantityErr = "Cannot update quantity"
 const MsgQuantityUpdationFailErr = "Updating quantity Failed"
 const MsgRemoveCartErr = "Removing from cart is Failed"
@@ -37,7 +38,8 @@ const MsgUserIdErr = "user_id not found"
 const MsgRequiredUserIdErr = "user_id is required"
 const MsgInvalidIdErr = "invalid user_id type"
 const MsgIdDatatypeErr = "user_id must be an integer"
-
+const MsgEditErr = "could not edit the data"
+const MsgStockUpdateErr = "Could  not update the product stock"
 
 
 
