@@ -16,4 +16,8 @@ type UserRepository interface {
 	ChangePassword(userID, password string) error
 	FindUserById(id string) (models.UserSignInResponse, error)
 	AddressExist(orderBody models.OrderIncoming) (bool, error)
+	NewReferralEntry(userId int, userReferral string) error 
+	GetUserIdFromReferralCode(ReferralCode string) (int, error) 
+	UpdateReferralAmount(referralAmount float64, referredUserId , currentUserID int) error 
+	AmountInRefferals(userID int) (float64, error) 
 }

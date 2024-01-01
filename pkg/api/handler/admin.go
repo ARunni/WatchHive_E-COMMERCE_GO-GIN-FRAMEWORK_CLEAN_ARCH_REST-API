@@ -4,6 +4,7 @@ import (
 	"WatchHive/pkg/helper"
 	interfaces "WatchHive/pkg/helper/interface"
 	service "WatchHive/pkg/usecase/interface"
+	msg "WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
 	"errors"
@@ -45,21 +46,21 @@ func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 	var adminDetails models.AdminLogin
 
 	if err := c.BindJSON(&adminDetails); err != nil {
-		errResp := response.ClientResponse(http.StatusBadRequest, "details is not in correct format", nil, err.Error())
+		errResp := response.ClientResponse(http.StatusBadRequest, msg.MsgConstraintsErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 
 	err := validator.New().Struct(adminDetails)
 	if err != nil {
-		errResp := response.ClientResponse(http.StatusBadRequest, "constraints not satisfied", nil, err.Error())
+		errResp := response.ClientResponse(http.StatusBadRequest, msg.MsgConstraintsErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 
 	admin, err := ad.adminUseCase.LoginHandler(adminDetails)
 	if err != nil {
-		errREsp := response.ClientResponse(http.StatusBadRequest, "cannot authenticate user", nil, err.Error())
+		errREsp := response.ClientResponse(http.StatusBadRequest, msg.MsgAuthUserErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errREsp)
 		return
 	}
@@ -67,7 +68,7 @@ func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 	c.Set("Access", admin.AccessToken)
 	// c.Set("Refresh", admin.RefreshToken)
 
-	successResp := response.ClientResponse(http.StatusOK, "logined successfully", admin, nil)
+	successResp := response.ClientResponse(http.StatusOK, msg.MsgLoginSucces, admin, nil)
 	c.JSON(http.StatusOK, successResp)
 
 }
@@ -81,7 +82,7 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 		return []byte("refreshsecret"), nil
 	})
 	if err != nil {
-		c.AbortWithError(401, errors.New("refresh token is invalid : user have to login again "))
+		c.AbortWithError(401, errors.New(msg.ErrRefreshToken))
 		return
 	}
 	claims := &helper.AuthCustomClaims{
@@ -115,12 +116,12 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	id := c.Query("id")
 	err := ad.adminUseCase.BlockUser(id)
 	if err != nil {
-		errResp := response.ClientResponse(http.StatusBadRequest, "user could not be blocked", nil, err.Error())
+		errResp := response.ClientResponse(http.StatusBadRequest, msg.MsgUserBlockErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 
-	succesResp := response.ClientResponse(http.StatusOK, "Successfully blocked the user", nil, nil)
+	succesResp := response.ClientResponse(http.StatusOK, msg.MsgUserBlockSucces, nil, nil)
 	c.JSON(http.StatusOK, succesResp)
 
 }
@@ -142,12 +143,12 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 	err := ad.adminUseCase.UnBlockUser(id)
 
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "user could not be unblocked", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, msg.MsgUserUnBlockErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Successfully unblocked the user", nil, nil)
+	successRes := response.ClientResponse(http.StatusOK, msg.MsgUserUnBlockSucces, nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -168,14 +169,14 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 	page, err := strconv.Atoi(pageStr)
 
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, msg.MsgPageNumFormatErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
 	users, err := ad.adminUseCase.GetUsers(page)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, msg.MsgGettingDataErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}

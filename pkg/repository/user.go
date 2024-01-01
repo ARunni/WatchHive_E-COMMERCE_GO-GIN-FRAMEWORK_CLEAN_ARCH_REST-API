@@ -156,3 +156,50 @@ func (or *userDatabase) AddressExist(orderBody models.OrderIncoming) (bool, erro
 	return count > 0, nil
 
 }
+
+func (ur *userDatabase) NewReferralEntry(userId int, userReferral string) error {
+
+	err := ur.DB.Exec("INSERT INTO referrals (user_id,referral_code,referral_amount) VALUES (?,?,?)", userId, userReferral, 0).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (ur *userDatabase) GetUserIdFromReferralCode(ReferralCode string) (int, error) {
+
+	var referredUserId int
+	err := ur.DB.Raw("SELECT user_id FROM referrals WHERE referral_code = ?", ReferralCode).Scan(&referredUserId).Error
+	if err != nil {
+		return 0, nil
+	}
+
+	return referredUserId, nil
+}
+
+func (ur *userDatabase) UpdateReferralAmount(referralAmount float64, referredUserId, currentUserID int) error {
+
+	err := ur.DB.Exec("UPDATE referrals SET referral_amount = ? , referred_user_id = ? WHERE user_id = ? ", referralAmount, referredUserId, currentUserID).Error
+	if err != nil {
+		return err
+	}
+
+	// find the current amount in referred users referral table and add 100 with that
+	err = ur.DB.Exec("UPDATE referrals SET referral_amount = referral_amount + ? WHERE user_id = ? ", referralAmount, referredUserId).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+func (ur *userDatabase) AmountInRefferals(userID int) (float64, error) {
+	var a float64
+	err := ur.DB.Raw("SELECT referral_amount FROM referrals WHERE user_id = ?", userID).Scan(&a).Error
+	if err != nil {
+		return 0.0, err
+	}
+	return a, nil
+}

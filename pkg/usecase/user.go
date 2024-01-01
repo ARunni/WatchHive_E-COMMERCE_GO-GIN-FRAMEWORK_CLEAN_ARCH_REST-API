@@ -3,12 +3,15 @@ package usecase
 import (
 	"WatchHive/pkg/config"
 	helper_interface "WatchHive/pkg/helper/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"strconv"
 
 	interfaces "WatchHive/pkg/repository/interface"
 	services "WatchHive/pkg/usecase/interface"
+
+	"github.com/google/uuid"
 )
 
 type userUseCase struct {
@@ -61,10 +64,70 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	if err != nil {
 		return models.TokenUsers{}, err
 	}
+	id := uuid.New().ID()
+	str := strconv.Itoa(int(id))
+	userReferral := str[:8]
+	err = u.userRepo.NewReferralEntry(userData.Id, userReferral)
+	if err != nil {
+		return models.TokenUsers{}, errors.New("referral creation failed")
+	}
+	if err != nil {
+		return models.TokenUsers{}, errors.New(errmsg.ErrWriteDB)
+	}
+
 	err = u.walletRepo.CreateWallet(userData.Id)
 	if err != nil {
 		return models.TokenUsers{}, err
 	}
+
+	//
+	if user.ReferralCode != "" {
+		// first check whether if a user with that referralCode exist
+		referredId, err := u.userRepo.GetUserIdFromReferralCode(user.ReferralCode)
+		if err != nil {
+			return models.TokenUsers{}, errors.New(errmsg.ErrGetDB)
+		}
+		if referredId != 0 {
+			referralAmount := 150
+			err := u.userRepo.UpdateReferralAmount(float64(referralAmount), referredId, userData.Id)
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
+			// referreason := "Amount credited for used referral code"
+			// err = u.userRepo.UpdateHistory(userData.Id, 0, float64(referralAmount), referreason)
+			// if err != nil {
+			// 	return models.TokenUsers{}, err
+			// }
+			amount, err := u.userRepo.AmountInRefferals(userData.Id)
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
+			wallectExist, err := u.walletRepo.IsWalletExist(referredId)
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
+			if !wallectExist {
+				err = u.walletRepo.CreateWallet(referredId)
+				if err != nil {
+					return models.TokenUsers{}, err
+				}
+			}
+			err = u.walletRepo.AddToWallet(referredId, amount)
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
+			err = u.walletRepo.AddToWallet(userData.Id, float64(referralAmount))
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
+			// reason := "Amount credited for refer a new person"
+			// err = u.userRepo.UpdateHistory(referredId, 0, amount, reason)
+			// if err != nil {
+			// 	return models.TokenUsers{}, err
+			// }
+		}
+	}
+	//
 	tokenString, err := u.helper.GenerateTokenClients(userData)
 	if err != nil {
 		return models.TokenUsers{}, errors.New("could not create token")

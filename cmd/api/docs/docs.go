@@ -2461,6 +2461,9 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
+                },
+                "referral_code": {
+                    "type": "string"
                 }
             }
         },

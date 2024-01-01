@@ -145,6 +145,8 @@ definitions:
         type: string
       phone:
         type: string
+      referral_code:
+        type: string
     type: object
   models.UserLogin:
     properties:
