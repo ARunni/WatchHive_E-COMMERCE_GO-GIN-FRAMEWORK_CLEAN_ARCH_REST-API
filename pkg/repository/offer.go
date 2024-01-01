@@ -113,19 +113,19 @@ func (of *OfferRepository) ExpireCategoryOffer(id int) error {
 
 	return nil
 }
- func (or *OfferRepository) GetCatOfferPercent(categoryId int) (int,error) {
+func (or *OfferRepository) GetCatOfferPercent(categoryId int) (int, error) {
 	var percent int
-	err := or.DB.Raw("select discount_percentage from category_offers where category_id = ? ",categoryId).Scan(&percent).Error
+	err := or.DB.Raw("select discount_percentage from category_offers where category_id = ? ", categoryId).Scan(&percent).Error
 	if err != nil {
-		return 0,errors.New(errmsg.ErrGetDB)
+		return 0, errors.New(errmsg.ErrGetDB)
 	}
-	return percent,nil
- }
- func (or *OfferRepository) GetProOfferPercent(productId int) (int,error) {
+	return percent, nil
+}
+func (or *OfferRepository) GetProOfferPercent(productId int) (int, error) {
 	var percent int
-	err := or.DB.Raw("select discount_percentage from category_offers where product_id = ? ",productId).Scan(&percent).Error
+	err := or.DB.Raw("select discount_percentage from product_offers where product_id = ? ", productId).Scan(&percent).Error
 	if err != nil {
-		return 0,errors.New(errmsg.ErrGetDB)
+		return 0, errors.New(errmsg.ErrGetDB)
 	}
-	return percent,nil
- }
+	return percent, nil
+}
