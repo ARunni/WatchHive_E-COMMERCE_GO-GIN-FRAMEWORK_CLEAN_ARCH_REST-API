@@ -102,7 +102,7 @@ func (Cat *CategoryHandler) UpdateCategory(c *gin.Context) {
 	}
 	a, err := Cat.CategoryUseCase.UpdateCategory(p.CurrentId, p.New)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgUpdate+"category", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgUpdateErr+"category", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
