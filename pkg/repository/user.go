@@ -107,7 +107,7 @@ func (db *userDatabase) AddAddress(userID int, address models.AddressInfo) error
 
 func (db *userDatabase) ShowUserDetails(userID int) (models.UsersProfileDetails, error) {
 	var userDetails models.UsersProfileDetails
-	query := "SELECT id,name,email,phone from users where id = ?"
+	query := "SELECT u.id,u.name,u.email,u.phone,r.referral_code  from users  u inner join referrals  r on u.id = r.user_id where u.id = ?"
 
 	result := db.DB.Raw(query, userID).Scan(&userDetails)
 	if result.Error != nil {

@@ -42,6 +42,8 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			checkout.GET("", orderHandler.GetOrderDetails)
 			checkout.DELETE("", orderHandler.CancelOrder)
 			checkout.PATCH("", orderHandler.ReturnOrder)
+			checkout.GET("/print", orderHandler.PrintInvoice)
+
 		}
 		wallet := engine.Group("/wallet", walletHandler.GetWallet)
 

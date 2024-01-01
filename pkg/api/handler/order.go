@@ -5,6 +5,7 @@ import (
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -322,4 +323,61 @@ func (oh *OrderHandler) ReturnOrder(c *gin.Context) {
 	success := response.ClientResponse(http.StatusOK, "Order Returned Successfully", nil, nil)
 	c.JSON(http.StatusOK, success)
 
+}
+
+// @Summary Print Invoice
+// @Description Generate and download the invoice for a specific order.
+// @Accept json
+// @Produce application/pdf
+// @Tags User Order Management
+// @security BearerTokenAuth
+// @Param order_id query string true "Order ID for which the invoice should be generated"
+// @Success 200 {file} pdf "Invoice PDF"
+// @Failure 400 {object} response.Response "Error in processing the request"
+// @Failure 500 {object} response.Response "Error generating or downloading the invoice"
+// @Router /user/orders/print [get]
+func (O *OrderHandler) PrintInvoice(c *gin.Context) {
+	orderId := c.Query("order_id")
+	orderIdInt, err := strconv.Atoi(orderId)
+	if err != nil {
+		err = errors.New("error in coverting order id" + err.Error())
+		errRes := response.ClientResponse(http.StatusBadGateway, "error in reading the order id", nil, err)
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+	pdf, err := O.orderUsecase.PrintInvoice(orderIdInt)
+	fmt.Println("error ", err)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadGateway, "error in printing the invoice", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	c.Header("Content-Disposition", "attachment;filename=invoice.pdf")
+
+	pdfFilePath := "salesReport/invoice.pdf"
+
+	err = pdf.OutputFileAndClose(pdfFilePath)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadGateway, "error in printing invoice", nil, err)
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	c.Header("Content-Disposition", "attachment; filename=sales_report.pdf")
+	c.Header("Content-Type", "application/pdf")
+
+	c.File(pdfFilePath)
+
+	c.Header("Content-Type", "application/pdf")
+
+	err = pdf.Output(c.Writer)
+	if err != nil {
+		errRes := response.ClientResponse(http.StatusBadGateway, "error in printing invoice", nil, err)
+		c.JSON(http.StatusBadRequest, errRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "the request was succesful", pdf, nil)
+	c.JSON(http.StatusOK, successRes)
 }

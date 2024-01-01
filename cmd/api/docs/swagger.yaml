@@ -1363,6 +1363,37 @@ paths:
       summary: Process checkout
       tags:
       - User Order Management
+  /user/orders/print:
+    get:
+      consumes:
+      - application/json
+      description: Generate and download the invoice for a specific order.
+      parameters:
+      - description: Order ID for which the invoice should be generated
+        in: query
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/pdf
+      responses:
+        "200":
+          description: Invoice PDF
+          schema:
+            type: file
+        "400":
+          description: Error in processing the request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Error generating or downloading the invoice
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Print Invoice
+      tags:
+      - User Order Management
   /user/otplogin:
     post:
       consumes:

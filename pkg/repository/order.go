@@ -345,21 +345,21 @@ func (or *orderRepository) ApproveOrder(orderID int) error {
 }
 
 func (or *orderRepository) ApproveCodPaid(orderID int) error {
-	err := or.DB.Exec("UPDATE orders SET shipment_status = 'delivered' , approval = 'true', payment_status = 'paid' WHERE id = ?", orderID).Error
+	err := or.DB.Exec("UPDATE orders SET shipment_status = 'delivered' , approval = 'true', payment_status = 'PAID' WHERE id = ?", orderID).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (or *orderRepository) ApproveRazorPaid(orderID int) error {
-	err := or.DB.Exec("UPDATE orders SET shipment_status = 'shipped' , approval = 'true', payment_status = 'paid' WHERE id = ?", orderID).Error
+	err := or.DB.Exec("UPDATE orders SET shipment_status = 'shipped' , approval = 'true', payment_status = 'PAID' WHERE id = ?", orderID).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (or *orderRepository) ApproveRazorDelivered(orderID int) error {
-	err := or.DB.Exec("UPDATE orders SET shipment_status = 'delivered' , approval = 'true', payment_status = 'paid' WHERE id = ?", orderID).Error
+	err := or.DB.Exec("UPDATE orders SET shipment_status = 'delivered' , approval = 'true', payment_status = 'PAID' WHERE id = ?", orderID).Error
 	if err != nil {
 		return err
 	}
@@ -432,4 +432,29 @@ func (or *orderRepository) GetFinalPriceOrder(orderID int) (float64, error) {
 		return 0.0, errors.New("getting final price is failed at db")
 	}
 	return final_price, nil
+}
+func (o *orderRepository) GetItemsByOrderId(orderId int) ([]models.ItemDetails, error) {
+	var items []models.ItemDetails
+
+	query := `
+	SELECT
+    i.product_name,
+    oi.quantity,
+    i.price,
+    oi.total_price
+FROM
+    orders o
+JOIN
+    order_items oi ON o.id = oi.order_id
+JOIN
+    products i ON oi.product_id = i.id
+WHERE
+    o.id = ?;
+	`
+
+	if err := o.DB.Raw(query, orderId).Scan(&items).Error; err != nil {
+		return []models.ItemDetails{}, err
+	}
+
+	return items, nil
 }

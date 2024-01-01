@@ -31,13 +31,14 @@ type OrderRepository interface {
 	UpdateStockOfProduct(orderProducts []models.OrderProducts) error
 	ApproveCodPaid(orderID int) error
 	ReturnOrderCod(orderId int) error
-	ReturnOrderRazorPay(orderId int) error 
+	ReturnOrderRazorPay(orderId int) error
 	ApproveCodReturn(orderID int) error
 	GetOrder(orderId int) (domain.Order, error)
-	GetDetailedOrderThroughId(orderId int) (models.CombinedOrderDetails, error) 
-	ApproveRazorPaid(orderID int) error 
-	GetPaymentType(orderID int) (int, error) 
-	ApproveRazorDelivered(orderID int) error 
-	GetPaymentStatus(orderID int) (string,error)
-	GetFinalPriceOrder(orderID int) (float64,error)
+	GetDetailedOrderThroughId(orderId int) (models.CombinedOrderDetails, error)
+	ApproveRazorPaid(orderID int) error
+	GetPaymentType(orderID int) (int, error)
+	ApproveRazorDelivered(orderID int) error
+	GetPaymentStatus(orderID int) (string, error)
+	GetFinalPriceOrder(orderID int) (float64, error)
+	GetItemsByOrderId(orderId int) ([]models.ItemDetails, error)
 }

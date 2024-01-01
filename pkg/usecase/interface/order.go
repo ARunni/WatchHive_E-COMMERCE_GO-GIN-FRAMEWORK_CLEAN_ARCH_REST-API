@@ -1,6 +1,10 @@
 package interfaces
 
-import "WatchHive/pkg/utils/models"
+import (
+	"WatchHive/pkg/utils/models"
+
+	"github.com/jung-kurt/gofpdf"
+)
 
 type OrderUseCase interface {
 	Checkout(userID int) (models.CheckoutDetails, error)
@@ -12,4 +16,5 @@ type OrderUseCase interface {
 	ApproveOrder(orderId int) error
 	CancelOrderFromAdmin(orderId int) error
 	ReturnOrder(orderId, userId int) error
+	PrintInvoice(orderIdInt int) (*gofpdf.Fpdf, error)
 }
