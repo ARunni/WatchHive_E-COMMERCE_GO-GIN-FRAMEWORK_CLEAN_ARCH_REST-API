@@ -4,6 +4,7 @@ import (
 	"WatchHive/pkg/helper"
 	interfaces "WatchHive/pkg/helper/interface"
 	service "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	msg "WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
@@ -96,7 +97,7 @@ func (ad *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
 	newAccessToken, err := token.SignedString([]byte("accesssecret"))
 	if err != nil {
-		c.AbortWithError(500, errors.New("error in creating new accesstoken"))
+		c.AbortWithError(500, errors.New(errmsg.ErrAccessToken))
 	}
 	c.JSON(200, newAccessToken)
 }
@@ -181,7 +182,7 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the users", users, nil)
+	successRes := response.ClientResponse(http.StatusOK, errmsg.MsgGetSucces, users, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
@@ -199,12 +200,12 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 func (ah *AdminHandler) AdminDashBoard(c *gin.Context) {
 	dashboard, err := ah.adminUseCase.AdminDashboard()
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGettingDataErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Successfully retrieved the dashboard", dashboard, nil)
+	successRes := response.ClientResponse(http.StatusOK, errmsg.MsgGetSucces, dashboard, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -224,11 +225,11 @@ func (ah *AdminHandler) FilteredSalesReport(c *gin.Context) {
 	timePeriod := c.Query("period")
 	salesReport, err := ah.adminUseCase.FilteredSalesReport(timePeriod)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError, "sales report could not be retrieved", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, errmsg.MsgGettingDataErr, nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
-	message := " current " + timePeriod + " sales report retrieved successfully"
+	message := " current " + timePeriod + errmsg.MsgGetSucces
 
 	success := response.ClientResponse(http.StatusOK, message, salesReport, nil)
 	c.JSON(http.StatusOK, success)
@@ -253,18 +254,18 @@ func (ah *AdminHandler) SalesReportByDate(c *gin.Context) {
 	startDateStr := c.Query("start")
 	endDateStr := c.Query("end")
 	if startDateStr == "" || endDateStr == "" {
-		err := response.ClientResponse(http.StatusBadRequest, "start or end date is empty", nil, "Empty date string")
+		err := response.ClientResponse(http.StatusBadRequest, errmsg.MsgEmptyDateErr, nil, "Empty date string")
 		c.JSON(http.StatusBadRequest, err)
 		return
 	}
 	report, err := ah.adminUseCase.ExecuteSalesReportByDate(startDateStr, endDateStr)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusInternalServerError, "sales report could not be retrieved", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusInternalServerError, errmsg.MsgGettingDataErr, nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
 
-	success := response.ClientResponse(http.StatusOK, "sales report retrieved successfully", report, nil)
+	success := response.ClientResponse(http.StatusOK, errmsg.MsgGetSucces, report, nil)
 	c.JSON(http.StatusOK, success)
 }
 
@@ -287,7 +288,7 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 	yearInt, err := strconv.Atoi(year)
 
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "error in getting year", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGetErr +"year", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -296,7 +297,7 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 	monthInt, err := strconv.Atoi(month)
 
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "error in getting month", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGetErr +"month", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -305,7 +306,7 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 	dayInt, err := strconv.Atoi(day)
 
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "error in getting day", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGetErr +"day", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -313,7 +314,7 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 	body, err := a.adminUseCase.SalesByDate(dayInt, monthInt, yearInt)
 
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "error in getting sales details", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGettingDataErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -322,7 +323,7 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 	if download == "pdf" {
 		pdf, err := a.adminUseCase.PrintSalesReport(body)
 		if err != nil {
-			errRes := response.ClientResponse(http.StatusBadGateway, "error in printing sales report", nil, err)
+			errRes := response.ClientResponse(http.StatusBadGateway, errmsg.MsgGettingDataErr, nil, err)
 			c.JSON(http.StatusBadRequest, errRes)
 			return
 		}
@@ -332,7 +333,7 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 
 		err = pdf.OutputFileAndClose(pdfFilePath)
 		if err != nil {
-			errRes := response.ClientResponse(http.StatusBadGateway, "error in printing sales report", nil, err)
+			errRes := response.ClientResponse(http.StatusBadGateway, errmsg.MsgPrintErr, nil, err)
 			c.JSON(http.StatusBadRequest, errRes)
 			return
 		}
@@ -346,7 +347,7 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 
 		err = pdf.Output(c.Writer)
 		if err != nil {
-			errRes := response.ClientResponse(http.StatusBadGateway, "error in printing sales report", nil, err)
+			errRes := response.ClientResponse(http.StatusBadGateway, errmsg.MsgPrintErr, nil, err)
 			c.JSON(http.StatusBadRequest, errRes)
 			return
 		}
@@ -354,7 +355,7 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 
 		excel, err := a.helper.ConvertToExel(body)
 		if err != nil {
-			errRes := response.ClientResponse(http.StatusBadGateway, "error in printing sales report", nil, err)
+			errRes := response.ClientResponse(http.StatusBadGateway, errmsg.MsgPrintErr, nil, err)
 			c.JSON(http.StatusBadRequest, errRes)
 			return
 		}
@@ -365,12 +366,12 @@ func (a *AdminHandler) PrintSalesByDate(c *gin.Context) {
 		c.Header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 		if err := excel.Write(c.Writer); err != nil {
-			errRes := response.ClientResponse(http.StatusBadGateway, "Error in serving the sales report", nil, err)
+			errRes := response.ClientResponse(http.StatusBadGateway, errmsg.MsgServErr, nil, err)
 			c.JSON(http.StatusBadRequest, errRes)
 			return
 		}
 	}
 
-	succesRes := response.ClientResponse(http.StatusOK, "success", body, nil)
+	succesRes := response.ClientResponse(http.StatusOK, errmsg.MsgSuccess, body, nil)
 	c.JSON(http.StatusOK, succesRes)
 }
