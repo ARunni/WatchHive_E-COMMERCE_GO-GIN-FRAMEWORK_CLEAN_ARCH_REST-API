@@ -2,6 +2,7 @@ package handler
 
 import (
 	interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
 	"errors"
@@ -37,14 +38,14 @@ func (ch *CartHandler) AddToCart(c *gin.Context) {
 	var cart models.AddCart
 	userID, errb := c.Get("id")
 	if !errb {
-		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided are in wrong format", nil, errors.New("getting user id is failed"))
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgFormatErr, nil, errors.New("getting user id is failed"))
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
 	if err := c.BindJSON(&cart); err != nil {
 
-		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided are in wrong format", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgFormatErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -52,11 +53,11 @@ func (ch *CartHandler) AddToCart(c *gin.Context) {
 
 	cartResp, err := ch.CartUsecase.AddToCart(cart)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Cannot Add to Cart", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgAddCartErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	succesRsp := response.ClientResponse(http.StatusOK, "Successfully Added To Cart", cartResp, nil)
+	succesRsp := response.ClientResponse(http.StatusOK, errmsg.MsgSuccess, cartResp, nil)
 	c.JSON(http.StatusOK, succesRsp)
 }
 
@@ -75,18 +76,18 @@ func (ch *CartHandler) AddToCart(c *gin.Context) {
 func (ch *CartHandler) ListCartItems(c *gin.Context) {
 	userID, errs := c.Get("id")
 	if !errs {
-		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot list products", nil, errors.New("error in getting user id"))
+		errResp := response.ClientResponse(http.StatusBadRequest, errmsg.MsgListErr, nil, errors.New("error in getting user id"))
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 	cartResp, err := ch.CartUsecase.ListCartItems(userID.(int))
 	if err != nil {
-		errResp := response.ClientResponse(http.StatusBadRequest, "could not get list", nil, err.Error())
+		errResp := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGettingDataErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 
-	succesResp := response.ClientResponse(http.StatusOK, "successfully got the cart list", cartResp, nil)
+	succesResp := response.ClientResponse(http.StatusOK, errmsg.MsgGetSucces, cartResp, nil)
 	c.JSON(http.StatusOK, succesResp)
 }
 
@@ -107,14 +108,14 @@ func (ch *CartHandler) UpdateProductQuantityCart(c *gin.Context) {
 	var cart models.AddCart
 	userID, errs := c.Get("id")
 	if !errs {
-		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot update quantity", nil, errors.New("error in getting user id"))
+		errResp := response.ClientResponse(http.StatusBadRequest, errmsg.MsgUpdateQuantityErr, nil, errors.New("error in getting user id"))
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 
 	if err := c.BindJSON(&cart); err != nil {
 
-		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided are in wrong format", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgFormatErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
@@ -122,12 +123,12 @@ func (ch *CartHandler) UpdateProductQuantityCart(c *gin.Context) {
 
 	cartResp, err := ch.CartUsecase.UpdateProductQuantityCart(cart)
 	if err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "Updation Failed", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgQuantityUpdationFailErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 
-	succesResp := response.ClientResponse(http.StatusOK, "Successfully Updated", cartResp, nil)
+	succesResp := response.ClientResponse(http.StatusOK, errmsg.MsgSuccess, cartResp, nil)
 	c.JSON(http.StatusOK, succesResp)
 
 }
@@ -150,25 +151,25 @@ func (ch *CartHandler) RemoveFromCart(c *gin.Context) {
 
 	userID, errs := c.Get("id")
 	if !errs {
-		errResp := response.ClientResponse(http.StatusBadRequest, "Cannot update quantity", nil, errors.New("error in getting user id"))
+		errResp := response.ClientResponse(http.StatusBadRequest, errmsg.MsgUpdateQuantityErr, nil, errors.New("error in getting user id"))
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
 
 	if err := c.BindJSON(&cart); err != nil {
 
-		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided are in wrong format", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgFormatErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
 	cart.UserID = userID.(int)
 	cartResp, err := ch.CartUsecase.RemoveFromCart(cart)
 	if err != nil {
-		errResp := response.ClientResponse(http.StatusBadRequest, "Removing from cart is Failed", nil, err.Error())
+		errResp := response.ClientResponse(http.StatusBadRequest, errmsg.MsgRemoveCartErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errResp)
 		return
 	}
-	successResp := response.ClientResponse(http.StatusOK, "Successfully Removed", cartResp, nil)
+	successResp := response.ClientResponse(http.StatusOK, errmsg.MsgSuccess, cartResp, nil)
 	c.JSON(http.StatusOK, successResp)
 
 }

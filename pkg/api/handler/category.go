@@ -2,6 +2,7 @@ package handler
 
 import (
 	interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"WatchHive/pkg/utils/response"
 	"net/http"
@@ -36,7 +37,7 @@ func (cat *CategoryHandler) AddCategory(c *gin.Context) {
 
 	var category models.CategoryAdd
 	if err := c.BindJSON(&category); err != nil {
-		errRes := response.ClientResponse(http.StatusBadRequest, "fields are provided are in wrong format", nil, err.Error())
+		errRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgFormatErr, nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}

@@ -18,6 +18,12 @@ const MsgGetErr = "error in getting"
 const MsgPrintErr = "error in printing sales report"
 const MsgServErr = "Error in serving the sales report"
 const MsgSuccess = "Success"
+const MsgAddCartErr = "Cannot Add to Cart"
+const MsgListErr = "Cannot list products"
+const MsgUpdateQuantityErr = "Cannot update quantity"
+const MsgQuantityUpdationFailErr = "Updating quantity Failed"
+const MsgRemoveCartErr = "Removing from cart is Failed"
+const MsgAddErr = "Could not add"
 
 
 
