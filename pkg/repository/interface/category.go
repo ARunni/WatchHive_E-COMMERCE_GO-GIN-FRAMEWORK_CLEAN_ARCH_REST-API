@@ -12,4 +12,5 @@ type CategoryRepository interface {
 	CheckCategory(currentId int) (bool,error)
 	DeleteCategory(categoryID string) error
 	CheckCategoryByName(name string) bool
+	GetCategoryId(productId int) (int,error) 
 }

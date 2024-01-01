@@ -10,12 +10,16 @@ import (
 type cartUseCase struct {
 	cartRepository    interfaces_repo.CartRepository
 	productRepository interfaces_repo.ProductRepository
+	offerRepo         interfaces_repo.OfferRepository
+	catRepo           interfaces_repo.CategoryRepository
 }
 
-func NewCartUseCase(repoc interfaces_repo.CartRepository, repop interfaces_repo.ProductRepository) interfaces.CartUseCase {
+func NewCartUseCase(repoc interfaces_repo.CartRepository, catRepo interfaces_repo.CategoryRepository, repop interfaces_repo.ProductRepository, offerRepo interfaces_repo.OfferRepository) interfaces.CartUseCase {
 	return &cartUseCase{
 		cartRepository:    repoc,
 		productRepository: repop,
+		offerRepo:         offerRepo,
+		catRepo:           catRepo,
 	}
 }
 
@@ -46,6 +50,23 @@ func (cu *cartUseCase) AddToCart(cart models.AddCart) (models.CartResponse, erro
 	if err != nil {
 		return models.CartResponse{}, err
 	}
+	catId, err := cu.catRepo.GetCategoryId(cart.ProductID)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+	catPercent, err := cu.offerRepo.GetCatOfferPercent(catId)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+
+	proPercent, err := cu.offerRepo.GetProOfferPercent(catId)
+	if err != nil {
+		return models.CartResponse{}, err
+	}
+	
+	price -= price * float64(catPercent) / 100
+	price -= price * float64(proPercent) / 100
+
 	QuantityOfProductInCart, err := cu.cartRepository.QuantityOfProductInCart(cart.UserID, int(cart.ProductID))
 	if err != nil {
 

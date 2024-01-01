@@ -3,6 +3,7 @@ package repository
 import (
 	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"strconv"
@@ -102,4 +103,13 @@ func (cr *categoryRepository) CheckCategoryByName(name string) bool {
 	}
 
 	return true
+}
+
+func (cr *categoryRepository) GetCategoryId(productId int) (int,error) {
+	var catId int
+	err := cr.DB.Raw("select category_id from products where id = ?",productId).Scan(&catId).Error
+	if err != nil {
+		return 0,errors.New(errmsg.ErrGetDB)
+	}
+	return catId,nil
 }

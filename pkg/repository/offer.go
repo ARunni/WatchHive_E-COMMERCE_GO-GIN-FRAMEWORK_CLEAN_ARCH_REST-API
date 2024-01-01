@@ -3,6 +3,7 @@ package repository
 import (
 	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"time"
@@ -112,3 +113,19 @@ func (of *OfferRepository) ExpireCategoryOffer(id int) error {
 
 	return nil
 }
+ func (or *OfferRepository) GetCatOfferPercent(categoryId int) (int,error) {
+	var percent int
+	err := or.DB.Raw("select discount_percentage from category_offers where category_id = ? ",categoryId).Scan(&percent).Error
+	if err != nil {
+		return 0,errors.New(errmsg.ErrGetDB)
+	}
+	return percent,nil
+ }
+ func (or *OfferRepository) GetProOfferPercent(productId int) (int,error) {
+	var percent int
+	err := or.DB.Raw("select discount_percentage from category_offers where product_id = ? ",productId).Scan(&percent).Error
+	if err != nil {
+		return 0,errors.New(errmsg.ErrGetDB)
+	}
+	return percent,nil
+ }

@@ -12,4 +12,6 @@ type OfferRepository interface {
 	GetCategoryOffer() ([]domain.CategoryOffer, error)
 	ExpireCategoryOffer(id int) error
 	ExpireProductOffer(id int) error
+	GetCatOfferPercent(categoryId int) (int,error)
+	GetProOfferPercent(productId int) (int,error)
 }
