@@ -24,6 +24,7 @@ const MsgUpdateQuantityErr = "Cannot update quantity"
 const MsgQuantityUpdationFailErr = "Updating quantity Failed"
 const MsgRemoveCartErr = "Removing from cart is Failed"
 const MsgAddErr = "Could not add"
+const MsgUpdate = "Could not update"
 
 
 
