@@ -2,6 +2,7 @@ package handler
 
 import (
 	interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/response"
 	"net/http"
 
@@ -31,25 +32,25 @@ func (wh *WalletHandler) GetWallet(c *gin.Context) {
 	userId, exists := c.Get("id")
 
 	if !exists {
-		errs := response.ClientResponse(http.StatusBadRequest, "user_id not found", nil, "user_id is required")
+		errs := response.ClientResponse(http.StatusBadRequest, errmsg.MsgUserIdErr, nil, errmsg.MsgRequiredUserIdErr)
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 
 	userID, ok := userId.(int)
 	if !ok {
-		errs := response.ClientResponse(http.StatusBadRequest, "invalid user_id type", nil, "user_id must be an integer")
+		errs := response.ClientResponse(http.StatusBadRequest, errmsg.MsgInvalidIdErr, nil, errmsg.MsgIdDatatypeErr)
 		c.JSON(http.StatusBadRequest, errs)
 		return
 	}
 
 	WalletDetails, err := wh.walletUsecase.GetWallet(userID)
 	if err != nil {
-		errs := response.ClientResponse(http.StatusInternalServerError, "failed to retrieve details", nil, err.Error())
+		errs := response.ClientResponse(http.StatusInternalServerError, errmsg.MsgGettingDataErr, nil, err.Error())
 		c.JSON(http.StatusInternalServerError, errs)
 		return
 	}
 
-	success := response.ClientResponse(http.StatusOK, "Wallet Details", WalletDetails, nil)
+	success := response.ClientResponse(http.StatusOK, errmsg.MsgGetSucces, WalletDetails, nil)
 	c.JSON(http.StatusOK, success)
 }

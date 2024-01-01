@@ -33,6 +33,12 @@ const MsgOTPSentSuccess = "OTP sent successfully"
 const MsgOTPVerifySuccess = "Successfully verified OTP"
 const MsgPaymentErr = "Cannot make payment"
 const MsgErr = "error"
+const MsgUserIdErr = "user_id not found"
+const MsgRequiredUserIdErr = "user_id is required"
+const MsgInvalidIdErr = "invalid user_id type"
+const MsgIdDatatypeErr = "user_id must be an integer"
+
+
 
 
 const ErrRefreshToken = "refresh token is invalid  login again "
