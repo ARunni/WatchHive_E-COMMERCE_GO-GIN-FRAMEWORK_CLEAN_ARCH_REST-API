@@ -26,6 +26,10 @@ const MsgRemoveCartErr = "Removing from cart is Failed"
 const MsgAddErr = "Could not add"
 const MsgUpdate = "Could not update"
 const MsgCouponExpiryErr = "Coupon cannot be made invalid"
+const MsgOTPSentErr = "OTP not sent"
+const MsgOTPVerifyErr = "Could not verify OTP"
+const MsgOTPSentSuccess = "OTP sent successfully"
+const MsgOTPVerifySuccess = "Successfully verified OTP"
 
 
 
