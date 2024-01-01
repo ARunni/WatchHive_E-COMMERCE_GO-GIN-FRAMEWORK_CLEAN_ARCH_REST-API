@@ -18,6 +18,7 @@ const MsgGetErr = "error in getting"
 const MsgPrintErr = "error in printing sales report"
 const MsgServErr = "Error in serving the sales report"
 const MsgSuccess = "Success"
+const MsgAddSuccess = "Successfully Added"
 const MsgAddCartErr = "Cannot Add to Cart"
 const MsgListErr = "Cannot list products"
 const MsgUpdateQuantityErr = "Cannot update quantity"
@@ -30,7 +31,8 @@ const MsgOTPSentErr = "OTP not sent"
 const MsgOTPVerifyErr = "Could not verify OTP"
 const MsgOTPSentSuccess = "OTP sent successfully"
 const MsgOTPVerifySuccess = "Successfully verified OTP"
-
+const MsgPaymentErr = "Cannot make payment"
+const MsgErr = "error"
 
 
 const ErrRefreshToken = "refresh token is invalid  login again "
