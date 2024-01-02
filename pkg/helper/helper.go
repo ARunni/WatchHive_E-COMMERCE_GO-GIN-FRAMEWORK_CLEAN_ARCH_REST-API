@@ -3,6 +3,7 @@ package helper
 import (
 	cfg "WatchHive/pkg/config"
 	interfaces "WatchHive/pkg/helper/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"reflect"
 	"strconv"
@@ -103,7 +104,7 @@ func (h *helper) GenerateTokenClients(user models.UserDetailsResponse) (string, 
 func (h *helper) PasswordHashing(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
-		return "", errors.New("internal server error")
+		return "", errors.New(errmsg.ErrServer)
 	}
 	hash := string(hashedPassword)
 	return hash, nil
@@ -161,11 +162,11 @@ func (h *helper) TwilioVerifyOTP(serviceID string, code string, phone string) er
 		return err
 	}
 
-	if *resp.Status == "approved" {
+	if *resp.Status == errmsg.StatusApprove {
 		return nil
 	}
 
-	return errors.New("failed to validate otp")
+	return errors.New(errmsg.ErrOtpValidate)
 
 }
 
@@ -188,14 +189,14 @@ func (h *helper) ValidateDatatype(data, intOrString string) (bool, error) {
 	switch intOrString {
 	case "int":
 		if _, err := strconv.Atoi(data); err != nil {
-			return false, errors.New("data is not an integer")
+			return false, errors.New(errmsg.ErrDataIsNot + "integer")
 		}
 		return true, nil
 	case "string":
 		kind := reflect.TypeOf(data).Kind()
 		return kind == reflect.String, nil
 	default:
-		return false, errors.New("data is not" + intOrString)
+		return false, errors.New(errmsg.ErrDataIsNot + intOrString)
 	}
 
 }
@@ -276,7 +277,7 @@ func (h *helper) ValidateDate(dateString string) bool {
 func (h *helper) ValidateAlphabets(data string) (bool, error) {
 	for _, char := range data {
 		if !unicode.IsLetter(char) {
-			return false, errors.New("data contains non-alphabetic characters")
+			return false, errors.New(errmsg.ErrAlphabet)
 		}
 	}
 	return true, nil

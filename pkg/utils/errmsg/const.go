@@ -1,7 +1,19 @@
 package errmsg
-
+// Error strings
 const DbErr = "Data base error"
 
+const ErrRefreshToken = "refresh token is invalid  login again "
+const ErrGetDB = "error in retriving data from database"
+const ErrWriteDB = "error in writing data to database"
+const ErrAccessToken = "error in creating new accesstoken"
+const ErrServer = "internal server error"
+const ErrOtpValidate ="failed to validate otp"
+const ErrDataIsNot = "data is not"
+const ErrAlphabet = "data contains non-alphabetic characters"
+
+const StatusApprove = "approved"
+
+// Message strings
 const MsgConstraintsErr = "Constraints not satisfied"
 const MsgAuthUserErr = "Cannot authenticate user"
 const MsgFormatErr = "Details is not in correct format"
@@ -56,8 +68,3 @@ const MsgTokenErr = "Invalid Authorization Token error"
 const MsgTokenMissingErr = "Missing authorization token"
 const MsgUnAuthErr = "Unauthorized access"
 const MsgIdGetErr = "Error retrieving ID"
-
-const ErrRefreshToken = "refresh token is invalid  login again "
-const ErrGetDB = "error in retriving data from database"
-const ErrWriteDB = "error in writing data to database"
-const ErrAccessToken = "error in creating new accesstoken"
