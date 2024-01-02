@@ -2,6 +2,7 @@ package repository
 
 import (
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"fmt"
@@ -50,7 +51,7 @@ func (c *userDatabase) FindUserByEmail(user models.UserLogin) (models.UserSignIn
 	 blocked = false`, user.Email).Scan(&user_details).Error
 
 	if err != nil {
-		return models.UserSignInResponse{}, errors.New("error checking user details ")
+		return models.UserSignInResponse{}, errors.New(errmsg.ErrGetDB)
 	}
 	return user_details, nil
 
@@ -60,7 +61,7 @@ func (c *userDatabase) FindUserById(id string) (models.UserSignInResponse, error
 	var user_details models.UserSignInResponse
 	err := c.DB.Raw("select * from users where id = ?", id).Scan(&user_details).Error
 	if err != nil {
-		return models.UserSignInResponse{}, errors.New("error in checking user details")
+		return models.UserSignInResponse{}, errors.New(errmsg.ErrGetDB)
 	}
 	return user_details, nil
 
@@ -99,7 +100,7 @@ func (db *userDatabase) AddAddress(userID int, address models.AddressInfo) error
 	querry := "INSERT INTO addresses(user_id,name,house_name,street,city,state,phone,pin) VALUES (?,?,?,?,?,?,?,?)"
 	err := db.DB.Exec(querry, userID, address.Name, address.HouseName, address.Street, address.City, address.State, address.Phone, address.Pin).Error
 	if err != nil {
-		return errors.New("could not add address, db error")
+		return errors.New(errmsg.ErrWriteDB)
 	}
 	return nil
 
