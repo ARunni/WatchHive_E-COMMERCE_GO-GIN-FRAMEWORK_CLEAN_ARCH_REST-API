@@ -1,25 +1,25 @@
 package errmsg
-// Error strings
 
+// Error strings
 
 const ErrRefreshToken = "refresh token is invalid  login again "
 const ErrGetDB = "error in retriving data from database"
 const ErrWriteDB = "error in writing data to database"
+const ErrUpdateDB = "error in updating data to database"
 const ErrAccessToken = "error in creating new accesstoken"
 const ErrServer = "internal server error"
-const ErrOtpValidate ="failed to validate otp"
+const ErrOtpValidate = "failed to validate otp"
 const ErrDataIsNot = "data is not"
 const ErrAlphabet = "data contains non-alphabetic characters"
 const ErrUserExist = "user does not exist"
 const ErrDb = "data base error"
-const ErrProductExist  = "product does not exist"
+const ErrProductExist = "product does not exist"
 const ErrIdExist = "id does not exist"
 const ErrCartFalse = "no cart found"
 const ErrDbConnect = "database connection is nil"
 const ErrDbConversion = "convertion of datatype is failed"
 const ErrOfferExistTrue = "offer already exist"
 const ErrGetOffer = "error in getting offers of"
-
 
 const StatusApprove = "approved"
 

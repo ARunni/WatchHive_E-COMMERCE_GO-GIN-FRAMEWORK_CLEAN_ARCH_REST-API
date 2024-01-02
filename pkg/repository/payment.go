@@ -2,6 +2,7 @@ package repository
 
 import (
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 
@@ -68,7 +69,7 @@ func (repo *paymentRepository) AddRazorPayDetails(orderId int, razorPayId string
 	insert into payments (order_id,razer_id) values($1,$2) 
 	`
 	if err := repo.DB.Exec(query, orderId, razorPayId).Error; err != nil {
-		err = errors.New("error in inserting values to razor pay data table" + err.Error())
+		err = errors.New(errmsg.ErrWriteDB + err.Error())
 		return err
 	}
 	return nil
@@ -77,7 +78,7 @@ func (repo *paymentRepository) AddRazorPayDetails(orderId int, razorPayId string
 func (pr *paymentRepository) UpdatePaymentDetails(orderId string, paymentId string) error {
 
 	if err := pr.DB.Exec("update payments set payment = $1 where razer_id = $2", paymentId, orderId).Error; err != nil {
-		err = errors.New("error in updating the razer pay table " + err.Error())
+		err = errors.New(errmsg.ErrUpdateDB + err.Error())
 		return err
 	}
 	return nil
@@ -110,7 +111,7 @@ func (pr *paymentRepository) UpdatePaymentStatus(status bool, orderId string) er
 		UPDATE orders SET payment_status = $1, shipment_status = 'shipped' WHERE id = $2 
 	`
 	if err := pr.DB.Exec(query, paymentStatus, orderId).Error; err != nil {
-		err = errors.New("error in updating orders payment status: " + err.Error())
+		err = errors.New(errmsg.ErrUpdateDB + err.Error())
 		return err
 	}
 	return nil
