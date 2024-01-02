@@ -5,6 +5,7 @@ import (
 	helper "WatchHive/pkg/helper/interface"
 	repo "WatchHive/pkg/repository/interface"
 	interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 
@@ -31,13 +32,13 @@ func (ot *otpUseCase) SendOTP(phone string) error {
 	phoneNumber := ot.helper.ValidatePhoneNumber(phone)
 
 	if !phoneNumber {
-		return errors.New("invalid phone number")
+		return errors.New(errmsg.ErrInvalidPhone)
 	}
 
 	ok := ot.otpRepository.FindUserByMobileNumber(phone)
 
 	if !ok {
-		return errors.New("the user does not exist")
+		return errors.New(errmsg.ErrUserExistFalse)
 	}
 
 	ot.helper.TwilioSetup(ot.cfg.ACCOUNTSID, ot.cfg.AUTHTOKEN)
@@ -55,7 +56,7 @@ func (ot *otpUseCase) VerifyOTP(code models.VerifyData) (models.TokenUsers, erro
 	phoneNumber := ot.helper.ValidatePhoneNumber(code.PhoneNumber)
 
 	if !phoneNumber {
-		return models.TokenUsers{}, errors.New("invalid phone number")
+		return models.TokenUsers{}, errors.New(errmsg.ErrInvalidPhone)
 	}
 
 	ot.helper.TwilioSetup(ot.cfg.ACCOUNTSID, ot.cfg.AUTHTOKEN)
@@ -63,7 +64,7 @@ func (ot *otpUseCase) VerifyOTP(code models.VerifyData) (models.TokenUsers, erro
 
 	if err != nil {
 		//this guard clause catches the error code runs only until here
-		return models.TokenUsers{}, errors.New("error while verifying")
+		return models.TokenUsers{}, errors.New(errmsg.ErrVerify)
 	}
 
 	// if user is authenticated using OTP send back user details

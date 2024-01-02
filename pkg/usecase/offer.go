@@ -4,6 +4,7 @@ import (
 	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
 	services "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 )
@@ -20,13 +21,13 @@ func NewOferUsecase(repo interfaces.OfferRepository) services.OfferUsecase {
 
 func (ou *offerUsecase) AddProductOffer(ProductOffer models.ProductOfferResp) error {
 	if err := ou.repo.AddProductOffer(ProductOffer); err != nil {
-		return errors.New("error in adding offer")
+		return errors.New(errmsg.ErrOfferAdd)
 	}
 	return nil
 }
 func (ou *offerUsecase) AddCategoryOffer(CategoryOffer models.CategorytOfferResp) error {
 	if err := ou.repo.AddCategoryOffer(CategoryOffer); err != nil {
-		return errors.New("error in adding offer")
+		return errors.New(errmsg.ErrOfferAdd)
 	}
 	return nil
 }

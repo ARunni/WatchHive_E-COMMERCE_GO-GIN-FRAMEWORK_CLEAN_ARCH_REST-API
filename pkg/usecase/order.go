@@ -4,6 +4,7 @@ import (
 	"WatchHive/pkg/domain"
 	repo_interface "WatchHive/pkg/repository/interface"
 	usecase_interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"fmt"
@@ -36,10 +37,10 @@ func NewOrderUseCase(orderRepo repo_interface.OrderRepository, walletRepo repo_i
 func (ou *orderUseCase) Checkout(userID int) (models.CheckoutDetails, error) {
 	ok, err := ou.cartRepository.CheckCart(userID)
 	if err != nil {
-		return models.CheckoutDetails{}, errors.New("error in getting details")
+		return models.CheckoutDetails{}, err
 	}
 	if !ok {
-		return models.CheckoutDetails{}, errors.New("no items in cart")
+		return models.CheckoutDetails{}, errors.New(errmsg.ErrEmptyCart)
 	}
 	allUserAddress, err := ou.userRepository.GetAllAddress(userID)
 	if err != nil {
@@ -78,7 +79,7 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		return models.OrderSuccessResponse{}, err
 	}
 	if !cartExist {
-		return models.OrderSuccessResponse{}, errors.New("cart empty can't order")
+		return models.OrderSuccessResponse{}, errors.New(errmsg.ErrEmptyCart)
 	}
 
 	addressExist, err := ou.userRepository.AddressExist(orderBody)
@@ -87,7 +88,7 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 	}
 
 	if !addressExist {
-		return models.OrderSuccessResponse{}, errors.New("address does not exist")
+		return models.OrderSuccessResponse{}, errors.New("address " + errmsg.ErrNotExist)
 	}
 	PaymentExist, err := ou.paymentRepository.PaymentExist(orderBody)
 	if err != nil {
@@ -95,7 +96,7 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 	}
 
 	if !PaymentExist {
-		return models.OrderSuccessResponse{}, errors.New("paymentmethod does not exist")
+		return models.OrderSuccessResponse{}, errors.New("paymentmethod " + errmsg.ErrNotExist)
 	}
 	cartItems, err := ou.cartRepository.DisplayCart(orderBody.UserID)
 	if err != nil {
@@ -152,21 +153,21 @@ func (ou *orderUseCase) GetOrderDetails(userId int, page int, count int) ([]mode
 
 func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
 	if orderID <= 0 {
-		return errors.New("invalid order id")
+		return errors.New(errmsg.ErrInvalidOId)
 	}
 	userTest, err := ou.orderRepository.UserOrderRelationship(orderID, userId)
 	if err != nil {
 		return err
 	}
 	if userTest != userId {
-		return errors.New("the order is not done by this user")
+		return errors.New(errmsg.ErrUserOwnedOrder)
 	}
 	ok, err := ou.orderRepository.OrderExist(orderID)
 	if err != nil {
-		return errors.New("error in getting data")
+		return errors.New(errmsg.ErrGetData)
 	}
 	if !ok {
-		return errors.New("order is not exist")
+		return errors.New("order " + errmsg.ErrNotExist)
 	}
 	orderProductDetails, err := ou.orderRepository.GetProductDetailsFromOrders(orderID)
 	if err != nil {
@@ -187,11 +188,11 @@ func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
 	}
 
 	if shipmentStatus == "cancelled" {
-		return errors.New("the order is already cancelled, so no point in cancelling")
+		return errors.New(errmsg.ErrCancelAlready)
 	}
 
 	if shipmentStatus == "Delivered" {
-		return errors.New("the order is delivered, you can return it")
+		return errors.New(errmsg.ErrDeliveredAlready)
 	}
 
 	err = ou.orderRepository.CancelOrders(orderID)
@@ -237,10 +238,10 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 	}
 	ok, err := ou.orderRepository.OrderExist(orderId)
 	if err != nil {
-		return errors.New("error in getting data")
+		return errors.New(errmsg.ErrGetData)
 	}
 	if !ok {
-		return errors.New("order is not exist")
+		return errors.New("order" + errmsg.ErrNotExist)
 	}
 	ShipmentStatus, err := ou.orderRepository.GetShipmentStatus(orderId)
 	if err != nil {
@@ -258,13 +259,13 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 	if paymenType == 1 {
 
 		if ShipmentStatus == "cancelled" {
-			return errors.New("the order is cancelled,cannot approve it")
+			return errors.New(errmsg.ErrCancelAlreadyApprove)
 		}
 		if ShipmentStatus == "pending" {
-			return errors.New("the order is pending,cannot approve it")
+			return errors.New(errmsg.ErrPendingApprove)
 		}
 		if ShipmentStatus == "delivered" {
-			return errors.New("the order is already deliverd")
+			return errors.New(errmsg.ErrDeliveredApprove)
 		}
 		if ShipmentStatus == "processing" {
 			err := ou.orderRepository.ApproveOrder(orderId)
@@ -294,13 +295,13 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 	// razorpay
 	if paymenType == 2 {
 		if ShipmentStatus == "cancelled" {
-			return errors.New("the order is cancelled,cannot approve it")
+			return errors.New(errmsg.ErrCancelAlreadyApprove)
 		}
 		if ShipmentStatus == "pending" {
-			return errors.New("the order is pending,cannot approve it")
+			return errors.New(errmsg.ErrPendingApprove)
 		}
 		if ShipmentStatus == "delivered" {
-			return errors.New("the order is already deliverd")
+			return errors.New(errmsg.ErrDeliveredApprove)
 		}
 		if ShipmentStatus == "processing" && paymentStatus == "PAID" {
 			err := ou.orderRepository.ApproveOrder(orderId)
@@ -331,12 +332,12 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 
 func (ou *orderUseCase) CancelOrderFromAdmin(orderId int) error {
 	if orderId <= 0 {
-		return errors.New("invalid order id")
+		return errors.New(errmsg.ErrInvalidOId)
 	}
 	ok, err := ou.orderRepository.CheckOrderID(orderId)
 
 	if !ok {
-		return errors.New("order does not exist")
+		return errors.New("order " + errmsg.ErrNotExist)
 	}
 	if err != nil {
 		return err
@@ -351,10 +352,10 @@ func (ou *orderUseCase) CancelOrderFromAdmin(orderId int) error {
 		return err
 	}
 	if ShipmentStatus == "cancelled" {
-		return errors.New("the order is already cancelled")
+		return errors.New(errmsg.ErrCancelAlready)
 	}
 	if ShipmentStatus == "deliverd" {
-		return errors.New("the order is delivered cannot be cancelled")
+		return errors.New(errmsg.ErrDeliveredAlreadyCancel)
 	}
 	err = ou.orderRepository.CancelOrders(orderId)
 	if err != nil {
@@ -384,7 +385,7 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 		return err
 	}
 	if userTest != userId {
-		return errors.New("the order is not done by this user")
+		return errors.New(errmsg.ErrUserOwnedOrder)
 	}
 
 	shipmentStatus, err := ou.orderRepository.GetShipmentStatus(orderId)
@@ -397,19 +398,19 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 	}
 
 	if shipmentStatus == "cancelled" {
-		return errors.New("the order is cancelled,cannot return it")
+		return errors.New(errmsg.ErrCancelAlreadyReturn)
 	}
 	if shipmentStatus == "pending" {
-		return errors.New("the order is pending,cannot return it")
+		return errors.New(errmsg.ErrPendingReturn)
 	}
 	if shipmentStatus == "processing" {
-		return errors.New("the order is processing cannot return it")
+		return errors.New(errmsg.ErrProcessingReturn)
 	}
 	if shipmentStatus == "returned" {
-		return errors.New("the order is already returned")
+		return errors.New(errmsg.ErrReturnedAlready)
 	}
 	if shipmentStatus == "shipped" {
-		return errors.New("the order is shipped cannot return it")
+		return errors.New(errmsg.ErrShippedReturn)
 	}
 	amount, err := ou.orderRepository.GetFinalPriceOrder(orderId)
 	if err != nil {
@@ -466,7 +467,7 @@ func (or *orderUseCase) PrintInvoice(orderId int) (*gofpdf.Fpdf, error) {
 	fmt.Println("items usecase", items)
 
 	if order.ShipmentStatus != "delivered" {
-		return nil, errors.New("wait for the invoice until the product is received")
+		return nil, errors.New(errmsg.ErrDeliverInvoice)
 	}
 
 	pdf := gofpdf.New("P", "mm", "A4", "")

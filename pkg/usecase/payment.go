@@ -4,6 +4,7 @@ import (
 	"WatchHive/pkg/config"
 	interfaces_repo "WatchHive/pkg/repository/interface"
 	interfaces_usecase "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 
@@ -27,7 +28,7 @@ func NewPaymentUseCase(repo interfaces_repo.PaymentRepository, orderRepo interfa
 
 func (pu *paymentUseCase) PaymentMethodID(order_id int) (int, error) {
 	if order_id <= 0 {
-		return 0, errors.New("invalid order id")
+		return 0, errors.New(errmsg.ErrInvalidOId)
 	}
 
 	id, err := pu.paymentRepository.PaymentMethodID(order_id)
@@ -38,14 +39,14 @@ func (pu *paymentUseCase) PaymentMethodID(order_id int) (int, error) {
 }
 func (pu *paymentUseCase) AddPaymentMethod(payment models.NewPaymentMethod) (models.PaymentDetails, error) {
 	if payment.PaymentName == "" {
-		return models.PaymentDetails{}, errors.New("payment method cannot be empty")
+		return models.PaymentDetails{}, errors.New("payment method" + errmsg.ErrFieldEmpty)
 	}
 	exists, err := pu.paymentRepository.CheckIfPaymentMethodAlreadyExists(payment.PaymentName)
 	if err != nil {
 		return models.PaymentDetails{}, err
 	}
 	if exists {
-		return models.PaymentDetails{}, errors.New("payment method already exists")
+		return models.PaymentDetails{}, errors.New("payment method " + errmsg.ErrExistTrue)
 	}
 	paymentadd, err := pu.paymentRepository.AddPaymentMethod(payment)
 	if err != nil {
@@ -59,12 +60,12 @@ func (pu *paymentUseCase) AddPaymentMethod(payment models.NewPaymentMethod) (mod
 func (pu *paymentUseCase) MakePaymentRazorpay(orderId, userId int) (models.CombinedOrderDetails, string, error) {
 
 	if orderId <= 0 || userId <= 0 {
-		return models.CombinedOrderDetails{}, "", errors.New("please provide valid IDs")
+		return models.CombinedOrderDetails{}, "", errors.New(errmsg.ErrInvalidData)
 	}
 
 	order, err := pu.orderRepo.GetOrder(orderId)
 	if err != nil {
-		err = errors.New("error in getting order details through order id" + err.Error())
+		err = errors.New(errmsg.ErrGetData + err.Error())
 		return models.CombinedOrderDetails{}, "", err
 	}
 
@@ -114,6 +115,6 @@ func (pu *paymentUseCase) SavePaymentDetails(paymentId, razorId, orderId string)
 		}
 		return nil
 	}
-	return errors.New("already paid")
+	return errors.New(errmsg.ErrAlreadyPaid)
 
 }
