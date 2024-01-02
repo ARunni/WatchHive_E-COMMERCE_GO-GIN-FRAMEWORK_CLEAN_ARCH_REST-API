@@ -48,6 +48,13 @@ func (ou *offerUsecase) GetCategoryOffer() ([]domain.CategoryOffer, error) {
 }
 
 func (ou *offerUsecase) ExpireProductOffer(id int) error {
+	ok, err := ou.repo.IsProductOfferExist(id)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return errors.New(errmsg.ErrNotExist)
+	}
 	if err := ou.repo.ExpireProductOffer(id); err != nil {
 		return err
 	}
@@ -56,6 +63,13 @@ func (ou *offerUsecase) ExpireProductOffer(id int) error {
 }
 
 func (ou *offerUsecase) ExpireCategoryOffer(id int) error {
+	ok, err := ou.repo.IsCategoryOfferExist(id)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return errors.New(errmsg.ErrNotExist)
+	}
 	if err := ou.repo.ExpireCategoryOffer(id); err != nil {
 		return err
 	}

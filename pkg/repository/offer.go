@@ -129,3 +129,20 @@ func (or *OfferRepository) GetProOfferPercent(productId int) (int, error) {
 	}
 	return percent, nil
 }
+
+func (or *OfferRepository) IsProductOfferExist(productId int) (bool, error) {
+	var count int
+	err := or.DB.Raw("select count(*) from product_offers where product_id = ?", productId).Scan(&count).Error
+	if err != nil {
+		return false, errors.New(errmsg.ErrDb)
+	}
+	return count > 0, nil
+}
+func (or *OfferRepository) IsCategoryOfferExist(catgoryId int) (bool, error) {
+	var count int
+	err := or.DB.Raw("select count(*) from category_offers where category_id = ?", catgoryId).Scan(&count).Error
+	if err != nil {
+		return false, errors.New(errmsg.ErrDb)
+	}
+	return count > 0, nil
+}
