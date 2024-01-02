@@ -80,7 +80,7 @@ func (cr *categoryRepository) DeleteCategory(catergoryID string) error {
 	id, err := strconv.Atoi(catergoryID)
 
 	if err != nil {
-		return errors.New(errmsg.ErrDbConversion)
+		return errors.New(errmsg.ErrDatatypeConversion)
 	}
 
 	result := cr.DB.Exec("DELETE FROM categories WHERE id = ?", id)
@@ -105,11 +105,11 @@ func (cr *categoryRepository) CheckCategoryByName(name string) bool {
 	return true
 }
 
-func (cr *categoryRepository) GetCategoryId(productId int) (int,error) {
+func (cr *categoryRepository) GetCategoryId(productId int) (int, error) {
 	var catId int
-	err := cr.DB.Raw("select category_id from products where id = ?",productId).Scan(&catId).Error
+	err := cr.DB.Raw("select category_id from products where id = ?", productId).Scan(&catId).Error
 	if err != nil {
-		return 0,errors.New(errmsg.ErrGetDB)
+		return 0, errors.New(errmsg.ErrGetDB)
 	}
-	return catId,nil
+	return catId, nil
 }

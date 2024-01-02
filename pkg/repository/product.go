@@ -2,6 +2,7 @@ package repository
 
 import (
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"strconv"
@@ -25,11 +26,11 @@ func (i *productRepository) AddProduct(product models.AddProducts, url string) (
 	i.DB.Model(&models.Product{}).Where("product_name = ? AND category_id = ?", product.ProductName, product.CategoryID).Count(&count)
 	if count > 0 {
 
-		return models.ProductResponse{}, errors.New("product already exists in the database")
+		return models.ProductResponse{}, errors.New(errmsg.ErrProductExistTrue)
 	}
 
 	if product.Stock < 0 || product.Price < 0 {
-		return models.ProductResponse{}, errors.New("stock and price cannot be negative")
+		return models.ProductResponse{}, errors.New("stock and price" + errmsg.ErrDataNegative)
 	}
 
 	query := `
@@ -48,7 +49,7 @@ func (i *productRepository) AddProduct(product models.AddProducts, url string) (
 	errr := i.DB.Raw(query, product.ProductName, product.CategoryID).Scan(&productResponse).Error
 
 	if errr != nil {
-		return productResponse, errors.New("error checking Product details")
+		return productResponse, errors.New(errmsg.ErrGetDB)
 	}
 	//Adding url to image table
 
@@ -75,7 +76,7 @@ func (prod *productRepository) ListProducts(pageList, offset int) ([]models.Prod
 	err := prod.DB.Raw(query, pageList, offset).Scan(&product_list).Error
 
 	if err != nil {
-		return []models.ProductUserResponse{}, errors.New("error checking Product details")
+		return []models.ProductUserResponse{}, errors.New(errmsg.ErrGetDB)
 	}
 
 	return product_list, nil
@@ -100,13 +101,14 @@ func (i *productRepository) DeleteProduct(productID string) error {
 
 	id, err := strconv.Atoi(productID)
 	if err != nil {
-		return errors.New("converting into integet is not happened")
+
+		return errors.New(errmsg.ErrDatatypeConversion)
 	}
 
 	result := i.DB.Exec("DELETE FROM products WHERE id = ?", id)
 
 	if result.RowsAffected < 1 {
-		return errors.New("no records with that ID exist")
+		return errors.New(errmsg.ErrUserExistFalse)
 	}
 
 	return nil
@@ -142,7 +144,7 @@ func (i *productRepository) UpdateProduct(pid int, stock int) (models.ProductRes
 
 	// Check the database connection
 	if i.DB == nil {
-		return models.ProductResponse{}, errors.New("database connection is nil")
+		return models.ProductResponse{}, errors.New(errmsg.ErrDbConnect)
 	}
 
 	// Update the
@@ -168,10 +170,10 @@ func (cr *productRepository) CheckProductAvailable(product_id int) (bool, error)
 
 	err := cr.DB.Raw(querry, product_id).Scan(&count).Error
 	if err != nil {
-		return false, errors.New("product does not exist")
+		return false, errors.New(errmsg.ErrProductExist)
 	}
 	if count < 1 {
-		return false, errors.New("product does not exist")
+		return false, errors.New(errmsg.ErrProductExist)
 	}
 	return true, nil
 }
@@ -181,7 +183,7 @@ func (cr *productRepository) GetPriceOfProduct(product_id int) (float64, error) 
 	err := cr.DB.Raw(qurry, product_id).Scan(&price).Error
 
 	if err != nil {
-		return 0, errors.New("error in getting price")
+		return 0, errors.New(errmsg.ErrGetDB)
 	}
 	return price, nil
 }

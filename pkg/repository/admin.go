@@ -43,7 +43,7 @@ func (ad *adminRepository) GetUserByID(id string) (domain.Users, error) {
 		return domain.Users{}, err
 	}
 	if count < 1 {
-		return domain.Users{}, errors.New(errmsg.ErrUserExist)
+		return domain.Users{}, errors.New(errmsg.ErrUserExistFalse)
 	}
 
 	var userDetails domain.Users
