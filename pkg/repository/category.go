@@ -59,7 +59,7 @@ func (cr *categoryRepository) UpdateCategory(currentId int, new string) (domain.
 
 	// Check the database connection
 	if cr.DB == nil {
-		return domain.Category{}, errors.New("database connection is nil")
+		return domain.Category{}, errors.New(errmsg.ErrDbConnect)
 	}
 
 	// Update the category
@@ -80,13 +80,13 @@ func (cr *categoryRepository) DeleteCategory(catergoryID string) error {
 	id, err := strconv.Atoi(catergoryID)
 
 	if err != nil {
-		return errors.New("converting into integers is not happen")
+		return errors.New(errmsg.ErrDbConversion)
 	}
 
 	result := cr.DB.Exec("DELETE FROM categories WHERE id = ?", id)
 
 	if result.RowsAffected < 1 {
-		return errors.New("now rows with that id exist")
+		return errors.New(errmsg.ErrIdExist)
 	}
 	return nil
 }

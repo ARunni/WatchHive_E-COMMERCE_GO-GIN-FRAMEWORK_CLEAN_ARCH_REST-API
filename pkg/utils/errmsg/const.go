@@ -13,7 +13,10 @@ const ErrAlphabet = "data contains non-alphabetic characters"
 const ErrUserExist = "user does not exist"
 const ErrDb = "data base error"
 const ErrProductExist  = "product does not exist"
+const ErrIdExist = "id does not exist"
 const ErrCartFalse = "no cart found"
+const ErrDbConnect = "database connection is nil"
+const ErrDbConversion = "convertion of datatype is failed"
 
 
 const StatusApprove = "approved"
