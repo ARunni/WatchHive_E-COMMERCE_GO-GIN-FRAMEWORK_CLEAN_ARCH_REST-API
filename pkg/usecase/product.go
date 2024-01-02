@@ -4,6 +4,7 @@ import (
 	helper "WatchHive/pkg/helper/interface"
 	rep "WatchHive/pkg/repository/interface"
 	interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"mime/multipart"
@@ -27,14 +28,14 @@ func NewProductUseCase(repo rep.ProductRepository, h helper.Helper, cat rep.Cate
 
 func (i *productUseCase) AddProduct(product models.AddProducts, file *multipart.FileHeader) (models.ProductResponse, error) {
 	if product.ProductName == "" {
-		return models.ProductResponse{}, errors.New("product name cannot be empty")
+		return models.ProductResponse{}, errors.New("product name " + errmsg.ErrFieldEmpty)
 
 	}
 	if product.Color == "" {
-		return models.ProductResponse{}, errors.New("color cannot be empty")
+		return models.ProductResponse{}, errors.New("color " + errmsg.ErrFieldEmpty)
 	}
 	if product.CategoryID <= 0 || product.Price <= 0 || product.Stock <= 0 {
-		err := errors.New("enter valid values")
+		err := errors.New(errmsg.ErrInvalidData)
 		return models.ProductResponse{}, err
 	}
 	ok, err := i.cat.CheckCategory(product.CategoryID)
@@ -42,12 +43,12 @@ func (i *productUseCase) AddProduct(product models.AddProducts, file *multipart.
 		return models.ProductResponse{}, err
 	}
 	if !ok {
-		return models.ProductResponse{}, errors.New("category id not available")
+		return models.ProductResponse{}, errors.New(errmsg.ErrInvalidCId)
 	}
 	ok = i.repository.CheckProductAndCat(product.ProductName, product.CategoryID)
 
 	if ok {
-		return models.ProductResponse{}, errors.New("already exist")
+		return models.ProductResponse{}, errors.New(errmsg.ErrExistTrue)
 	}
 
 	url, err := i.helper.AddImageToAwsS3(file)
@@ -78,14 +79,14 @@ func (i *productUseCase) ListProducts(pageNo, pageList int) ([]models.ProductUse
 func (usecase *productUseCase) EditProduct(product models.ProductEdit) (models.ProductUserResponse, error) {
 
 	if product.ID <= 0 || product.CategoryID <= 0 || product.Price <= 0 || product.Stock <= 0 {
-		err := errors.New("enter valid values")
+		err := errors.New(errmsg.ErrInvalidData)
 		return models.ProductUserResponse{}, err
 	}
 	if product.ProductName == "" {
-		return models.ProductUserResponse{}, errors.New("product name cannot be empty")
+		return models.ProductUserResponse{}, errors.New("product name "+ errmsg.ErrFieldEmpty)
 	}
 	if product.Color == "" {
-		return models.ProductUserResponse{}, errors.New("color cannot be empty")
+		return models.ProductUserResponse{}, errors.New("color " +errmsg.ErrFieldEmpty )
 	}
 	modProduct, err := usecase.repository.EditProduct(product)
 	if err != nil {
@@ -99,15 +100,15 @@ func (pu *productUseCase) DeleteProduct(productID string) error {
 	pID, cErr := strconv.Atoi(productID)
 
 	if cErr != nil || pID <= 0 {
-		return errors.New("invalid data")
+		return errors.New(errmsg.ErrInvalidData)
 
 	}
 	ok, err := pu.repository.CheckProduct(pID)
 	if err != nil {
-		return errors.New("error in searching")
+		return err
 	}
 	if !ok {
-		return errors.New("product does not exist")
+		return errors.New("product "+ errmsg.ErrNotExist)
 	}
 	err = pu.repository.DeleteProduct(productID)
 	if err != nil {
@@ -119,16 +120,16 @@ func (pu *productUseCase) DeleteProduct(productID string) error {
 func (i productUseCase) UpdateProduct(pid int, stock int) (models.ProductResponse, error) {
 
 	if pid <= 0 || stock <= 0 {
-		return models.ProductResponse{}, errors.New("invalid product id or stock")
+		return models.ProductResponse{}, errors.New(errmsg.ErrInvalidData)
 	}
 
 	result, err := i.repository.CheckProduct(pid)
 	if err != nil {
-		return models.ProductResponse{}, errors.New("error occured during the search")
+		return models.ProductResponse{}, err
 	}
 
 	if !result {
-		return models.ProductResponse{}, errors.New("there is no product as you mentioned")
+		return models.ProductResponse{}, errors.New("product " + errmsg.ErrNotExist)
 	}
 
 	newcat, err := i.repository.UpdateProduct(pid, stock)

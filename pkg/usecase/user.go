@@ -35,29 +35,29 @@ var ErrorHashingPassword = "Error In Hashing Password"
 
 func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
 	if user.Password == "" {
-		return models.TokenUsers{}, errors.New("password cannot be empty")
+		return models.TokenUsers{}, errors.New("password " + errmsg.ErrFieldEmpty)
 	}
 	if user.Name == "" {
-		return models.TokenUsers{}, errors.New("name cannot be empty")
+		return models.TokenUsers{}, errors.New("name " + errmsg.ErrFieldEmpty)
 	}
 
 	phoneNumber := u.helper.ValidatePhoneNumber(user.Phone)
 
 	if !phoneNumber {
-		return models.TokenUsers{}, errors.New("invalid phone number")
+		return models.TokenUsers{}, errors.New(errmsg.ErrInvalidPhone)
 	}
 
 	userExist := u.userRepo.CheckUserAvilability(user.Email)
 	if userExist {
-		return models.TokenUsers{}, errors.New("user already exist, sign in")
+		return models.TokenUsers{}, errors.New(errmsg.ErrAlreadyUser)
 	}
 	if user.Password != user.ConfirmPassword {
-		return models.TokenUsers{}, errors.New("password does not match")
+		return models.TokenUsers{}, errors.New(errmsg.ErrPasswordMatch)
 	}
 
 	hashedPassword, err := u.helper.PasswordHashing(user.Password)
 	if err != nil {
-		return models.TokenUsers{}, errors.New("error hashing password")
+		return models.TokenUsers{}, errors.New(errmsg.ErrPasswordHash)
 	}
 	user.Password = hashedPassword
 	userData, err := u.userRepo.UserSignup(user)
@@ -69,7 +69,7 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	userReferral := str[:8]
 	err = u.userRepo.NewReferralEntry(userData.Id, userReferral)
 	if err != nil {
-		return models.TokenUsers{}, errors.New("referral creation failed")
+		return models.TokenUsers{}, errors.New(errmsg.ErrCreateRefferal)
 	}
 	if err != nil {
 		return models.TokenUsers{}, errors.New(errmsg.ErrWriteDB)
@@ -130,7 +130,7 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	//
 	tokenString, err := u.helper.GenerateTokenClients(userData)
 	if err != nil {
-		return models.TokenUsers{}, errors.New("could not create token")
+		return models.TokenUsers{}, errors.New(errmsg.ErrCreateTocken)
 	}
 	return models.TokenUsers{
 		Users: userData,
@@ -143,25 +143,25 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 
 	ok := u.userRepo.CheckUserAvilability(user.Email)
 	if !ok {
-		return models.TokenUsers{}, errors.New("the user does not exist")
+		return models.TokenUsers{}, errors.New(errmsg.ErrUserExistFalse)
 
 	}
 
 	isBlocked, err := u.userRepo.UserBlockStatus(user.Email)
 	if err != nil {
-		return models.TokenUsers{}, errors.New("internal error")
+		return models.TokenUsers{}, errors.New(errmsg.ErrInternal)
 	}
 	if isBlocked {
-		return models.TokenUsers{}, errors.New("user is blocked")
+		return models.TokenUsers{}, errors.New(errmsg.ErrUserBlockTrue)
 	}
 	user_details, err := u.userRepo.FindUserByEmail(user)
 	if err != nil {
-		return models.TokenUsers{}, errors.New("password is incorrect")
+		return models.TokenUsers{}, errors.New(errmsg.ErrPassword)
 	}
 	err = u.helper.CompareHashAndPassword(user_details.Password, user.Password)
 
 	if err != nil {
-		return models.TokenUsers{}, errors.New("password incorrect")
+		return models.TokenUsers{}, errors.New(errmsg.ErrPassword)
 	}
 
 	var userDetails models.UserDetailsResponse
@@ -173,7 +173,7 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 
 	tokenString, err := u.helper.GenerateTokenClients(userDetails)
 	if err != nil {
-		return models.TokenUsers{}, errors.New("could not create token")
+		return models.TokenUsers{}, errors.New(errmsg.ErrCreateTocken)
 	}
 	return models.TokenUsers{
 		Users: userDetails,
@@ -184,28 +184,28 @@ func (u *userUseCase) AddAddress(userID int, address models.AddressInfo) ([]mode
 
 	ok, err := u.helper.ValidateAlphabets(address.Name)
 	if err != nil {
-		return []models.AddressInfoResponse{}, errors.New("invalid name")
+		return []models.AddressInfoResponse{}, errors.New(errmsg.ErrInvalidName)
 	}
 	if !ok {
-		return []models.AddressInfoResponse{}, errors.New("invalid name")
+		return []models.AddressInfoResponse{}, errors.New(errmsg.ErrInvalidName)
 	}
 	phone := u.helper.ValidatePhoneNumber(address.Phone)
 	if !phone {
-		return []models.AddressInfoResponse{}, errors.New("invalid mobile number")
+		return []models.AddressInfoResponse{}, errors.New(errmsg.ErrInvalidPhone)
 	}
 
 	pin := u.helper.ValidatePin(address.Pin)
 	if !pin {
-		return []models.AddressInfoResponse{}, errors.New("invalid pin number")
+		return []models.AddressInfoResponse{}, errors.New(errmsg.ErrInvalidPin)
 	}
 
 	if userID <= 0 {
-		return []models.AddressInfoResponse{}, errors.New("invalid user_id")
+		return []models.AddressInfoResponse{}, errors.New(errmsg.ErrInvalidUId)
 	}
 
 	errs := u.userRepo.CheckUserById(userID)
 	if !errs {
-		return []models.AddressInfoResponse{}, errors.New("user does not exist")
+		return []models.AddressInfoResponse{}, errors.New(errmsg.ErrUserExist)
 	}
 
 	errResp := u.userRepo.AddAddress(userID, address)
@@ -239,18 +239,18 @@ func (u *userUseCase) GetAllAddress(userID int) ([]models.AddressInfoResponse, e
 
 func (u *userUseCase) EditProfile(user models.UsersProfileDetails) (models.UsersProfileDetails, error) {
 	if user.Name == "" {
-		return models.UsersProfileDetails{}, errors.New("name cannot be empty")
+		return models.UsersProfileDetails{}, errors.New("name " + errmsg.ErrFieldEmpty)
 	}
 	ok, err := u.helper.ValidateAlphabets(user.Name)
 	if err != nil {
-		return models.UsersProfileDetails{}, errors.New("invalid name")
+		return models.UsersProfileDetails{}, errors.New(errmsg.ErrInvalidName)
 	}
 	if !ok {
-		return models.UsersProfileDetails{}, errors.New("invalid name")
+		return models.UsersProfileDetails{}, errors.New(errmsg.ErrInvalidName)
 	}
 	phErr := u.helper.ValidatePhoneNumber(user.Phone)
 	if !phErr {
-		return models.UsersProfileDetails{}, errors.New("invalid phone number")
+		return models.UsersProfileDetails{}, errors.New(errmsg.ErrInvalidPhone)
 	}
 	details, err := u.userRepo.EditProfile(user)
 	if err != nil {
@@ -262,15 +262,15 @@ func (u *userUseCase) EditProfile(user models.UsersProfileDetails) (models.Users
 func (u *userUseCase) ChangePassword(user models.ChangePassword) error {
 
 	if user.NewPassWord == "" || user.ConfirmPassword == "" {
-		return errors.New("password cannot be empty")
+		return errors.New("password " + errmsg.ErrFieldEmpty)
 	}
 
 	if user.NewPassWord != user.ConfirmPassword {
-		return errors.New("password mismatch")
+		return errors.New(errmsg.ErrPasswordMatch)
 	}
 	newHashed, err := u.helper.PasswordHashing(user.NewPassWord)
 	if err != nil {
-		return errors.New("password hashing failed")
+		return errors.New(errmsg.ErrPasswordHash)
 	}
 
 	idString := strconv.FormatUint(uint64(user.UserID), 10)
@@ -284,7 +284,7 @@ func (u *userUseCase) ChangePassword(user models.ChangePassword) error {
 
 	err = u.userRepo.ChangePassword(idString, newHashed)
 	if err != nil {
-		return errors.New("password cannot change")
+		return errors.New(errmsg.ErrChangePassword)
 	}
 	return nil
 }

@@ -3,6 +3,7 @@ package usecase
 import (
 	walletrep "WatchHive/pkg/repository/interface"
 	interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 )
@@ -18,7 +19,7 @@ func NewWalletUsecase(walletRep walletrep.WalletRepository) interfaces.WalletUse
 func (wu *walletUsecase) GetWallet(userID int) (models.WalletAmount, error) {
 	ok, err := wu.walletRepo.IsWalletExist(userID)
 	if err != nil {
-		return models.WalletAmount{}, errors.New("error in db")
+		return models.WalletAmount{}, errors.New(errmsg.ErrDb)
 	}
 	if !ok {
 		err = wu.walletRepo.CreateWallet(userID)
