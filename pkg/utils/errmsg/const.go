@@ -17,6 +17,8 @@ const ErrIdExist = "id does not exist"
 const ErrCartFalse = "no cart found"
 const ErrDbConnect = "database connection is nil"
 const ErrDbConversion = "convertion of datatype is failed"
+const ErrOfferExistTrue = "offer already exist"
+const ErrGetOffer = "error in getting offers of"
 
 
 const StatusApprove = "approved"

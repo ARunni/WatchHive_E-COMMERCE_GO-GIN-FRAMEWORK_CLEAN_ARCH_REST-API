@@ -22,10 +22,10 @@ func (or *OfferRepository) AddProductOffer(ProductOffer models.ProductOfferResp)
 	var count int
 	err := or.DB.Raw("select count(*) from product_offers where offer_name =? and product_id=?", ProductOffer.OfferName, ProductOffer.ProductID).Scan(&count).Error
 	if err != nil {
-		return errors.New("error in getting offer details")
+		return errors.New(errmsg.ErrGetDB)
 	}
 	if count > 0 {
-		return errors.New("offer already exist")
+		return errors.New(errmsg.ErrOfferExistTrue)
 	}
 
 	err = or.DB.Raw("SELECT COUNT(*) FROM product_offers WHERE product_id = ?", ProductOffer.ProductID).Scan(&count).Error
@@ -54,10 +54,10 @@ func (or *OfferRepository) AddCategoryOffer(CategoryOffer models.CategorytOfferR
 	var count int
 	err := or.DB.Raw("select count(*) from category_offers where offer_name =? and category_id=?", CategoryOffer.OfferName, CategoryOffer.CategoryID).Scan(&count).Error
 	if err != nil {
-		return errors.New("error in getting offer details")
+		return errors.New(errmsg.ErrGetDB)
 	}
 	if count > 0 {
-		return errors.New("offer already exist")
+		return errors.New(errmsg.ErrOfferExistTrue)
 	}
 
 	err = or.DB.Raw("SELECT COUNT(*) FROM category_offers WHERE category_id = ?", CategoryOffer.CategoryID).Scan(&count).Error
@@ -86,7 +86,7 @@ func (or *OfferRepository) GetProductOffer() ([]domain.ProductOffer, error) {
 	var productOfferDetails []domain.ProductOffer
 	err := or.DB.Raw("SELECT * FROM product_offers").Scan(&productOfferDetails).Error
 	if err != nil {
-		return []domain.ProductOffer{}, errors.New("error in getting product offers")
+		return []domain.ProductOffer{}, errors.New(errmsg.ErrGetOffer + "product")
 	}
 	return productOfferDetails, nil
 }
@@ -95,7 +95,7 @@ func (or *OfferRepository) GetCategoryOffer() ([]domain.CategoryOffer, error) {
 	var categoryOfferDetails []domain.CategoryOffer
 	err := or.DB.Raw("SELECT * FROM category_offers").Scan(&categoryOfferDetails).Error
 	if err != nil {
-		return []domain.CategoryOffer{}, errors.New("error in getting category offers")
+		return []domain.CategoryOffer{}, errors.New(errmsg.ErrGetOffer + "category")
 	}
 	return categoryOfferDetails, nil
 }
