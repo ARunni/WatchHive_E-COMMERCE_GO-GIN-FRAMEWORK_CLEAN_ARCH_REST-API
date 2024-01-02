@@ -3,6 +3,7 @@ package usecase
 import (
 	interfaces_repo "WatchHive/pkg/repository/interface"
 	interfaces "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 )
@@ -25,25 +26,25 @@ func NewCartUseCase(repoc interfaces_repo.CartRepository, catRepo interfaces_rep
 
 func (cu *cartUseCase) AddToCart(cart models.AddCart) (models.CartResponse, error) {
 
-	if cart.ProductID < 1 || cart.UserID < 1 {
-		return models.CartResponse{}, errors.New("invalid product id or user id ")
+	if cart.ProductID < 1 {
+		return models.CartResponse{}, errors.New(errmsg.ErrInvalidPId)
 	}
 	if cart.Quantity < 1 {
-		return models.CartResponse{}, errors.New("quantity must be 1 or greater")
+		return models.CartResponse{}, errors.New(errmsg.ErrDataZero)
 	}
 	is_available, err := cu.productRepository.CheckProductAvailable(int(cart.ProductID))
 	if err != nil {
 		return models.CartResponse{}, err
 	}
 	if !is_available {
-		return models.CartResponse{}, errors.New("product is not available")
+		return models.CartResponse{}, errors.New(errmsg.ErrProductExist)
 	}
 	stock, err := cu.cartRepository.CheckStock(int(cart.ProductID))
 	if err != nil {
 		return models.CartResponse{}, err
 	}
 	if stock < int(cart.Quantity) {
-		return models.CartResponse{}, errors.New("out of stock")
+		return models.CartResponse{}, errors.New(errmsg.ErrOutOfStock)
 	}
 
 	price, err := cu.productRepository.GetPriceOfProduct(int(cart.ProductID))
@@ -63,7 +64,7 @@ func (cu *cartUseCase) AddToCart(cart models.AddCart) (models.CartResponse, erro
 	if err != nil {
 		return models.CartResponse{}, err
 	}
-	
+
 	price -= price * float64(catPercent) / 100
 	price -= price * float64(proPercent) / 100
 
@@ -73,7 +74,7 @@ func (cu *cartUseCase) AddToCart(cart models.AddCart) (models.CartResponse, erro
 		return models.CartResponse{}, err
 	}
 	if (QuantityOfProductInCart + int(cart.Quantity)) > 20 {
-		return models.CartResponse{}, errors.New("limit exceeds")
+		return models.CartResponse{}, errors.New(errmsg.ErrLimitExceeds)
 	}
 
 	finalPrice := (price * float64(cart.Quantity))
@@ -135,20 +136,20 @@ func (cu *cartUseCase) UpdateProductQuantityCart(cart models.AddCart) (models.Ca
 
 	ok, err := cu.cartRepository.CheckCart(cart.UserID)
 	if err != nil {
-		return models.CartResponse{}, errors.New("error in checking cart")
+		return models.CartResponse{}, err
 	}
 	if !ok {
-		return models.CartResponse{}, errors.New("cart is empty")
+		return models.CartResponse{}, errors.New(errmsg.ErrEmptyCart)
 	}
 	if cart.Quantity < 1 || cart.ProductID < 1 {
-		return models.CartResponse{}, errors.New("invalid product id or quantity")
+		return models.CartResponse{}, errors.New(errmsg.ErrInvalidPId + " or quantity")
 	}
 	is_available, err := cu.productRepository.CheckProductAvailable(int(cart.ProductID))
 	if err != nil {
 		return models.CartResponse{}, err
 	}
 	if !is_available {
-		return models.CartResponse{}, errors.New("product is not available")
+		return models.CartResponse{}, errors.New(errmsg.ErrProductExist)
 	}
 	stock, err := cu.cartRepository.CheckStock(int(cart.ProductID))
 	if err != nil {
@@ -159,7 +160,7 @@ func (cu *cartUseCase) UpdateProductQuantityCart(cart models.AddCart) (models.Ca
 		return models.CartResponse{}, err
 	}
 	if !ok {
-		return models.CartResponse{}, errors.New("product not available in cart")
+		return models.CartResponse{}, errors.New(errmsg.ErrCartProductExist)
 	}
 
 	if stock < int(cart.Quantity) {
@@ -196,7 +197,7 @@ func (cu *cartUseCase) UpdateProductQuantityCart(cart models.AddCart) (models.Ca
 func (cu *cartUseCase) RemoveFromCart(cart models.RemoveFromCart) (models.CartResponse, error) {
 
 	if cart.ProductID < 1 {
-		return models.CartResponse{}, errors.New("product id cannot be empty")
+		return models.CartResponse{}, errors.New(errmsg.ErrFieldEmpty)
 	}
 
 	is_available, err := cu.cartRepository.CheckCart(cart.UserID)
@@ -208,7 +209,7 @@ func (cu *cartUseCase) RemoveFromCart(cart models.RemoveFromCart) (models.CartRe
 		return models.CartResponse{}, err
 	}
 	if !ok {
-		return models.CartResponse{}, errors.New("product not available in cart")
+		return models.CartResponse{}, errors.New(errmsg.ErrCartProductExist)
 	}
 
 	err = cu.cartRepository.RemoveFromCart(cart)

@@ -4,6 +4,7 @@ import (
 	helper "WatchHive/pkg/helper/interface"
 	interfaces "WatchHive/pkg/repository/interface"
 	usecase "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"strconv"
@@ -61,7 +62,7 @@ func (ad *adminUseCase) BlockUser(id string) error {
 	}
 	ok := ad.adminRepository.IsUserExist(iD)
 	if !ok {
-		return errors.New("user does not exist")
+		return errors.New(errmsg.ErrUserExistFalse)
 	}
 	user, err := ad.adminRepository.GetUserByID(id)
 	if err != nil {
@@ -69,7 +70,7 @@ func (ad *adminUseCase) BlockUser(id string) error {
 	}
 
 	if user.Blocked {
-		return errors.New("already blocked")
+		return errors.New(errmsg.ErrBlockAlready)
 	} else {
 		user.Blocked = true
 	}
@@ -87,11 +88,11 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 
 	iD, IdErr := strconv.Atoi(id)
 	if IdErr != nil || iD <= 0 {
-		return errors.New("invalid id")
+		return errors.New(errmsg.ErrIdExist)
 	}
 	ok := ad.adminRepository.IsUserExist(iD)
 	if !ok {
-		return errors.New("user does not exist")
+		return errors.New(errmsg.ErrUserExistFalse)
 	}
 	user, err := ad.adminRepository.GetUserByID(id)
 	if err != nil {
@@ -101,7 +102,7 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 	if user.Blocked {
 		user.Blocked = false
 	} else {
-		return errors.New("already unblocked")
+		return errors.New(errmsg.ErrUnBlockAlready)
 	}
 
 	err = ad.adminRepository.UpdateBlockUserByID(user)
@@ -114,7 +115,7 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 }
 func (ad *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
 	if page < 0 {
-		return []models.UserDetailsAtAdmin{}, errors.New("page number cannot be negative")
+		return []models.UserDetailsAtAdmin{}, errors.New("page number"+errmsg.ErrDataNegative)
 	}
 
 	userDetails, err := ad.adminRepository.GetUsers(page)
@@ -159,12 +160,12 @@ func (au *adminUseCase) AdminDashboard() (models.CompleteAdminDashboard, error) 
 // sales report
 func (ah *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesReport, error) {
 	if timePeriod == "" {
-		err := errors.New("field cannot be empty")
+		err := errors.New(errmsg.ErrFieldEmpty)
 		return models.SalesReport{}, err
 	}
 
 	if timePeriod != "week" && timePeriod != "month" && timePeriod != "year" {
-		err := errors.New("invalid time period, available options : week, month & year")
+		err := errors.New(errmsg.ErrInvalidTimePeriod)
 		return models.SalesReport{}, err
 	}
 
@@ -181,47 +182,47 @@ func (au *adminUseCase) ExecuteSalesReportByDate(startDate, endDate string) (mod
 
 	parsedStartDate, err := time.Parse("02-01-2006", startDate)
 	if err != nil {
-		err := errors.New("enter the date in correct format")
+		err := errors.New(errmsg.ErrFormat+":date")
 		return models.SalesReport{}, err
 	}
 
 	isValid := !parsedStartDate.IsZero()
 	if !isValid {
-		err := errors.New("enter the date in correct format & valid date")
+		err := errors.New(errmsg.ErrFormat+":date")
 		return models.SalesReport{}, err
 	}
 	parsedEndDate, err := time.Parse("02-01-2006", endDate)
 	if err != nil {
-		err := errors.New("enter the date in correct format")
+		err := errors.New(errmsg.ErrFormat+":date")
 		return models.SalesReport{}, err
 	}
 
 	isValid = !parsedEndDate.IsZero()
 	if !isValid {
-		err := errors.New("enter the date in correct format & valid date")
+		err := errors.New(errmsg.ErrFormat+":date")
 		return models.SalesReport{}, err
 	}
 
 	if parsedStartDate.After(parsedEndDate) {
-		err := errors.New("start date is after end date")
+		err := errors.New(errmsg.ErrFormat+" start date is after end date")
 
 		return models.SalesReport{}, err
 	}
 
 	orders, err := au.adminRepository.FilteredSalesReport(parsedStartDate, parsedEndDate)
 	if err != nil {
-		return models.SalesReport{}, errors.New("report fetching failed")
+		return models.SalesReport{}, errors.New(errmsg.ErrGetDB)
 	}
 	return orders, nil
 }
 func (ad *adminUseCase) SalesByDate(dayInt int, monthInt int, yearInt int) ([]models.OrderDetailsAdmin, error) {
 
 	if dayInt == 0 && monthInt == 0 && yearInt == 0 {
-		return []models.OrderDetailsAdmin{}, errors.New("must enter a value for day, month, and year")
+		return []models.OrderDetailsAdmin{}, errors.New(errmsg.ErrFieldEmpty+ "day, month, and year")
 	}
 
 	if dayInt < 0 || monthInt < 0 || yearInt < 0 {
-		return []models.OrderDetailsAdmin{}, errors.New("no such values are allowded")
+		return []models.OrderDetailsAdmin{}, errors.New(errmsg.ErrFormat+ "day, month, and year")
 	}
 
 	if yearInt >= 2020 {
@@ -252,7 +253,7 @@ func (ad *adminUseCase) SalesByDate(dayInt int, monthInt int, yearInt int) ([]mo
 		}
 	}
 
-	return []models.OrderDetailsAdmin{}, errors.New("invalid date parameters")
+	return []models.OrderDetailsAdmin{}, errors.New(errmsg.ErrInvalidFormat)
 }
 
 func (ad *adminUseCase) PrintSalesReport(sales []models.OrderDetailsAdmin) (*gofpdf.Fpdf, error) {

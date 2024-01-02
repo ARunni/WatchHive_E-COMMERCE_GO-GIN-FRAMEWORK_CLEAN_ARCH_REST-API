@@ -4,6 +4,7 @@ import (
 	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
 	services "WatchHive/pkg/usecase/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"strconv"
@@ -21,11 +22,11 @@ func NewCategoryUseCase(repo interfaces.CategoryRepository) services.CategoryUse
 }
 func (cu *categoryUseCase) AddCategory(category models.CategoryAdd) (domain.Category, error) {
 	if category.Category == "" {
-		return domain.Category{}, errors.New("invalid category")
+		return domain.Category{}, errors.New(errmsg.ErrInvalidFormat)
 	}
 	ok := cu.repository.CheckCategoryByName(category.Category)
 	if ok {
-		return domain.Category{}, errors.New("already exist")
+		return domain.Category{}, errors.New(errmsg.ErrExistTrue)
 	}
 
 	productResponse, err := cu.repository.AddCategory(category)
@@ -50,7 +51,7 @@ func (cu *categoryUseCase) GetCategories() ([]domain.Category, error) {
 func (cu *categoryUseCase) UpdateCategory(currentId int, new string) (domain.Category, error) {
 
 	if currentId <= 0 {
-		return domain.Category{}, errors.New("invalid category id")
+		return domain.Category{}, errors.New(errmsg.ErrInvalidCId)
 	}
 
 	ok, err := cu.repository.CheckCategory(currentId)
@@ -59,7 +60,7 @@ func (cu *categoryUseCase) UpdateCategory(currentId int, new string) (domain.Cat
 	}
 
 	if !ok {
-		return domain.Category{}, errors.New("there is no category as you mentioned")
+		return domain.Category{}, errors.New(errmsg.ErrCatExistFalse)
 	}
 
 	newcat, err := cu.repository.UpdateCategory(currentId, new)
@@ -72,19 +73,19 @@ func (cu *categoryUseCase) UpdateCategory(currentId int, new string) (domain.Cat
 
 func (cu *categoryUseCase) DeleteCategory(categoryID string) error {
 	if categoryID == "" {
-		return errors.New("invalid data")
+		return errors.New(errmsg.ErrInvalidData)
 	}
 	catId, catErr := strconv.Atoi(categoryID)
 
 	if catErr != nil || catId <= 0 {
-		return errors.New("invalid category id")
+		return errors.New(errmsg.ErrInvalidCId)
 	}
 	ok, err := cu.repository.CheckCategory(catId)
 	if err != nil {
-		return errors.New("error in checking")
+		return err
 	}
 	if !ok {
-		return errors.New("category does not exist")
+		return errors.New(errmsg.ErrCatExistFalse)
 	}
 	err = cu.repository.DeleteCategory(categoryID)
 	if err != nil {

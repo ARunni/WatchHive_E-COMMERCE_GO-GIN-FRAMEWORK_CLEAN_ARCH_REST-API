@@ -2,7 +2,7 @@ package errmsg
 
 // Error strings
 
-const ErrRefreshToken = "refresh token is invalid  login again "
+const ErrRefreshToken = "refresh token is sinvalid  login again "
 const ErrGetDB = "error in retriving data from database"
 const ErrWriteDB = "error in writing data to database"
 const ErrUpdateDB = "error in updating data to database"
@@ -22,6 +22,22 @@ const ErrDatatypeConversion = "convertion of datatype is failed"
 const ErrOfferExistTrue = "offer already exist"
 const ErrGetOffer = "error in getting offers of"
 const ErrDataNegative = "data cannot be negative"
+const ErrBlockAlready = "already blocked"
+const ErrUnBlockAlready = "already unblocked"
+const ErrFieldEmpty = "field cannot be empty"
+const ErrInvalidTimePeriod = "invalid time period, available options : week, month & year"
+const ErrFormat = "enter the data in correct format"
+const ErrInvalidFormat = "invalid format"
+const ErrInvalidPId = "invalid product id"
+const ErrDataZero = "data must be 1 or greater"
+const ErrOutOfStock = "out of stock"
+const ErrLimitExceeds = "limit exceeds"
+const ErrEmptyCart = "cart is empty"
+const ErrCartProductExist = "product not available in cart"
+const ErrExistTrue ="already exist"
+const ErrInvalidCId = "invalid category id"
+const ErrCatExistFalse ="category does not exist"
+const ErrInvalidData = "invalid data"
 
 const StatusApprove = "approved"
 
