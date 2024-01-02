@@ -2,6 +2,7 @@ package repository
 
 import (
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 
 	"github.com/pkg/errors"
@@ -33,10 +34,10 @@ func (cr *cartRepository) CheckProductAvailable(product_id int) (bool, error) {
 
 	err := cr.DB.Raw(querry, product_id).Scan(&count).Error
 	if err != nil {
-		return false, errors.New("product does not exist")
+		return false, errors.New(errmsg.ErrProductExist)
 	}
 	if count < 1 {
-		return false, errors.New("product does not exist")
+		return false, errors.New(errmsg.ErrProductExist)
 	}
 	return true, nil
 }
@@ -46,7 +47,7 @@ func (cr *cartRepository) CheckStock(product_id int) (int, error) {
 	var stock int
 	err := cr.DB.Raw(qurry, product_id).Scan(&stock).Error
 	if err != nil {
-		return 0, errors.New("error in getting stock")
+		return 0, errors.New(errmsg.ErrGetDB)
 	}
 	return stock, nil
 }
@@ -56,7 +57,7 @@ func (cr *cartRepository) QuantityOfProductInCart(userId int, productId int) (in
 	querry := "SELECT quantity FROM carts WHERE user_id = ? AND product_id = ?"
 	err := cr.DB.Raw(querry, userId, productId).Scan(&productQty).Error
 	if err != nil {
-		return 0, errors.New("error in getting quantity")
+		return 0, errors.New(errmsg.ErrGetDB)
 	}
 	return productQty, nil
 }
@@ -153,7 +154,7 @@ func (cr *cartRepository) RemoveFromCart(cart models.RemoveFromCart) error {
 	querry := `	DELETE  FROM carts WHERE product_id = ? AND user_id = ?`
 	err := cr.DB.Exec(querry, cart.ProductID, cart.UserID).Error
 	if err != nil {
-		return errors.New("error at database")
+		return errors.New(errmsg.ErrDb)
 	}
 	return nil
 }
@@ -163,10 +164,10 @@ func (cr *cartRepository) CheckCart(userID int) (bool, error) {
 	querry := `	SELECT COUNT(*) FROM carts WHERE user_id = ?`
 	err := cr.DB.Raw(querry, userID).Scan(&count).Error
 	if err != nil {
-		return false, errors.New("no cart found")
+		return false, errors.New(errmsg.ErrCartFalse)
 	}
 	if count < 1 {
-		return false, errors.New("no cart found")
+		return false, errors.New(errmsg.ErrCartFalse)
 	}
 	return true, nil
 }
@@ -196,7 +197,7 @@ func (cr *cartRepository) CheckProductOnCart(productID, userID int) (bool, error
 	var count int
 	err := cr.DB.Raw("select count(*) from carts where product_id=? and user_id= ?", productID, userID).Scan(&count).Error
 	if err != nil {
-		return false, errors.New("error in getting data")
+		return false, errors.New(errmsg.ErrGetDB)
 	}
 	if count < 1 {
 		return false, nil

@@ -1,6 +1,6 @@
 package errmsg
 // Error strings
-const DbErr = "Data base error"
+
 
 const ErrRefreshToken = "refresh token is invalid  login again "
 const ErrGetDB = "error in retriving data from database"
@@ -10,10 +10,17 @@ const ErrServer = "internal server error"
 const ErrOtpValidate ="failed to validate otp"
 const ErrDataIsNot = "data is not"
 const ErrAlphabet = "data contains non-alphabetic characters"
+const ErrUserExist = "user does not exist"
+const ErrDb = "data base error"
+const ErrProductExist  = "product does not exist"
+const ErrCartFalse = "no cart found"
+
 
 const StatusApprove = "approved"
 
 // Message strings
+const DbErr = "Data base error"
+
 const MsgConstraintsErr = "Constraints not satisfied"
 const MsgAuthUserErr = "Cannot authenticate user"
 const MsgFormatErr = "Details is not in correct format"

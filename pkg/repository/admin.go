@@ -3,6 +3,7 @@ package repository
 import (
 	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 	"strconv"
@@ -42,7 +43,7 @@ func (ad *adminRepository) GetUserByID(id string) (domain.Users, error) {
 		return domain.Users{}, err
 	}
 	if count < 1 {
-		return domain.Users{}, errors.New("user for the given id does not exist")
+		return domain.Users{}, errors.New(errmsg.ErrUserExist)
 	}
 
 	var userDetails domain.Users
@@ -98,12 +99,12 @@ func (ar *adminRepository) DashboardUserDetails() (models.DashBoardUser, error) 
 	var userDetails models.DashBoardUser
 	err := ar.DB.Raw("select count(*) from users where is_admin = 'false'").Scan(&userDetails.TotalUsers).Error
 	if err != nil {
-		err = errors.New("cannot get total users from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardUser{}, err
 	}
 	err = ar.DB.Raw("select count(*) from users where blocked = 'true'").Scan(&userDetails.BlockedUser).Error
 	if err != nil {
-		err = errors.New("cannot get blocked users from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardUser{}, err
 	}
 	return userDetails, nil
@@ -113,12 +114,12 @@ func (ar *adminRepository) DashboardProductDetails() (models.DashBoardProduct, e
 	var productDetails models.DashBoardProduct
 	err := ar.DB.Raw("select count(*) from products").Scan(&productDetails.TotalProducts).Error
 	if err != nil {
-		err = errors.New("cannot get total products from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardProduct{}, err
 	}
 	err = ar.DB.Raw("select count(*) from products where stock <= 0").Scan(&productDetails.OutofStockProduct).Error
 	if err != nil {
-		err = errors.New("cannot get stock from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardProduct{}, err
 	}
 	return productDetails, nil
@@ -131,7 +132,7 @@ func (ar *adminRepository) DashboardAmountDetails() (models.DashBoardAmount, err
 	`
 	err := ar.DB.Raw(querry).Scan(&amountDetails.CreditedAmount).Error
 	if err != nil {
-		err = errors.New("cannot get total amount from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardAmount{}, err
 	}
 	querry =
@@ -147,7 +148,7 @@ func (ar *adminRepository) DashboardAmountDetails() (models.DashBoardAmount, err
 	`
 	err = ar.DB.Raw(querry).Scan(&amountDetails.PendingAmount).Error
 	if err != nil {
-		err = errors.New("cannot get pending amount from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardAmount{}, err
 	}
 	return amountDetails, nil
@@ -157,27 +158,27 @@ func (ar *adminRepository) DashboardOrderDetails() (models.DashBoardOrder, error
 	var orderDetails models.DashBoardOrder
 	err := ar.DB.Raw("select count(*) from orders where payment_status = 'PAID'").Scan(&orderDetails.CompletedOrder).Error
 	if err != nil {
-		err = errors.New("cannot get total order from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardOrder{}, err
 	}
 	err = ar.DB.Raw("select count(*) from orders where shipment_status = 'pending' or shipment_status = 'processing'").Scan(&orderDetails.PendingOrder).Error
 	if err != nil {
-		err = errors.New("cannot get pending orders from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardOrder{}, err
 	}
 	err = ar.DB.Raw("select count(*) from orders where shipment_status = 'cancelled' ").Scan(&orderDetails.CancelledOrder).Error
 	if err != nil {
-		err = errors.New("cannot get cancelled orders from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardOrder{}, err
 	}
 	err = ar.DB.Raw("select count(*) from orders  ").Scan(&orderDetails.TotalOrder).Error
 	if err != nil {
-		err = errors.New("cannot get total orders from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardOrder{}, err
 	}
 	err = ar.DB.Raw("select sum(quantity) from order_items  ").Scan(&orderDetails.TotalOrderItem).Error
 	if err != nil {
-		err = errors.New("cannot get total order items from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardOrder{}, err
 	}
 	return orderDetails, nil
@@ -188,19 +189,19 @@ func (ar *adminRepository) DashboardTotalRevenueDetails() (models.DashBoardReven
 	startTime := time.Now().AddDate(0, 0, -1)
 	err := ar.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status ='PAID' and created_at >= ?", startTime).Scan(&revenueDetails.TodayRevenue).Error
 	if err != nil {
-		err = errors.New("cannot get today revenue from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardRevenue{}, err
 	}
 	startTime = time.Now().AddDate(0, -1, 1)
 	err = ar.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status ='PAID' and created_at >= ?", startTime).Scan(&revenueDetails.MonthRevenue).Error
 	if err != nil {
-		err = errors.New("cannot get month revenue from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardRevenue{}, err
 	}
 	startTime = time.Now().AddDate(-1, 1, 1)
 	err = ar.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status ='PAID' and created_at >= ?", startTime).Scan(&revenueDetails.YearRevenue).Error
 	if err != nil {
-		err = errors.New("cannot get year revenue from db")
+		err = errors.New(errmsg.ErrGetDB)
 		return models.DashBoardRevenue{}, err
 	}
 	return revenueDetails, nil
