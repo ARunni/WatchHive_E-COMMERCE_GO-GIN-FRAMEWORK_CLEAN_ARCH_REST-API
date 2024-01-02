@@ -3,6 +3,7 @@ package repository
 import (
 	"WatchHive/pkg/domain"
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 
@@ -33,10 +34,10 @@ func (or *orderRepository) GetAddressFromOrderId(orderID int) (models.AddressInf
 	var addressInfoResponse models.AddressInfoResponse
 	var addressId int
 	if err := or.DB.Raw("SELECT address_id FROM orders WHERE id =?", orderID).Scan(&addressId).Error; err != nil {
-		return models.AddressInfoResponse{}, errors.New("first in orders")
+		return models.AddressInfoResponse{}, errors.New(errmsg.ErrGetDB)
 	}
 	if err := or.DB.Raw("SELECT * FROM addresses WHERE id=?", addressId).Scan(&addressInfoResponse).Error; err != nil {
-		return models.AddressInfoResponse{}, errors.New("second  in address")
+		return models.AddressInfoResponse{}, errors.New(errmsg.ErrGetDB)
 	}
 	return addressInfoResponse, nil
 }
@@ -237,7 +238,7 @@ func (or *orderRepository) UserOrderRelationship(orderID int, userID int) (int, 
 func (or *orderRepository) GetPaymentStatus(orderID int) (string, error) {
 	var paymentStatus string
 	if err := or.DB.Raw("select payment_status from orders where id = ?", orderID).Scan(&paymentStatus).Error; err != nil {
-		return "", errors.New("retriving data from database failed")
+		return "", errors.New(errmsg.ErrGetDB)
 	}
 	return paymentStatus, nil
 }
@@ -429,7 +430,7 @@ func (or *orderRepository) GetFinalPriceOrder(orderID int) (float64, error) {
 	var final_price float64
 	err := or.DB.Raw("select final_price from orders where id = ?", orderID).Scan(&final_price).Error
 	if err != nil {
-		return 0.0, errors.New("getting final price is failed at db")
+		return 0.0, errors.New(errmsg.ErrGetDB)
 	}
 	return final_price, nil
 }
