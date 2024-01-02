@@ -473,14 +473,14 @@ func (or *orderUseCase) PrintInvoice(orderId,userId int) (*gofpdf.Fpdf, error) {
 		return nil, err
 	}
 
-	fmt.Println("order usecase ", order)
+	
 
 	items, err := or.orderRepository.GetItemsByOrderId(orderId)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println("items usecase", items)
+	
 
 	if order.ShipmentStatus != "delivered" {
 		return nil, errors.New(errmsg.ErrDeliverInvoice)
