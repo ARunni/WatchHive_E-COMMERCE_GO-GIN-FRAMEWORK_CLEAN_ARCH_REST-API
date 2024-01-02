@@ -20,12 +20,31 @@ func NewOferUsecase(repo interfaces.OfferRepository) services.OfferUsecase {
 }
 
 func (ou *offerUsecase) AddProductOffer(ProductOffer models.ProductOfferResp) error {
+	if ProductOffer.ProductID <= 0 {
+		return errors.New(errmsg.ErrDataZero)
+	}
+	if ProductOffer.DiscountPercentage <= 0 {
+		return errors.New(errmsg.ErrDataZero)
+	}
+	if ProductOffer.OfferName == ""{
+		return errors.New(errmsg.ErrFieldEmpty)
+	}
+
 	if err := ou.repo.AddProductOffer(ProductOffer); err != nil {
 		return errors.New(errmsg.ErrOfferAdd)
 	}
 	return nil
 }
 func (ou *offerUsecase) AddCategoryOffer(CategoryOffer models.CategorytOfferResp) error {
+	if CategoryOffer.CategoryID <= 0 {
+		return errors.New(errmsg.ErrDataZero)
+	}
+	if CategoryOffer.DiscountPercentage <= 0 {
+		return errors.New(errmsg.ErrDataZero)
+	}
+	if CategoryOffer.OfferName == ""{
+		return errors.New(errmsg.ErrFieldEmpty)
+	}
 	if err := ou.repo.AddCategoryOffer(CategoryOffer); err != nil {
 		return errors.New(errmsg.ErrOfferAdd)
 	}
