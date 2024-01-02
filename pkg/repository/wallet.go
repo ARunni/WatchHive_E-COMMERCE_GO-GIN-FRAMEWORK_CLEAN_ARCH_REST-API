@@ -2,6 +2,7 @@ package repository
 
 import (
 	interfaces "WatchHive/pkg/repository/interface"
+	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
 
@@ -21,7 +22,7 @@ func (wr *WalletDB) CreateWallet(userID int) error {
 	err := wr.Db.Exec("INSERT INTO wallets (created_at ,user_id) VALUES (NOW(),?) RETURNING id", userID).Error
 	if err != nil {
 
-		return errors.New("cannot create wallet error at database")
+		return errors.New(errmsg.ErrWriteDB)
 	}
 
 	return nil
@@ -39,7 +40,7 @@ func (wr *WalletDB) IsWalletExist(userID int) (bool, error) {
 	var count int
 	err := wr.Db.Raw("select count(*) from wallets where user_id=?", userID).Scan(&count).Error
 	if err != nil {
-		return false, errors.New("cannot get wallet details")
+		return false, errors.New(errmsg.ErrGetDB)
 	}
 	return count >= 1, nil
 }
@@ -47,7 +48,7 @@ func (wr *WalletDB) IsWalletExist(userID int) (bool, error) {
 func (wr *WalletDB) AddToWallet(userID int, Amount float64) error {
 	err := wr.Db.Exec("update wallets set amount = amount+? where user_id = ? returning amount", Amount, userID).Error
 	if err != nil {
-		return errors.New("inserting into wallet failed at db")
+		return errors.New(errmsg.ErrWriteDB)
 	}
 	return nil
 
