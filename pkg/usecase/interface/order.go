@@ -16,5 +16,5 @@ type OrderUseCase interface {
 	ApproveOrder(orderId int) error
 	CancelOrderFromAdmin(orderId int) error
 	ReturnOrder(orderId, userId int) error
-	PrintInvoice(orderIdInt int) (*gofpdf.Fpdf, error)
+	PrintInvoice(orderIdInt,userID int) (*gofpdf.Fpdf, error)
 }

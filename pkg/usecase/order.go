@@ -371,14 +371,14 @@ func (ou *orderUseCase) CancelOrderFromAdmin(orderId int) error {
 func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 
 	if orderId < 0 {
-		return errors.New("invalid order id")
+		return errors.New(errmsg.ErrInvalidData)
 	}
 	ok, err := ou.orderRepository.CheckOrderID(orderId)
 	if err != nil {
 		return err
 	}
 	if !ok {
-		return errors.New("order does not exist")
+		return errors.New("order " + errmsg.ErrNotExist)
 	}
 	userTest, err := ou.orderRepository.UserOrderRelationship(orderId, userId)
 	if err != nil {
@@ -446,8 +446,24 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 	return nil
 }
 
-func (or *orderUseCase) PrintInvoice(orderId int) (*gofpdf.Fpdf, error) {
-
+func (or *orderUseCase) PrintInvoice(orderId,userId int) (*gofpdf.Fpdf, error) {
+	if orderId < 0 {
+		return nil,errors.New(errmsg.ErrInvalidData)
+	}
+	ok, err := or.orderRepository.CheckOrderID(orderId)
+	if err != nil {
+		return nil,err
+	}
+	if !ok {
+		return nil,errors.New("order " + errmsg.ErrNotExist)
+	}
+	userTest, err := or.orderRepository.UserOrderRelationship(orderId, userId)
+	if err != nil {
+		return nil,err
+	}
+	if userTest != userId {
+		return nil,errors.New(errmsg.ErrUserOwnedOrder)
+	}
 	if orderId < 1 {
 		return nil, errors.New("enter a valid order id")
 	}

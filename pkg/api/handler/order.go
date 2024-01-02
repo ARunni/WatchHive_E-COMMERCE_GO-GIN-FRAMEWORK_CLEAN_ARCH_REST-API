@@ -338,6 +338,9 @@ func (oh *OrderHandler) ReturnOrder(c *gin.Context) {
 // @Failure 500 {object} response.Response "Error generating or downloading the invoice"
 // @Router /user/orders/print [get]
 func (O *OrderHandler) PrintInvoice(c *gin.Context) {
+	userId,_ := c.Get("id")
+	userID := userId.(int)
+
 	orderId := c.Query("order_id")
 	orderIdInt, err := strconv.Atoi(orderId)
 	if err != nil {
@@ -346,7 +349,7 @@ func (O *OrderHandler) PrintInvoice(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	pdf, err := O.orderUsecase.PrintInvoice(orderIdInt)
+	pdf, err := O.orderUsecase.PrintInvoice(orderIdInt,userID)
 	fmt.Println("error ", err)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadGateway, errmsg.MsgPrintErr, nil, err.Error())
