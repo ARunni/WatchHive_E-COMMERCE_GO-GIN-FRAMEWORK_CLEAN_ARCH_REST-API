@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"WatchHive/pkg/config"
+	"WatchHive/pkg/utils/errmsg"
 	"net/http"
 	"strings"
 
@@ -21,7 +22,7 @@ func AdminAuthMiddleware(c *gin.Context) {
 
 	if err != nil {
 		// The access token is invalid.
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization Token error"})
+		c.JSON(http.StatusUnauthorized, gin.H{errmsg.MsgErr: errmsg.MsgTokenErr})
 		c.Abort()
 		return
 
