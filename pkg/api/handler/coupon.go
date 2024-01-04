@@ -48,7 +48,37 @@ func (ch *CouponHandler) AddCoupon(c *gin.Context) {
 	c.JSON(http.StatusOK, successResp)
 }
 
-func (ch *CouponHandler) GetCoupon(c *gin.Context) {
+// GetCoupon Get All coupons
+// @Summary Get coupons
+// @Description Retrieves coupon information
+// @Tags Admin Coupon Management
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response "Success: Retrieved coupons successfully"
+// @Failure 400 {object} response.Response "Bad request: Error while retrieving coupons"
+// @Security BearerTokenAuth
+// @Router admin/coupon [get]
+func (ch *CouponHandler) GetCouponAdmin(c *gin.Context) {
+	couponResp, err := ch.CouponUsecase.GetCoupon()
+	if err != nil {
+		ereResp := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGetErr, nil, err.Error())
+		c.JSON(http.StatusBadRequest, ereResp)
+	}
+	successRep := response.ClientResponse(http.StatusOK, errmsg.MsgGetSucces, couponResp, nil)
+	c.JSON(http.StatusOK, successRep)
+}
+
+// GetCoupon Get All coupons
+// @Summary Get coupons
+// @Description Retrieves coupon information
+// @Tags User Coupon Management
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response "Success: Retrieved coupons successfully"
+// @Failure 400 {object} response.Response "Bad request: Error while retrieving coupons"
+// @Security BearerTokenAuth
+// @Router admin/coupon [get]
+func (ch *CouponHandler) GetCouponUser(c *gin.Context) {
 	couponResp, err := ch.CouponUsecase.GetCoupon()
 	if err != nil {
 		ereResp := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGetErr, nil, err.Error())

@@ -60,7 +60,7 @@ func UserRoutes(engine *gin.RouterGroup,
 		}
 		coupon := engine.Group("/coupon")
 		{
-			coupon.GET("", couponHandler.GetCoupon)
+			coupon.GET("", couponHandler.GetCouponUser)
 		}
 
 	}
