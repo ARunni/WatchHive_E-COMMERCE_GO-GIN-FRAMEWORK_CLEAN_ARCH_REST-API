@@ -10,4 +10,5 @@ type CouponResp struct {
 	ID              uint   `json:"id"`
 	OfferPercentage int    `json:"offer_percentage"`
 	ExpireDate      string `json:"expire_date"`
+	CouponName      string `json:"coupon_name"`
 }
