@@ -7,7 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, categoryHandler *handler.CategoryHandler, productHandler *handler.ProductHandler, paymentHandler *handler.PaymentHandler, orderHandler *handler.OrderHandler, offerHandler *handler.OfferHandler) {
+func AdminRoutes(engine *gin.RouterGroup,
+	adminHandler *handler.AdminHandler,
+	categoryHandler *handler.CategoryHandler,
+	productHandler *handler.ProductHandler,
+	paymentHandler *handler.PaymentHandler,
+	orderHandler *handler.OrderHandler,
+	offerHandler *handler.OfferHandler,
+	couponHandler *handler.CouponHandler) {
 
 	engine.POST("", adminHandler.LoginHandler)
 
@@ -61,6 +68,10 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 			offer.POST("/category_offer", offerHandler.AddCategoryOffer)
 			offer.GET("/category_offer", offerHandler.GetCategoryOffer)
 			offer.DELETE("/category_offer", offerHandler.ExpireCategoryOffer)
+		}
+		coupon := engine.Group("coupon")
+		{
+			coupon.POST("", couponHandler.AddCoupon)
 		}
 
 	}

@@ -71,7 +71,7 @@ const ErrInvalidName = "invalid name"
 const ErrInvalidPin = "invalid pin number"
 const ErrInvalidUId = "invalid user id"
 const ErrChangePassword = "password cannot change"
-
+const ErrInvalidDate = "invalid date format or invalid date"
 
 const StatusApprove = "approved"
 
@@ -132,3 +132,4 @@ const MsgTokenErr = "Invalid Authorization Token error"
 const MsgTokenMissingErr = "Missing authorization token"
 const MsgUnAuthErr = "Unauthorized access"
 const MsgIdGetErr = "Error retrieving ID"
+const MsgCouponAddFailed = "Adding coupon is failed "

@@ -24,7 +24,8 @@ func NewServerHTTP(adminHandler *handler.AdminHandler,
 	orderHandler *handler.OrderHandler,
 	paymentHandler *handler.PaymentHandler,
 	walletHandler *handler.WalletHandler,
-	offerHandler *handler.OfferHandler) *ServerHTTP {
+	offerHandler *handler.OfferHandler,
+	couponHandler *handler.CouponHandler) *ServerHTTP {
 	engine := gin.New()
 
 	engine.Use(gin.Logger())
@@ -33,7 +34,7 @@ func NewServerHTTP(adminHandler *handler.AdminHandler,
 	engine.GET("/validate_token", adminHandler.ValidateRefreshTokenAndCreateNewAccess)
 
 	routes.UserRoutes(engine.Group("/user"), userHandler, otpHandler, productHandler, cartHandler, orderHandler, paymentHandler, walletHandler)
-	routes.AdminRoutes(engine.Group("/admin"), adminHandler, catgoryHandler, productHandler, paymentHandler, orderHandler, offerHandler)
+	routes.AdminRoutes(engine.Group("/admin"), adminHandler, catgoryHandler, productHandler, paymentHandler, orderHandler, offerHandler,couponHandler)
 
 	return &ServerHTTP{engine: engine}
 }
