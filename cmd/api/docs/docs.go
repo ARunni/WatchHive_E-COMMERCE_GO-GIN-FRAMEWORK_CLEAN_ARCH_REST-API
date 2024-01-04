@@ -272,6 +272,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/coupon": {
+            "post": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Adds a new coupon based on the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Coupon Management"
+                ],
+                "summary": "Add a new coupon",
+                "parameters": [
+                    {
+                        "description": "Coupon details to add",
+                        "name": "AddCoupon",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Coupon"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Coupon added successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: Fields are provided in the wrong format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: Invalid or missing authentication",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error: Could not add the coupon",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/currentsalesreport": {
             "get": {
                 "security": [
@@ -1316,63 +1373,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid request or unable to unblock user",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/coupons": {
-            "post": {
-                "security": [
-                    {
-                        "BearerTokenAuth": []
-                    }
-                ],
-                "description": "Adds a new coupon based on the provided details.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Coupons"
-                ],
-                "summary": "Add a new coupon",
-                "parameters": [
-                    {
-                        "description": "Coupon details to add",
-                        "name": "AddCoupon",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Coupon"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success: Coupon added successfully",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request: Fields are provided in the wrong format",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized: Invalid or missing authentication",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error: Could not add the coupon",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
