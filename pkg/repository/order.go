@@ -327,7 +327,7 @@ addresses.city,addresses.state,
 addresses.pin 
 FROM orders INNER JOIN users 
 ON orders.user_id = users.id INNER JOIN addresses 
-ON orders.address_id = addresses.id limit ? offset ?`
+ON orders.address_id = addresses.id order by orders.id desc limit ? offset ?`
 
 	err := or.DB.Raw(querry, count, offset).Scan(&orderDatails).Error
 	if err != nil {
