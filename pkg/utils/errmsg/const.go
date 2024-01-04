@@ -72,6 +72,7 @@ const ErrInvalidPin = "invalid pin number"
 const ErrInvalidUId = "invalid user id"
 const ErrChangePassword = "password cannot change"
 const ErrInvalidDate = "invalid date format or invalid date"
+const ErrCouponExistTrue = "given offer already exist try another name"
 
 const StatusApprove = "approved"
 
