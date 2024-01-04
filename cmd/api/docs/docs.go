@@ -273,6 +273,38 @@ const docTemplate = `{
             }
         },
         "/admin/coupon": {
+            "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Retrieves coupon information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Coupon Management"
+                ],
+                "summary": "Get coupons",
+                "responses": {
+                    "200": {
+                        "description": "Success: Retrieved coupons successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: Error while retrieving coupons",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -1584,6 +1616,40 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error: Updation failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/coupon": {
+            "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Retrieves coupon information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Coupon Management"
+                ],
+                "summary": "Get coupons",
+                "responses": {
+                    "200": {
+                        "description": "Success: Retrieved coupons successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: Error while retrieving coupons",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }

@@ -363,6 +363,26 @@ paths:
       tags:
       - Admin Category Management
   /admin/coupon:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves coupon information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Retrieved coupons successfully'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 'Bad request: Error while retrieving coupons'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get coupons
+      tags:
+      - Admin Coupon Management
     post:
       consumes:
       - application/json
@@ -1212,6 +1232,27 @@ paths:
       summary: Add item to cart
       tags:
       - User Cart Management
+  /user/coupon:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves coupon information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Retrieved coupons successfully'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 'Bad request: Error while retrieving coupons'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get coupons
+      tags:
+      - User Coupon Management
   /user/login:
     post:
       consumes:

@@ -57,7 +57,7 @@ func (ch *CouponHandler) AddCoupon(c *gin.Context) {
 // @Success 200 {object} response.Response "Success: Retrieved coupons successfully"
 // @Failure 400 {object} response.Response "Bad request: Error while retrieving coupons"
 // @Security BearerTokenAuth
-// @Router admin/coupon [get]
+// @Router /admin/coupon [get]
 func (ch *CouponHandler) GetCouponAdmin(c *gin.Context) {
 	couponResp, err := ch.CouponUsecase.GetCoupon()
 	if err != nil {
@@ -77,7 +77,7 @@ func (ch *CouponHandler) GetCouponAdmin(c *gin.Context) {
 // @Success 200 {object} response.Response "Success: Retrieved coupons successfully"
 // @Failure 400 {object} response.Response "Bad request: Error while retrieving coupons"
 // @Security BearerTokenAuth
-// @Router admin/coupon [get]
+// @Router /user/coupon [get]
 func (ch *CouponHandler) GetCouponUser(c *gin.Context) {
 	couponResp, err := ch.CouponUsecase.GetCoupon()
 	if err != nil {
