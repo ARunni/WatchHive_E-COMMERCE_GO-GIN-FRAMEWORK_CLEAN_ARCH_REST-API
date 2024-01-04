@@ -60,3 +60,12 @@ func (cr *couponRepo) GetCoupon() ([]models.CouponResp, error) {
 	}
 	return coupon, nil
 }
+
+func (cr *couponRepo) GetCouponData(couponID int) (models.CouponResp, error) {
+	var coupon models.CouponResp
+	err := cr.DB.Raw("select * from coupons").Scan(&coupon).Error
+	if err != nil {
+		return models.CouponResp{}, errors.New(errmsg.ErrGetDB)
+	}
+	return coupon, nil
+}

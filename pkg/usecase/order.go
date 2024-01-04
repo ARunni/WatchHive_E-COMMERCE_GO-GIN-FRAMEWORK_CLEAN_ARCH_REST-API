@@ -21,15 +21,17 @@ type orderUseCase struct {
 	userRepository    repo_interface.UserRepository
 	paymentRepository repo_interface.PaymentRepository
 	walletRepo        repo_interface.WalletRepository
+	couponRepo        repo_interface.CouponRepository
 }
 
-func NewOrderUseCase(orderRepo repo_interface.OrderRepository, walletRepo repo_interface.WalletRepository, cartRepo repo_interface.CartRepository, userRepo repo_interface.UserRepository, paymentRepo repo_interface.PaymentRepository) usecase_interfaces.OrderUseCase {
+func NewOrderUseCase(orderRepo repo_interface.OrderRepository, couponRepo repo_interface.CouponRepository, walletRepo repo_interface.WalletRepository, cartRepo repo_interface.CartRepository, userRepo repo_interface.UserRepository, paymentRepo repo_interface.PaymentRepository) usecase_interfaces.OrderUseCase {
 	return &orderUseCase{
 		orderRepository:   orderRepo,
 		cartRepository:    cartRepo,
 		userRepository:    userRepo,
 		paymentRepository: paymentRepo,
 		walletRepo:        walletRepo,
+		couponRepo:        couponRepo,
 	}
 
 }
@@ -94,6 +96,18 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
 	}
+	// var CouponData models.CouponResp
+	if orderBody.CouponID > 0 {
+
+		couponExist, err := ou.couponRepo.IsCouponExistByID(orderBody.CouponID)
+		if err != nil {
+			return models.OrderSuccessResponse{}, err
+		}
+		if !couponExist {
+			return models.OrderSuccessResponse{}, errors.New(errmsg.ErrCouponExistFalse)
+		}
+
+	}
 
 	if !PaymentExist {
 		return models.OrderSuccessResponse{}, errors.New("paymentmethod " + errmsg.ErrNotExist)
@@ -104,8 +118,17 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 	}
 
 	total, err := ou.cartRepository.TotalAmountInCart(orderBody.UserID)
+
+	totalOld := total
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
+	}
+	if orderBody.CouponID > 0 {
+		couponData, err := ou.couponRepo.GetCouponData(orderBody.CouponID)
+		if err != nil {
+			return models.OrderSuccessResponse{}, err
+		}
+		total -= (total * float64(couponData.OfferPercentage) / 100)
 	}
 
 	order_id, err := ou.orderRepository.OrderItems(orderBody, total)
@@ -138,6 +161,10 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
 	}
+
+	orderSuccessResponse.Total = totalOld
+	orderSuccessResponse.FinalPrice = total
+
 	return orderSuccessResponse, nil
 }
 
@@ -446,23 +473,23 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 	return nil
 }
 
-func (or *orderUseCase) PrintInvoice(orderId,userId int) (*gofpdf.Fpdf, error) {
+func (or *orderUseCase) PrintInvoice(orderId, userId int) (*gofpdf.Fpdf, error) {
 	if orderId < 0 {
-		return nil,errors.New(errmsg.ErrInvalidData)
+		return nil, errors.New(errmsg.ErrInvalidData)
 	}
 	ok, err := or.orderRepository.CheckOrderID(orderId)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	if !ok {
-		return nil,errors.New("order " + errmsg.ErrNotExist)
+		return nil, errors.New("order " + errmsg.ErrNotExist)
 	}
 	userTest, err := or.orderRepository.UserOrderRelationship(orderId, userId)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	if userTest != userId {
-		return nil,errors.New(errmsg.ErrUserOwnedOrder)
+		return nil, errors.New(errmsg.ErrUserOwnedOrder)
 	}
 	if orderId < 1 {
 		return nil, errors.New("enter a valid order id")
@@ -473,14 +500,10 @@ func (or *orderUseCase) PrintInvoice(orderId,userId int) (*gofpdf.Fpdf, error) {
 		return nil, err
 	}
 
-	
-
 	items, err := or.orderRepository.GetItemsByOrderId(orderId)
 	if err != nil {
 		return nil, err
 	}
-
-	
 
 	if order.ShipmentStatus != "delivered" {
 		return nil, errors.New(errmsg.ErrDeliverInvoice)

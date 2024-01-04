@@ -7,4 +7,5 @@ type CouponRepository interface {
 	IsCouponExistByName(couponName string) (bool, error)
 	IsCouponExistByID(couponID int) (bool, error)
 	GetCoupon()([]models.CouponResp,error)
+	GetCouponData(couponID int)(models.CouponResp,error)
 }

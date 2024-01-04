@@ -2553,6 +2553,9 @@ const docTemplate = `{
                 "address_id": {
                     "type": "integer"
                 },
+                "coupon_id": {
+                    "type": "integer"
+                },
                 "payment_id": {
                     "type": "integer"
                 }

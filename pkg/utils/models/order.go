@@ -10,10 +10,13 @@ type CheckoutDetails struct {
 type OrderFromCart struct {
 	PaymentID uint `json:"payment_id" binding:"required"`
 	AddressID uint `json:"address_id" binding:"required"`
+	CouponID  uint `json:"coupon_id" `
 }
 type OrderSuccessResponse struct {
-	OrderID        uint   `json:"order_id"`
-	ShipmentStatus string `json:"shipment_status"`
+	OrderID        uint    `json:"order_id"`
+	ShipmentStatus string  `json:"shipment_status"`
+	Total          float64 `json:"total"`
+	FinalPrice     float64 `json:"finalprice"`
 }
 
 type OrderDetails struct {
@@ -27,6 +30,7 @@ type OrderIncoming struct {
 	UserID    int `json:"user_id"`
 	PaymentID int `json:"payment_id"`
 	AddressID int `json:"address_id"`
+	CouponID  int `json:"coupon_id"`
 }
 
 type OrderProductDetails struct {
