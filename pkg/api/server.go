@@ -33,8 +33,17 @@ func NewServerHTTP(adminHandler *handler.AdminHandler,
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	engine.GET("/validate_token", adminHandler.ValidateRefreshTokenAndCreateNewAccess)
 
-	routes.UserRoutes(engine.Group("/user"), userHandler, otpHandler, productHandler, cartHandler, orderHandler, paymentHandler, walletHandler)
-	routes.AdminRoutes(engine.Group("/admin"), adminHandler, catgoryHandler, productHandler, paymentHandler, orderHandler, offerHandler,couponHandler)
+	routes.UserRoutes(engine.Group("/user"),
+		userHandler, otpHandler,
+		productHandler, cartHandler,
+		orderHandler, paymentHandler,
+		walletHandler, couponHandler)
+
+	routes.AdminRoutes(engine.Group("/admin"),
+		adminHandler, catgoryHandler,
+		productHandler, paymentHandler,
+		orderHandler, offerHandler,
+		couponHandler)
 
 	return &ServerHTTP{engine: engine}
 }

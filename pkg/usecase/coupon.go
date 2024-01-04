@@ -53,3 +53,11 @@ func (cu *couponUsecase) AddCoupon(coupon models.Coupon) (models.CouponResp, err
 	}
 	return couponResp, nil
 }
+
+func (cu *couponUsecase) GetCoupon()([]models.CouponResp,error) {
+	couponRep,err:=cu.couponRepo.GetCoupon()
+	if err != nil {
+		return []models.CouponResp{},err
+	} 
+	return couponRep,nil
+}
