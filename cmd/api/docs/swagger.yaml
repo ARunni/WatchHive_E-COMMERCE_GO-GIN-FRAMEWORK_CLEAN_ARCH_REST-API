@@ -66,6 +66,15 @@ definitions:
       new_password:
         type: string
     type: object
+  models.Coupon:
+    properties:
+      coupon_name:
+        type: string
+      expire_date:
+        type: string
+      offer_percentage:
+        type: integer
+    type: object
   models.NewPaymentMethod:
     properties:
       payment_name:
@@ -1029,6 +1038,42 @@ paths:
       summary: Unblock a user
       tags:
       - Admin User Management
+  /coupons:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new coupon based on the provided details.
+      parameters:
+      - description: Coupon details to add
+        in: body
+        name: AddCoupon
+        required: true
+        schema:
+          $ref: '#/definitions/models.Coupon'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Coupon added successfully'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 'Bad request: Fields are provided in the wrong format'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: 'Unauthorized: Invalid or missing authentication'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: 'Internal server error: Could not add the coupon'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Add a new coupon
+      tags:
+      - Coupons
   /user/cart:
     delete:
       consumes:
