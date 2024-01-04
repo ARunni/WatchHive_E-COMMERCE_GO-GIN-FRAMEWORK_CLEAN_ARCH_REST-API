@@ -2386,7 +2386,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User Wallet"
+                    "User Wallet Management"
                 ],
                 "summary": "Retrieve wallet details",
                 "responses": {
@@ -2404,6 +2404,40 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error: Failed to retrieve wallet details",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/wallet/history": {
+            "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Retrieves wallet history information for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Wallet Management"
+                ],
+                "summary": "Get wallet history",
+                "responses": {
+                    "200": {
+                        "description": "Success: Retrieved wallet history successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: Error while retrieving wallet history",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -2558,6 +2592,9 @@ const docTemplate = `{
                 },
                 "payment_id": {
                     "type": "integer"
+                },
+                "use_wallet": {
+                    "type": "boolean"
                 }
             }
         },

@@ -57,6 +57,7 @@ func UserRoutes(engine *gin.RouterGroup,
 
 		{
 			wallet.GET("", walletHandler.GetWallet)
+			wallet.GET("/history",walletHandler.GetWalletHistory)
 		}
 		coupon := engine.Group("/coupon")
 		{

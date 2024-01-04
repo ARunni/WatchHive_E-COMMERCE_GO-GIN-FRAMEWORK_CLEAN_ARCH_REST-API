@@ -163,7 +163,16 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 	if err != nil {
 		return models.TokenUsers{}, errors.New(errmsg.ErrPassword)
 	}
-
+	ok, err = u.walletRepo.IsWalletExist(int(user_details.Id))
+	if err != nil {
+		return models.TokenUsers{}, err
+	}
+	if !ok {
+		err := u.walletRepo.CreateWallet(int(user_details.Id))
+		if err != nil {
+			return models.TokenUsers{}, err
+		}
+	}
 	var userDetails models.UserDetailsResponse
 
 	userDetails.Id = int(user_details.Id)

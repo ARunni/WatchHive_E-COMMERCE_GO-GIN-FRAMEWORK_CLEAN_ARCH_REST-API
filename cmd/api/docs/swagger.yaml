@@ -93,6 +93,8 @@ definitions:
         type: integer
       payment_id:
         type: integer
+      use_wallet:
+        type: boolean
     required:
     - address_id
     - payment_id
@@ -1739,7 +1741,28 @@ paths:
       - BearerTokenAuth: []
       summary: Retrieve wallet details
       tags:
-      - User Wallet
+      - User Wallet Management
+  /user/wallet/history:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves wallet history information for a user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Retrieved wallet history successfully'
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: 'Bad request: Error while retrieving wallet history'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get wallet history
+      tags:
+      - User Wallet Management
 securityDefinitions:
   BearerTokenAuth:
     in: header

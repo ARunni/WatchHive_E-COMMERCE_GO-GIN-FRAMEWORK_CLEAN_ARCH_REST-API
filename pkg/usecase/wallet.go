@@ -3,9 +3,8 @@ package usecase
 import (
 	walletrep "WatchHive/pkg/repository/interface"
 	interfaces "WatchHive/pkg/usecase/interface"
-	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
-	"errors"
+	"fmt"
 )
 
 type walletUsecase struct {
@@ -17,15 +16,24 @@ func NewWalletUsecase(walletRep walletrep.WalletRepository) interfaces.WalletUse
 }
 
 func (wu *walletUsecase) GetWallet(userID int) (models.WalletAmount, error) {
-	ok, err := wu.walletRepo.IsWalletExist(userID)
+
+	amount, err := wu.walletRepo.GetWallet(userID)
 	if err != nil {
-		return models.WalletAmount{}, errors.New(errmsg.ErrDb)
+		return models.WalletAmount{}, err
 	}
-	if !ok {
-		err = wu.walletRepo.CreateWallet(userID)
-		if err != nil {
-			return models.WalletAmount{}, err
-		}
+	return amount, nil
+}
+
+func (wu *walletUsecase) GetWalletHistory(userId int) ([]models.WalletHistoryResp, error) {
+
+	wallet, err := wu.walletRepo.GetWalletData(userId)
+	if err != nil {
+		return []models.WalletHistoryResp{}, err
 	}
-	return wu.walletRepo.GetWallet(userID)
+	walletResp, err := wu.walletRepo.GetWalletHistory(int(wallet.Id))
+	if err != nil {
+		return []models.WalletHistoryResp{}, err
+	}
+	fmt.Println(".........usecase", walletResp)
+	return walletResp, nil
 }

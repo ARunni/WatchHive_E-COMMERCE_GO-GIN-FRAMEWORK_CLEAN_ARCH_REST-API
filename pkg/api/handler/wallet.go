@@ -20,7 +20,7 @@ func NewWalletHandler(usecase interfaces.WalletUsecase) *WalletHandler {
 // GetWallet retrieves wallet details for a user.
 // @Summary Retrieve wallet details
 // @Description Retrieves wallet details for a specific user.
-// @Tags User Wallet
+// @Tags User Wallet Management
 // @Accept json
 // @Produce json
 // @Security BearerTokenAuth
@@ -53,4 +53,27 @@ func (wh *WalletHandler) GetWallet(c *gin.Context) {
 
 	success := response.ClientResponse(http.StatusOK, errmsg.MsgGetSucces, WalletDetails, nil)
 	c.JSON(http.StatusOK, success)
+}
+
+// GetWalletHistory
+// @Summary Get wallet history
+// @Description Retrieves wallet history information for a user
+// @Tags User Wallet Management
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response "Success: Retrieved wallet history successfully"
+// @Failure 400 {object} response.Response "Bad request: Error while retrieving wallet history"
+// @Security BearerTokenAuth
+// @Router /user/wallet/history [get]
+func (wh *WalletHandler) GetWalletHistory(c *gin.Context) {
+	userId, _ := c.Get("id")
+	userID, _ := userId.(int)
+	walletHistory, err := wh.walletUsecase.GetWalletHistory(userID)
+	if err != nil {
+		errs := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGettingDataErr, nil, err)
+		c.JSON(http.StatusBadRequest, errs)
+		return
+	}
+	succesResp := response.ClientResponse(http.StatusOK, errmsg.MsgGetSucces, walletHistory, nil)
+	c.JSON(http.StatusOK, succesResp)
 }

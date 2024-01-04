@@ -198,7 +198,7 @@ func (or *orderRepository) GetOrderDetails(userId int, page int, count int) ([]m
 	}
 	offset := (page - 1) * count
 	var orderDetails []models.OrderDetails
-	err := or.DB.Raw("SELECT id as order_id,final_price,shipment_status,payment_status FROM orders WHERE user_id = ? LIMIT ? OFFSET ? ", userId, count, offset).Scan(&orderDetails).Error
+	err := or.DB.Raw("SELECT id as order_id,final_price,shipment_status,payment_status FROM orders WHERE user_id = ? order by id desc LIMIT ? OFFSET ? ", userId, count, offset).Scan(&orderDetails).Error
 
 	if err != nil {
 		return []models.FullOrderDetails{}, err

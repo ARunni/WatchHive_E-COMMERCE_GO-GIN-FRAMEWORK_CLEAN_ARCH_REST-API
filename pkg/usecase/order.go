@@ -7,7 +7,6 @@ import (
 	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -131,6 +130,25 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		total -= (total * float64(couponData.OfferPercentage) / 100)
 	}
 
+	walletData, err := ou.walletRepo.GetWalletData(orderBody.UserID)
+	if err != nil {
+		return models.OrderSuccessResponse{}, err
+	}
+	if total < walletData.Amount {
+
+		err := ou.walletRepo.DebitFromWallet(orderBody.UserID, total)
+		if err != nil {
+			return models.OrderSuccessResponse{}, err
+		}
+		total = 0.0
+	} else {
+		err := ou.walletRepo.DebitFromWallet(orderBody.UserID, walletData.Amount)
+		if err != nil {
+			return models.OrderSuccessResponse{}, err
+		}
+		total -= walletData.Amount
+	}
+
 	order_id, err := ou.orderRepository.OrderItems(orderBody, total)
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
@@ -155,6 +173,16 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		if err != nil {
 			return models.OrderSuccessResponse{}, err
 		}
+	}
+	var walletDebit models.WalletHistory
+	walletDebit.Amount = total
+	walletDebit.OrderID = order_id
+	walletDebit.Status = "DEBITED"
+	walletDebit.WalletID = int(walletData.Id)
+
+	err = ou.walletRepo.AddToWalletHistory(walletDebit)
+	if err != nil {
+		return models.OrderSuccessResponse{}, err
 	}
 
 	orderSuccessResponse, err := ou.orderRepository.GetBriefOrderDetails(order_id)
@@ -209,9 +237,8 @@ func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
 		return err
 	}
 
-	if shipmentStatus == "pending" || shipmentStatus == "returned" {
-		message := fmt.Sprint(shipmentStatus)
-		return errors.New("the order is in" + message + ", so no point in cancelling")
+	if shipmentStatus == "returned" {
+		return errors.New(errmsg.ErrReturnedAlready)
 	}
 
 	if shipmentStatus == "cancelled" {
