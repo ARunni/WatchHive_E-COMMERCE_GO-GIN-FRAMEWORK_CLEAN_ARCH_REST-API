@@ -263,8 +263,8 @@ func (h *helper) GetTimeFromPeriod(timePeriod string) (time.Time, time.Time) {
 
 func (h *helper) ValidateDate(dateString string) bool {
 
-	// dateLayout := "2006-01-02"
-	dateLayout := "02-01-2006"
+	dateLayout := "2006-01-02"
+	// dateLayout := "02-01-2006"
 
 	_, err := time.Parse(dateLayout, dateString)
 

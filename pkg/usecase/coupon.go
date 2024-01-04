@@ -7,6 +7,7 @@ import (
 	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"time"
 )
 
 type couponUsecase struct {
@@ -28,11 +29,23 @@ func (cu *couponUsecase) AddCoupon(coupon models.Coupon) (models.CouponResp, err
 	if coupon.OfferPercentage <= 0 {
 		return models.CouponResp{}, errors.New(errmsg.ErrDataZero)
 	}
-	formattedExpireDate := coupon.ExpireDate.Format("02-01-2006")
-	ok := cu.h.ValidateDate(formattedExpireDate)
-	if !ok {
-		return models.CouponResp{}, errors.New(errmsg.ErrInvalidDate)
+	parsedStartDate, err := time.Parse("02-01-2006", coupon.ExpireDate)
+	if err != nil {
+		err := errors.New(errmsg.ErrFormat + " :expire_date")
+		return models.CouponResp{}, err
 	}
+
+	isValid := !parsedStartDate.IsZero()
+	if !isValid {
+		err := errors.New(errmsg.ErrFormat + ":date")
+		return models.CouponResp{}, err
+	}
+	// formattedExpireDate := coupon.ExpireDate.Format("02-01-2006")
+	// formattedExpireDate := coupon.ExpireDate.Format("2006-01-02")
+	// ok := cu.h.ValidateDate(formattedExpireDate)
+	// if !ok {
+	// 	return models.CouponResp{}, errors.New(errmsg.ErrInvalidDate)
+	// }
 	couponResp, err := cu.couponRepo.AddCoupon(coupon)
 	if err != nil {
 		return models.CouponResp{}, err
