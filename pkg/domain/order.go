@@ -14,6 +14,7 @@ type Order struct {
 	PaymentStatus   string        `json:"payment_status" gorm:"default:'not paid'"`
 	TotalAmount     float64       `json:"total_amount"`
 	FinalPrice      float64       `json:"final_price"`
+	IsWalletUsed    bool          `json:"is_wallet_used" gorm:"default:false"`
 	Approval        bool          `json:"approval" gorm:"default:false"`
 }
 

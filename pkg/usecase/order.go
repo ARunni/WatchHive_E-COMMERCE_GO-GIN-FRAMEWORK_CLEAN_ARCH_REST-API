@@ -7,6 +7,7 @@ import (
 	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -129,6 +130,8 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		}
 		total -= (total * float64(couponData.OfferPercentage) / 100)
 	}
+	fmt.Println("before wallet total", total)
+	fmt.Println("before wallet totalold", total)
 	var WalletData models.Wallet
 	if orderFromCart.UseWallet {
 
@@ -136,6 +139,7 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		if err != nil {
 			return models.OrderSuccessResponse{}, err
 		}
+		fmt.Println("inside use  wallet wallet data", WalletData)
 		if total < WalletData.Amount {
 
 			err := ou.walletRepo.DebitFromWallet(orderBody.UserID, total)
@@ -150,8 +154,9 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 			}
 			total -= WalletData.Amount
 		}
+		fmt.Println("inside wallet total", total)
 	}
-
+	fmt.Println("outside wallet total", total)
 	order_id, err := ou.orderRepository.OrderItems(orderBody, total)
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
@@ -183,7 +188,7 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		walletDebit.Amount = total
 		walletDebit.OrderID = order_id
 		walletDebit.Status = "DEBITED"
-		walletDebit.WalletID = int(WalletData.Id)
+		walletDebit.ID = int(WalletData.Id)
 
 		err = ou.walletRepo.AddToWalletHistory(walletDebit)
 		if err != nil {
@@ -195,12 +200,12 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
 	}
-	if orderFromCart.UseWallet {
 
-		orderSuccessResponse.Total = totalOld
-		orderSuccessResponse.FinalPrice = total
-	}
-	err = ou.orderRepository.AddTotalToOrder(order_id, totalOld)
+	orderSuccessResponse.Total = totalOld
+	orderSuccessResponse.FinalPrice = total
+	fmt.Println("before AddTotalToOrder total", total)
+
+	err = ou.orderRepository.AddTotalToOrder(order_id, total)
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
 	}

@@ -63,7 +63,7 @@ func (wr *WalletDB) AddToWalletHistory(wallet models.WalletHistory) error {
 	(wallet_id,order_id,amount,status)  
 	values (?,?,?,?)
 	`
-	err := wr.Db.Raw(querry, wallet.WalletID, wallet.OrderID, wallet.Amount, wallet.Status).Error
+	err := wr.Db.Raw(querry, wallet.ID, wallet.OrderID, wallet.Amount, wallet.Status).Error
 	if err != nil {
 		return errors.New(errmsg.ErrWriteDB)
 	}
