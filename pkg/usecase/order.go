@@ -129,24 +129,27 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		}
 		total -= (total * float64(couponData.OfferPercentage) / 100)
 	}
+	var WalletData models.Wallet
+	if orderFromCart.UseWallet {
 
-	walletData, err := ou.walletRepo.GetWalletData(orderBody.UserID)
-	if err != nil {
-		return models.OrderSuccessResponse{}, err
-	}
-	if total < walletData.Amount {
-
-		err := ou.walletRepo.DebitFromWallet(orderBody.UserID, total)
+		WalletData, err := ou.walletRepo.GetWalletData(orderBody.UserID)
 		if err != nil {
 			return models.OrderSuccessResponse{}, err
 		}
-		total = 0.0
-	} else {
-		err := ou.walletRepo.DebitFromWallet(orderBody.UserID, walletData.Amount)
-		if err != nil {
-			return models.OrderSuccessResponse{}, err
+		if total < WalletData.Amount {
+
+			err := ou.walletRepo.DebitFromWallet(orderBody.UserID, total)
+			if err != nil {
+				return models.OrderSuccessResponse{}, err
+			}
+			total = 0.0
+		} else {
+			err := ou.walletRepo.DebitFromWallet(orderBody.UserID, WalletData.Amount)
+			if err != nil {
+				return models.OrderSuccessResponse{}, err
+			}
+			total -= WalletData.Amount
 		}
-		total -= walletData.Amount
 	}
 
 	order_id, err := ou.orderRepository.OrderItems(orderBody, total)
@@ -174,25 +177,33 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 			return models.OrderSuccessResponse{}, err
 		}
 	}
-	var walletDebit models.WalletHistory
-	walletDebit.Amount = total
-	walletDebit.OrderID = order_id
-	walletDebit.Status = "DEBITED"
-	walletDebit.WalletID = int(walletData.Id)
+	if orderFromCart.UseWallet {
 
-	err = ou.walletRepo.AddToWalletHistory(walletDebit)
-	if err != nil {
-		return models.OrderSuccessResponse{}, err
+		var walletDebit models.WalletHistory
+		walletDebit.Amount = total
+		walletDebit.OrderID = order_id
+		walletDebit.Status = "DEBITED"
+		walletDebit.WalletID = int(WalletData.Id)
+
+		err = ou.walletRepo.AddToWalletHistory(walletDebit)
+		if err != nil {
+			return models.OrderSuccessResponse{}, err
+		}
 	}
 
 	orderSuccessResponse, err := ou.orderRepository.GetBriefOrderDetails(order_id)
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
 	}
+	if orderFromCart.UseWallet {
 
-	orderSuccessResponse.Total = totalOld
-	orderSuccessResponse.FinalPrice = total
-
+		orderSuccessResponse.Total = totalOld
+		orderSuccessResponse.FinalPrice = total
+	}
+	err = ou.orderRepository.AddTotalToOrder(order_id, totalOld)
+	if err != nil {
+		return models.OrderSuccessResponse{}, err
+	}
 	return orderSuccessResponse, nil
 }
 

@@ -459,3 +459,11 @@ WHERE
 
 	return items, nil
 }
+
+func (or *orderRepository) AddTotalToOrder(orderId int, amount float64) error {
+	err := or.DB.Raw("update orders set total_amount = ? where id = ? ", amount, orderId).Error
+	if err != nil {
+		return errors.New(errmsg.ErrWriteDB)
+	}
+	return nil
+}
