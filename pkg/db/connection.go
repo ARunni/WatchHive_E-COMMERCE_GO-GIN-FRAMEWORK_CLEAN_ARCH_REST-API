@@ -85,6 +85,8 @@ func CheckAndCreateAdmin(db *gorm.DB) {
 			Email:    "admin@watchhive.com",
 			Password: string(hashedPassword),
 			IsAdmin:  true,
+			Blocked:  false,
+			Phone:    "7736202090",
 		}
 		db.Create(&admin)
 	}
