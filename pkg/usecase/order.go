@@ -7,7 +7,6 @@ import (
 	"WatchHive/pkg/utils/errmsg"
 	"WatchHive/pkg/utils/models"
 	"errors"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -130,33 +129,34 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		}
 		total -= (total * float64(couponData.OfferPercentage) / 100)
 	}
-	fmt.Println("before wallet total", total)
-	fmt.Println("before wallet totalold", total)
+
 	var WalletData models.Wallet
+	WalletData, err = ou.walletRepo.GetWalletData(orderBody.UserID)
+	if err != nil {
+		return models.OrderSuccessResponse{}, err
+	}
+	var WalletAmounHis float64
 	if orderFromCart.UseWallet {
 
-		WalletData, err := ou.walletRepo.GetWalletData(orderBody.UserID)
-		if err != nil {
-			return models.OrderSuccessResponse{}, err
-		}
-		fmt.Println("inside use  wallet wallet data", WalletData)
 		if total < WalletData.Amount {
-
+			WalletAmounHis = total
 			err := ou.walletRepo.DebitFromWallet(orderBody.UserID, total)
 			if err != nil {
 				return models.OrderSuccessResponse{}, err
 			}
+
 			total = 0.0
 		} else {
 			err := ou.walletRepo.DebitFromWallet(orderBody.UserID, WalletData.Amount)
 			if err != nil {
 				return models.OrderSuccessResponse{}, err
 			}
+			WalletAmounHis = WalletData.Amount
 			total -= WalletData.Amount
 		}
-		fmt.Println("inside wallet total", total)
+
 	}
-	fmt.Println("outside wallet total", total)
+
 	order_id, err := ou.orderRepository.OrderItems(orderBody, total)
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
@@ -182,13 +182,13 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 			return models.OrderSuccessResponse{}, err
 		}
 	}
-	if orderFromCart.UseWallet {
+	if orderFromCart.UseWallet && WalletData.Amount > 0 {
 
 		var walletDebit models.WalletHistory
-		walletDebit.Amount = total
+		walletDebit.Amount = WalletAmounHis
 		walletDebit.OrderID = order_id
 		walletDebit.Status = "DEBITED"
-		walletDebit.ID = int(WalletData.Id)
+		walletDebit.ID = int(WalletData.ID)
 
 		err = ou.walletRepo.AddToWalletHistory(walletDebit)
 		if err != nil {
@@ -203,11 +203,24 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 
 	orderSuccessResponse.Total = totalOld
 	orderSuccessResponse.FinalPrice = total
-	fmt.Println("before AddTotalToOrder total", total)
 
 	err = ou.orderRepository.AddTotalToOrder(order_id, total)
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
+	}
+
+	if orderBody.PaymentID == 2 {
+		if orderSuccessResponse.FinalPrice != 0 {
+
+			user := strconv.Itoa(userID)
+			order := strconv.Itoa(order_id)
+			orderSuccessResponse.PaymentLink = "https://watchhive.ardev.online/user/payment?user_id=" + user + "&order_id=" + order
+		} else {
+			err := ou.orderRepository.PayRazorZero(order_id)
+			if err != nil {
+				return models.OrderSuccessResponse{}, err
+			}
+		}
 	}
 	return orderSuccessResponse, nil
 }
@@ -269,15 +282,27 @@ func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
 	if err != nil {
 		return err
 	}
+	var WalletHistory models.WalletHistory
+
 	if paymentStatus == "paid" || paymentStatus == "PAID" {
 		amount, err := ou.orderRepository.GetFinalPriceOrder(orderID)
 		if err != nil {
 			return err
 		}
+		WalletHistory.Amount = amount
+
+		walletData, err := ou.walletRepo.GetWalletData(userId)
+		if err != nil {
+			return err
+		}
+		WalletHistory.ID = walletData.ID
+		WalletHistory.OrderID = orderID
+		WalletHistory.Status = "CREDITED"
 		err = ou.walletRepo.AddToWallet(userId, amount)
 		if err != nil {
 			return err
 		}
+		err = ou.walletRepo.AddToWalletHistory()
 	}
 	err = ou.orderRepository.UpdateQuantityOfProduct(orderProductDetails)
 	if err != nil {

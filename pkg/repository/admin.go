@@ -336,3 +336,12 @@ func (ad *adminRepository) SalesByDay(yearInt int, monthInt int, dayInt int) ([]
 
 	return orderDetails, nil
 }
+
+func (ad *adminRepository) IsAdmin(mailId string) (bool, error) {
+	var admin bool
+	err := ad.DB.Raw("select is_admin  from users where email = ?", mailId).Scan(&admin).Error
+	if err != nil {
+		return false, errors.New(errmsg.ErrGetDB)
+	}
+	return admin, nil
+}

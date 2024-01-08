@@ -29,7 +29,7 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	adminHandler := handler.NewAdminHandler(adminUseCase, interfacesHelper)
 	userRepository := repository.NewUserRepository(gormDB)
 	walletRepository := repository.NewWalletRepository(gormDB)
-	userUseCase := usecase.NewUserUseCase(userRepository, cfg, interfacesHelper, walletRepository)
+	userUseCase := usecase.NewUserUseCase(userRepository, adminRepository, cfg, interfacesHelper, walletRepository)
 	userHandler := handler.NewUserHandler(userUseCase)
 	otpRepository := repository.NewOtpRepository(gormDB)
 	otpUseCase := usecase.NewOtpUseCase(cfg, otpRepository, interfacesHelper)

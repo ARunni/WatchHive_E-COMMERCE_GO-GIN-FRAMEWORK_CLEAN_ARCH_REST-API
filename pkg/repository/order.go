@@ -467,3 +467,11 @@ func (or *orderRepository) AddTotalToOrder(orderId int, amount float64) error {
 	}
 	return nil
 }
+
+func (or *orderRepository) PayRazorZero(orderId int) error {
+	err := or.DB.Raw("update orders set payment_status = 'PAID' where id = ? ", orderId).Error
+	if err != nil {
+		return errors.New(errmsg.ErrWriteDB)
+	}
+	return nil
+}

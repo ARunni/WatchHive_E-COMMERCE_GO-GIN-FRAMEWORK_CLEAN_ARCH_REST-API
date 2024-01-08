@@ -17,7 +17,7 @@ type WalletHistory struct {
 	Status  string  `json:"status" gorm:"not null"`
 }
 type Wallet struct {
-	Id     uint    `json:"id"`
+	ID     int     `json:"id"`
 	UserID int     `json:"user_id"`
 	Amount float64 `json:"amount"`
 }

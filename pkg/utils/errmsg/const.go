@@ -74,6 +74,7 @@ const ErrChangePassword = "password cannot change"
 const ErrInvalidDate = "invalid date format or invalid date"
 const ErrCouponExistTrue = "given cooupon already exist try another name"
 const ErrCouponExistFalse = "given coupon is not available"
+const ErrUserAdmin = "entered email is belongs to admin"
 
 const StatusApprove = "approved"
 

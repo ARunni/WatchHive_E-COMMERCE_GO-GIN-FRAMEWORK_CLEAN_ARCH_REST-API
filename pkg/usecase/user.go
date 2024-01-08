@@ -16,17 +16,19 @@ import (
 
 type userUseCase struct {
 	userRepo   interfaces.UserRepository
+	adminRepo  interfaces.AdminRepository
 	cfg        config.Config
 	helper     helper_interface.Helper
 	walletRepo interfaces.WalletRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository, cfg config.Config, h helper_interface.Helper, wallet interfaces.WalletRepository) services.UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository, adminRepo interfaces.AdminRepository, cfg config.Config, h helper_interface.Helper, wallet interfaces.WalletRepository) services.UserUseCase {
 	return &userUseCase{
 		userRepo:   repo,
 		cfg:        cfg,
 		helper:     h,
 		walletRepo: wallet,
+		adminRepo:  adminRepo,
 	}
 }
 
@@ -120,6 +122,7 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 			if err != nil {
 				return models.TokenUsers{}, err
 			}
+
 			// reason := "Amount credited for refer a new person"
 			// err = u.userRepo.UpdateHistory(referredId, 0, amount, reason)
 			// if err != nil {
@@ -158,6 +161,14 @@ func (u *userUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 	if err != nil {
 		return models.TokenUsers{}, errors.New(errmsg.ErrPassword)
 	}
+	isAdmin, err := u.adminRepo.IsAdmin(user.Email)
+	if err != nil {
+		return models.TokenUsers{}, err
+	}
+	if isAdmin {
+		return models.TokenUsers{}, errors.New(errmsg.ErrUserAdmin)
+	}
+
 	err = u.helper.CompareHashAndPassword(user_details.Password, user.Password)
 
 	if err != nil {

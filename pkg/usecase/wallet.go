@@ -4,7 +4,6 @@ import (
 	walletrep "WatchHive/pkg/repository/interface"
 	interfaces "WatchHive/pkg/usecase/interface"
 	"WatchHive/pkg/utils/models"
-	"fmt"
 )
 
 type walletUsecase struct {
@@ -30,10 +29,10 @@ func (wu *walletUsecase) GetWalletHistory(userId int) ([]models.WalletHistoryRes
 	if err != nil {
 		return []models.WalletHistoryResp{}, err
 	}
-	walletResp, err := wu.walletRepo.GetWalletHistory(int(wallet.Id))
+	walletResp, err := wu.walletRepo.GetWalletHistory(int(wallet.ID))
 	if err != nil {
 		return []models.WalletHistoryResp{}, err
 	}
-	fmt.Println(".........usecase", walletResp)
+
 	return walletResp, nil
 }

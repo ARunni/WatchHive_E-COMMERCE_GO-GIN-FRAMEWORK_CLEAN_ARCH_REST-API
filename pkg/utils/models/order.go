@@ -18,6 +18,7 @@ type OrderSuccessResponse struct {
 	ShipmentStatus string  `json:"shipment_status"`
 	Total          float64 `json:"total"`
 	FinalPrice     float64 `json:"finalprice"`
+	PaymentLink    string  `json:"payment_link"`
 }
 
 type OrderDetails struct {
