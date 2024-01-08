@@ -5,7 +5,6 @@ import (
 	"WatchHive/pkg/domain"
 	"fmt"
 
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -70,24 +69,24 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	return db, dbErr
 }
 
-func CheckAndCreateAdmin(db *gorm.DB) {
-	var count int64
-	db.Model(&domain.Users{}).Count(&count)
-	if count == 0 {
-		password := "admin@123"
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-		if err != nil {
-			return
-		}
-		admin := domain.Users{
-			ID:       1,
-			Name:     "Admin WatchHive",
-			Email:    "admin@watchhive.com",
-			Password: string(hashedPassword),
-			IsAdmin:  true,
-			Blocked:  false,
-			Phone:    "7736202090",
-		}
-		db.Create(&admin)
-	}
-}
+// func CheckAndCreateAdmin(db *gorm.DB) {
+// 	var count int64
+// 	db.Model(&domain.Users{}).Count(&count)
+// 	if count == 0 {
+// 		password := "admin@123"
+// 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+// 		if err != nil {
+// 			return
+// 		}
+// 		admin := domain.Users{
+// 			ID:       1,
+// 			Name:     "Admin WatchHive",
+// 			Email:    "admin@watchhive.com",
+// 			Password: string(hashedPassword),
+// 			IsAdmin:  true,
+// 			Blocked:  false,
+// 			Phone:    "7736202090",
+// 		}
+// 		db.Create(&admin)
+// 	}
+// }
