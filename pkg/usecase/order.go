@@ -215,12 +215,13 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 			user := strconv.Itoa(userID)
 			order := strconv.Itoa(order_id)
 			orderSuccessResponse.PaymentLink = "https://watchhive.ardev.online/user/payment?user_id=" + user + "&order_id=" + order
-		} else {
+		} 
+		}
+		if orderSuccessResponse.FinalPrice == 0 {
 			err := ou.orderRepository.PayRazorZero(order_id)
 			if err != nil {
 				return models.OrderSuccessResponse{}, err
 			}
-		}
 	}
 	return orderSuccessResponse, nil
 }
@@ -302,7 +303,10 @@ func (ou *orderUseCase) CancelOrders(orderID int, userId int) error {
 		if err != nil {
 			return err
 		}
-		err = ou.walletRepo.AddToWalletHistory()
+		err = ou.walletRepo.AddToWalletHistory(WalletHistory)
+		if err != nil {
+			return err
+		}
 	}
 	err = ou.orderRepository.UpdateQuantityOfProduct(orderProductDetails)
 	if err != nil {
@@ -511,6 +515,7 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 	if err != nil {
 		return err
 	}
+	var WalletHistory models.WalletHistory
 	if paymenType == 1 {
 
 		if shipmentStatus == "delivered" {
@@ -520,6 +525,19 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 				return err
 			}
 			err = ou.walletRepo.AddToWallet(userId, amount)
+			if err != nil {
+				return err
+			}
+			walletData, err := ou.walletRepo.GetWalletData(userId)
+			if err != nil {
+				return err
+			}
+			WalletHistory.ID = walletData.ID
+			WalletHistory.OrderID = orderId
+			WalletHistory.Status = "CREDITED"
+			WalletHistory.Amount = amount
+
+			err = ou.walletRepo.AddToWalletHistory(WalletHistory)
 			if err != nil {
 				return err
 			}
@@ -533,6 +551,19 @@ func (ou *orderUseCase) ReturnOrder(orderId, userId int) error {
 				return err
 			}
 			err = ou.walletRepo.AddToWallet(userId, amount)
+			if err != nil {
+				return err
+			}
+			walletData, err := ou.walletRepo.GetWalletData(userId)
+			if err != nil {
+				return err
+			}
+			WalletHistory.ID = walletData.ID
+			WalletHistory.OrderID = orderId
+			WalletHistory.Status = "CREDITED"
+			WalletHistory.Amount = amount
+
+			err = ou.walletRepo.AddToWalletHistory(WalletHistory)
 			if err != nil {
 				return err
 			}
@@ -575,6 +606,11 @@ func (or *orderUseCase) PrintInvoice(orderId, userId int) (*gofpdf.Fpdf, error) 
 
 	if order.ShipmentStatus != "delivered" {
 		return nil, errors.New(errmsg.ErrDeliverInvoice)
+	}
+
+	walletAmount, err := or.walletRepo.GetWalletHistoryAmount(orderId)
+	if err != nil {
+		return nil, err
 	}
 
 	pdf := gofpdf.New("P", "mm", "A4", "")
@@ -639,6 +675,12 @@ func (or *orderUseCase) PrintInvoice(orderId, userId int) (*gofpdf.Fpdf, error) 
 	pdf.SetFillColor(217, 217, 217)
 	pdf.CellFormat(120, 10, "Offer Applied:", "1", 0, "R", true, 0, "")
 	pdf.CellFormat(40, 10, "$"+strconv.FormatFloat(offerApplied, 'f', 2, 64), "1", 0, "C", true, 0, "")
+	pdf.Ln(10)
+
+	pdf.SetFont("Arial", "B", 16)
+	pdf.SetFillColor(217, 217, 217)
+	pdf.CellFormat(120, 10, "Wallet Used:", "1", 0, "R", true, 0, "")
+	pdf.CellFormat(40, 10, "$"+strconv.FormatFloat(walletAmount, 'f', 2, 64), "1", 0, "C", true, 0, "")
 	pdf.Ln(10)
 
 	pdf.SetFont("Arial", "B", 16)
