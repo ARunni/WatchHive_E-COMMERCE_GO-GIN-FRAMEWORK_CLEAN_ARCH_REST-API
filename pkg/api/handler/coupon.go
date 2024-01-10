@@ -87,3 +87,30 @@ func (ch *CouponHandler) GetCouponUser(c *gin.Context) {
 	successRep := response.ClientResponse(http.StatusOK, errmsg.MsgGetSucces, couponResp, nil)
 	c.JSON(http.StatusOK, successRep)
 }
+
+// EditCoupon edits a coupon.
+// @Summary Edit a coupon
+// @Description Edit an existing coupon
+// @Tags Admin Coupon Management
+// @Accept json
+// @Produce json
+// @Param coupon body models.CouponResp true "Coupon object to edit"
+// @Success 200 {object} models.CouponResp "Success: Edited coupon successfully"
+// @Failure 400 {object} response.Response "Bad request: Error while editing coupon"
+// @Security BearerTokenAuth
+// @Router /admin/coupon/ [put]
+func (ch *CouponHandler) EditCoupon(c *gin.Context) {
+	var coupon models.CouponResp
+	if err := c.BindJSON(&coupon); err != nil {
+		errResp := response.ClientResponse(http.StatusBadRequest, errmsg.MsgFormatErr, nil, err.Error())
+		c.JSON(http.StatusBadRequest, errResp)
+		return
+	}
+	couuponResp, err := ch.CouponUsecase.EditCoupon(coupon)
+	if err != nil {
+		ereResp := response.ClientResponse(http.StatusBadRequest, errmsg.MsgEditCouponFailed, nil, err.Error())
+		c.JSON(http.StatusBadRequest, ereResp)
+	}
+	successRep := response.ClientResponse(http.StatusOK, errmsg.MsgEditCouponSuccess, couuponResp, nil)
+	c.JSON(http.StatusOK, successRep)
+}

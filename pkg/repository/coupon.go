@@ -69,3 +69,27 @@ func (cr *couponRepo) GetCouponData(couponID int) (models.CouponResp, error) {
 	}
 	return coupon, nil
 }
+
+func (cr *couponRepo) EditCoupon(coupon models.CouponResp) (models.CouponResp, error) {
+	curretTime := time.Now()
+	querrry := `
+	update coupons set
+	 updated_at = ?, coupon_name = ?,
+	  offer_percentage = ?, expire_date = ? 
+	  where id = ?
+	`
+	err := cr.DB.Exec(querrry, curretTime, coupon.CouponName, coupon.OfferPercentage, coupon.ExpireDate, coupon.ID).Error
+	if err != nil {
+		return models.CouponResp{}, errors.New(errmsg.ErrWriteDB)
+	}
+	return coupon, nil
+}
+
+func (cr *couponRepo) GetCouponIdByName(couponName string) (int, error) {
+	var id int
+	err := cr.DB.Raw("select id from coupons where coupon_name = ?", couponName).Scan(&id).Error
+	if err != nil {
+		return 0, errors.New(errmsg.ErrGetDB)
+	}
+	return id, nil
+}

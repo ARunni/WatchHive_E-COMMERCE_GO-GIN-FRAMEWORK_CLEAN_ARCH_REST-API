@@ -73,6 +73,7 @@ func AdminRoutes(engine *gin.RouterGroup,
 		{
 			coupon.POST("", couponHandler.AddCoupon)
 			coupon.GET("", couponHandler.GetCouponAdmin)
+			coupon.PATCH("", couponHandler.EditCoupon)
 		}
 
 	}

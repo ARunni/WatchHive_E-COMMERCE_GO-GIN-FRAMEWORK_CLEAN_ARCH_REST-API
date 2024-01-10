@@ -75,6 +75,7 @@ const ErrInvalidDate = "invalid date format or invalid date"
 const ErrCouponExistTrue = "given cooupon already exist try another name"
 const ErrCouponExistFalse = "given coupon is not available"
 const ErrUserAdmin = "entered email is belongs to admin"
+const ErrDateExpired = "date expired"
 
 const StatusApprove = "approved"
 
@@ -136,3 +137,5 @@ const MsgTokenMissingErr = "Missing authorization token"
 const MsgUnAuthErr = "Unauthorized access"
 const MsgIdGetErr = "Error retrieving ID"
 const MsgCouponAddFailed = "Adding coupon is failed "
+const MsgEditCouponFailed = "Editing coupon is failed "
+const MsgEditCouponSuccess = "Editing coupon is Success "

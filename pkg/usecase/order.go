@@ -126,6 +126,16 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		if err != nil {
 			return models.OrderSuccessResponse{}, err
 		}
+
+		parsedTime, err := time.Parse(time.RFC3339, couponData.ExpireDate)
+		if err != nil {
+
+			return models.OrderSuccessResponse{}, errors.New(errmsg.ErrDatatypeConversion)
+		}
+
+		if parsedTime.Before(time.Now()) {
+			return models.OrderSuccessResponse{}, errors.New(errmsg.ErrDateExpired)
+		}
 		total -= (total * float64(couponData.OfferPercentage) / 100)
 	}
 	totalOld := total

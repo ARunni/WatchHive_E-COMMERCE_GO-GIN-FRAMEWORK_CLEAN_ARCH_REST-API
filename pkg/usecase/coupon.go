@@ -61,3 +61,44 @@ func (cu *couponUsecase) GetCoupon()([]models.CouponResp,error) {
 	} 
 	return couponRep,nil
 }
+
+func (cu *couponUsecase) EditCoupon(coupon models.CouponResp) (models.CouponResp,error) {
+	idOk,err := cu.couponRepo.IsCouponExistByID(int(coupon.ID))
+	if err != nil {
+		return models.CouponResp{},err
+	}
+	if !idOk {
+		return models.CouponResp{},errors.New(errmsg.ErrCouponExistFalse)
+	}
+	nameId,err := cu.couponRepo.GetCouponIdByName(coupon.CouponName)
+	if err != nil {
+		return models.CouponResp{},err
+	}
+	if nameId != int(coupon.ID) {
+		return models.CouponResp{},errors.New(errmsg.ErrCouponExistTrue)
+	}
+
+	if coupon.CouponName == "" {
+		return models.CouponResp{}, errors.New(errmsg.ErrFieldEmpty)
+	}
+	if coupon.OfferPercentage <= 0 {
+		return models.CouponResp{}, errors.New(errmsg.ErrDataZero)
+	}
+	parsedStartDate, err := time.Parse("02-01-2006", coupon.ExpireDate)
+	if err != nil {
+		err := errors.New(errmsg.ErrFormat + " :expire_date")
+		return models.CouponResp{}, err
+	}
+
+	isValid := !parsedStartDate.IsZero()
+	if !isValid {
+		err := errors.New(errmsg.ErrFormat + " :expire_date")
+		return models.CouponResp{}, err
+	}
+	resCoupon,err := cu.couponRepo.EditCoupon(coupon)
+	if err != nil {
+		return models.CouponResp{},err
+	}
+	return resCoupon,nil
+
+}
