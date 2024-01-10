@@ -361,6 +361,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/coupon/": {
+            "put": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Edit an existing coupon",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin Coupon Management"
+                ],
+                "summary": "Edit a coupon",
+                "parameters": [
+                    {
+                        "description": "Coupon object to edit",
+                        "name": "coupon",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CouponResp"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success: Edited coupon successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.CouponResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: Error while editing coupon",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/currentsalesreport": {
             "get": {
                 "security": [
@@ -2555,6 +2600,23 @@ const docTemplate = `{
                 },
                 "expire_date": {
                     "type": "string"
+                },
+                "offer_percentage": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.CouponResp": {
+            "type": "object",
+            "properties": {
+                "coupon_name": {
+                    "type": "string"
+                },
+                "expire_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "offer_percentage": {
                     "type": "integer"

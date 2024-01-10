@@ -75,6 +75,17 @@ definitions:
       offer_percentage:
         type: integer
     type: object
+  models.CouponResp:
+    properties:
+      coupon_name:
+        type: string
+      expire_date:
+        type: string
+      id:
+        type: integer
+      offer_percentage:
+        type: integer
+    type: object
   models.NewPaymentMethod:
     properties:
       payment_name:
@@ -420,6 +431,34 @@ paths:
       security:
       - BearerTokenAuth: []
       summary: Add a new coupon
+      tags:
+      - Admin Coupon Management
+  /admin/coupon/:
+    put:
+      consumes:
+      - application/json
+      description: Edit an existing coupon
+      parameters:
+      - description: Coupon object to edit
+        in: body
+        name: coupon
+        required: true
+        schema:
+          $ref: '#/definitions/models.CouponResp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'Success: Edited coupon successfully'
+          schema:
+            $ref: '#/definitions/models.CouponResp'
+        "400":
+          description: 'Bad request: Error while editing coupon'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Edit a coupon
       tags:
       - Admin Coupon Management
   /admin/currentsalesreport:
