@@ -363,6 +363,11 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 	if err != nil {
 		return err
 	}
+	finalPrice, err := ou.orderRepository.GetFinalPrice(orderId)
+	if err != nil {
+		return err
+	}
+
 	//cod
 	if paymenType == 1 {
 
@@ -418,6 +423,12 @@ func (ou *orderUseCase) ApproveOrder(orderId int) error {
 			}
 
 			return nil
+		}
+		if finalPrice == 0 && paymentStatus == "not paid" {
+			err := ou.orderRepository.ApproveRazorPaid(orderId)
+			if err != nil {
+				return err
+			}
 		}
 		if ShipmentStatus == "shipped" {
 			// 	err := ou.orderRepository.ApproveRazorPaid(orderId)
