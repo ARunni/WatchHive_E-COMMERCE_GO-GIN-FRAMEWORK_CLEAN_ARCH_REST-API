@@ -15,7 +15,8 @@ type OrderRepository interface {
 	FindPrice(product_id int) (float64, error)
 	FindStock(id int) (int, error)
 	CheckOrderID(orderId int) (bool, error)
-	OrderItems(ob models.OrderIncoming, price float64) (int, error)
+	OrderItems(ob models.OrderIncoming, finalPrice, totalPrice float64, isWallet bool) (int, error)
+	GetTotalPrice(orderId int)(float64,error)
 	AddOrderProducts(order_id int, cart []models.Cart) error
 	GetBriefOrderDetails(orderID int) (models.OrderSuccessResponse, error)
 	OrderExist(orderID int) (bool, error)
@@ -41,6 +42,6 @@ type OrderRepository interface {
 	GetPaymentStatus(orderID int) (string, error)
 	GetFinalPriceOrder(orderID int) (float64, error)
 	GetItemsByOrderId(orderId int) ([]models.ItemDetails, error)
-	AddTotalToOrder(orderId int,amount float64) error
-	PayRazorZero(orderId int)error
+	AddTotalToOrder(orderId int, amount float64) error
+	PayRazorZero(orderId int) error
 }

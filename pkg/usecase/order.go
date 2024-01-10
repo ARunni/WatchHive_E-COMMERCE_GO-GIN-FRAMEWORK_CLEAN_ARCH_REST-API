@@ -118,7 +118,6 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 
 	total, err := ou.cartRepository.TotalAmountInCart(orderBody.UserID)
 
-	totalOld := total
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
 	}
@@ -129,7 +128,7 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 		}
 		total -= (total * float64(couponData.OfferPercentage) / 100)
 	}
-
+	totalOld := total
 	var WalletData models.Wallet
 	WalletData, err = ou.walletRepo.GetWalletData(orderBody.UserID)
 	if err != nil {
@@ -157,7 +156,7 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 
 	}
 
-	order_id, err := ou.orderRepository.OrderItems(orderBody, total)
+	order_id, err := ou.orderRepository.OrderItems(orderBody, total, totalOld, orderFromCart.UseWallet)
 	if err != nil {
 		return models.OrderSuccessResponse{}, err
 	}
@@ -215,13 +214,13 @@ func (ou *orderUseCase) OrderItemsFromCart(orderFromCart models.OrderFromCart, u
 			user := strconv.Itoa(userID)
 			order := strconv.Itoa(order_id)
 			orderSuccessResponse.PaymentLink = "https://watchhive.ardev.online/user/payment?user_id=" + user + "&order_id=" + order
-		} 
 		}
-		if orderSuccessResponse.FinalPrice == 0 {
-			err := ou.orderRepository.PayRazorZero(order_id)
-			if err != nil {
-				return models.OrderSuccessResponse{}, err
-			}
+	}
+	if orderSuccessResponse.FinalPrice == 0 {
+		err := ou.orderRepository.PayRazorZero(order_id)
+		if err != nil {
+			return models.OrderSuccessResponse{}, err
+		}
 	}
 	return orderSuccessResponse, nil
 }
@@ -612,6 +611,10 @@ func (or *orderUseCase) PrintInvoice(orderId, userId int) (*gofpdf.Fpdf, error) 
 	if err != nil {
 		return nil, err
 	}
+	totalPriceAmount, err := or.orderRepository.GetTotalPrice(orderId)
+	if err != nil {
+		return nil, err
+	}
 
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
@@ -669,7 +672,7 @@ func (or *orderUseCase) PrintInvoice(orderId, userId int) (*gofpdf.Fpdf, error) 
 	pdf.CellFormat(40, 10, "$"+strconv.FormatFloat(totalPrice, 'f', 2, 64), "1", 0, "C", true, 0, "")
 	pdf.Ln(10)
 
-	offerApplied := totalPrice - order.FinalPrice
+	offerApplied := totalPrice - totalPriceAmount
 
 	pdf.SetFont("Arial", "B", 16)
 	pdf.SetFillColor(217, 217, 217)

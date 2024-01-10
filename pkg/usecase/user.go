@@ -95,11 +95,7 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 			if err != nil {
 				return models.TokenUsers{}, err
 			}
-			// referreason := "Amount credited for used referral code"
-			// err = u.userRepo.UpdateHistory(userData.Id, 0, float64(referralAmount), referreason)
-			// if err != nil {
-			// 	return models.TokenUsers{}, err
-			// }
+
 			amount, err := u.userRepo.AmountInRefferals(userData.Id)
 			if err != nil {
 				return models.TokenUsers{}, err
@@ -114,11 +110,34 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 					return models.TokenUsers{}, err
 				}
 			}
+			var walletDebit models.WalletHistory
+			walletDataRef, err := u.walletRepo.GetWalletData(referredId)
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
 			err = u.walletRepo.AddToWallet(referredId, amount)
 			if err != nil {
 				return models.TokenUsers{}, err
 			}
+			walletDebit.Amount = amount
+			walletDebit.ID = walletDataRef.ID
+			walletDebit.Status = "CREDITED"
+			err = u.walletRepo.AddToWalletHistory(walletDebit)
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
 			err = u.walletRepo.AddToWallet(userData.Id, float64(referralAmount))
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
+			walletDataRefd, err := u.walletRepo.GetWalletData(referredId)
+			if err != nil {
+				return models.TokenUsers{}, err
+			}
+			walletDebit.Amount = float64(referralAmount)
+			walletDebit.ID = walletDataRefd.ID
+			walletDebit.Status = "CREDITED"
+			err = u.walletRepo.AddToWalletHistory(walletDebit)
 			if err != nil {
 				return models.TokenUsers{}, err
 			}
