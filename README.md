@@ -25,6 +25,7 @@ Security is a top priority for the project:
 
 - **OTP Verification**: Twilio API is integrated for OTP verification.
 - **Payment Integration**: Razorpay API is used for payment processing.
+- **Refresh Tokens**: Enhances security and extends user sessions using refresh tokens.
 
 ## Getting Started
 
