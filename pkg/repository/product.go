@@ -56,7 +56,7 @@ func (i *productRepository) AddProduct(product models.AddProducts, url string) (
 	queryimage := "INSERT INTO product_images (product_id, url) VALUES (?, ?)"
 
 	imgErr := i.DB.Exec(queryimage, productResponse.ID, url).Error
-	if err != nil {
+	if imgErr != nil {
 
 		return models.ProductResponse{}, imgErr
 	}
