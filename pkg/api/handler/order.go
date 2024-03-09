@@ -130,12 +130,12 @@ func (oh *OrderHandler) GetOrderDetails(c *gin.Context) {
 	id, errs := c.Get("id")
 
 	if !errs {
-		if err != nil {
-			err := errors.New("couldn't get id ")
-			errorRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGetErr+"id", nil, err.Error())
-			c.JSON(http.StatusBadRequest, errorRes)
-			return
-		}
+		// if err != nil {
+		err := errors.New("couldn't get id ")
+		errorRes := response.ClientResponse(http.StatusBadRequest, errmsg.MsgGetErr+"id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+		// }
 	}
 
 	UserID := id.(int)
