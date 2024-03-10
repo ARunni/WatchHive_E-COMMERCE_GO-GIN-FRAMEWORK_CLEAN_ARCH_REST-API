@@ -14,5 +14,6 @@ mock : ## mockgen
 	mockgen -source pkg/helper/interface/helper.go -destination pkg/helper/mock/helper_mock.go -package mock
 	mockgen -source pkg/repository/interface/wallet.go -destination pkg/repository/mock/wallet_mock.go -package mock
 
-	
+test: ##Run testing
+	go test ./...
 	
