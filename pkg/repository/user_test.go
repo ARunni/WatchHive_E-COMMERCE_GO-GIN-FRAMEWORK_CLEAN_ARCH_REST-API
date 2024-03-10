@@ -125,3 +125,57 @@ func TestUserSignUp(t *testing.T) {
 
 	}
 }
+
+type id struct {
+	id int
+}
+
+func Test_GetUserDetails(t *testing.T) {
+	tests := []struct {
+		name    string
+		args    id
+		stub    func(sqlmock.Sqlmock)
+		want    models.UsersProfileDetails
+		wantErr error
+	}{
+		{
+			name: "Success",
+			args: id{
+				id: 1,
+			},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+				expectedQuery := `^SELECT u.id,u.name,u.email,u.phone,r.referral_code  from users  u inner join referrals  r on u.id = r.user_id where u.id =?`
+				mockSQL.ExpectQuery(expectedQuery).WithArgs(1).
+					WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "phone", "referral_code"}).AddRow(1, "Arun CM", "aruncm@gmail.com", "9747745981", "bskja7dsgved"))
+			},
+			want: models.UsersProfileDetails{
+				ID:           1,
+				Name:         "Arun CM",
+				Email:        "aruncm@gmail.com",
+				Phone:        "9747745981",
+				ReferralCode: "bskja7dsgved",
+			},
+			wantErr: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			ad := userDatabase{DB: gormDB}
+
+			result, err := ad.ShowUserDetails(tt.args.id)
+
+			assert.Equal(t, tt.want, result)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+}
