@@ -15,3 +15,4 @@ mock : ## mockgen
 	mockgen -source pkg/repository/interface/wallet.go -destination pkg/repository/mock/wallet_mock.go -package mock
 
 	
+	
