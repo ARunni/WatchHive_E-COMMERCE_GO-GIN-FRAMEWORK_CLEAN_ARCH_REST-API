@@ -73,9 +73,9 @@ func (u *userUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	if err != nil {
 		return models.TokenUsers{}, errors.New(errmsg.ErrCreateRefferal)
 	}
-	if err != nil {
-		return models.TokenUsers{}, errors.New(errmsg.ErrWriteDB)
-	}
+	// if err != nil {
+	// 	return models.TokenUsers{}, errors.New(errmsg.ErrWriteDB)
+	// }
 
 	err = u.walletRepo.CreateWallet(userData.Id)
 	if err != nil {
