@@ -71,23 +71,23 @@ func TestUserSignUp(t *testing.T) {
 			args: args{
 				input: models.UserDetails{
 					Name:     "Rahul",
-					Email:    "rahulchacko888@gmail.com",
+					Email:    "arun007@gmail.com",
 					Password: "12345",
-					Phone:    "9867327710",
+					Phone:    "9747745981",
 				},
 			},
 			beforeTest: func(mockSQL sqlmock.Sqlmock) {
 				expectedQuery := `INSERT INTO users \(name, email, password, phone\) VALUES \(\$1, \$2, \$3, \$4\) RETURNING id, name, email, phone`
 				mockSQL.ExpectQuery(expectedQuery).
-					WithArgs("Rahul", "rahulchacko888@gmail.com", "12345", "9867327710").
+					WithArgs("Rahul", "arun007@gmail.com", "12345", "9747745981").
 					WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "phone"}).
-						AddRow(1, "Rahul", "rahulchacko888@gmail.com", "9867327710"))
+						AddRow(1, "Rahul", "arun007@gmail.com", "9747745981"))
 			},
 			want: models.UserDetailsResponse{
 				Id:    1,
 				Name:  "Rahul",
-				Email: "rahulchacko888@gmail.com",
-				Phone: "9867327710",
+				Email: "arun007@gmail.com",
+				Phone: "9747745981",
 			},
 			wantErr: nil,
 		},
