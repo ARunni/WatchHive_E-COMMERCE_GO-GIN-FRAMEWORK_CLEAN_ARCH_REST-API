@@ -21,6 +21,9 @@ jobs:
     - name: Build
       run: go build -v ./...
 
+    - name: Test
+      run: go test -v ./...  
+
     - name: Deploy to AWS EC2
       uses: appleboy/ssh-action@master
       with:
