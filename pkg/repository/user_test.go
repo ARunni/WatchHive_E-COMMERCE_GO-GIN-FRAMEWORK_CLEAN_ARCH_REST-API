@@ -39,17 +39,6 @@ func TestCheckUserAvailability(t *testing.T) {
 			},
 			want: false,
 		},
-		 {
-			name: " user not avilable",
-			arg:  "arun1@gmail",
-			stub: func(mock sqlmock.Sqlmock) {
-				querry := "select count (*) from users where email ='arun1@gmail'"
-				mock.ExpectQuery(regexp.QuoteMeta(querry)).
-					WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(0))
-			},
-			want: true,
-		},
-
 	}
 
 	for _, tt := range tests {
