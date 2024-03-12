@@ -492,3 +492,5 @@ func (or *orderRepository) GetFinalPrice(orderId int) (float64, error) {
 	}
 	return finalPrice, nil
 }
+
+
