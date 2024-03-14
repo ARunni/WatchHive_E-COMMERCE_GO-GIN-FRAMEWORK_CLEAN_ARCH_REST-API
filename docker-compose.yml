@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: watchhive
+    networks:
+      - mydb
+    volumes:
+      - database-postgres:/var/lib/postgresql/data
+
+ 
+
+  watchhivego:
+    image: watchhive
+    restart: on-failure
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PORT: ${DB_PORT}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - postgres
+    networks:
+      - mydb
+    ports:
+      - "7000:7000"
+
+volumes:
+  database-postgres:
+
+networks:
+  mydb:
+    driver: bridge
