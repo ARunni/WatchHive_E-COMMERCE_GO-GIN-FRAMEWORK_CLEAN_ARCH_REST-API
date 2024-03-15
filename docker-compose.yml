@@ -2,20 +2,24 @@ version: "3.8"
 services:
   postgres:
     image: postgres
+  
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345
       POSTGRES_DB: watchhive
+      POSTGRES_PORT: 5432
     networks:
       - mydb
     volumes:
       - database-postgres:/var/lib/postgresql/data
 
+
  
 
   watchhivego:
-    image: watchhive
+    image: watchhive_1
+    build: .
     restart: on-failure
     environment:
       DB_HOST: ${DB_HOST}
