@@ -18,7 +18,7 @@ services:
  
 
   watchhivego:
-    image: watchhive_1
+    image: watchhive
     build: .
     restart: on-failure
     environment:
