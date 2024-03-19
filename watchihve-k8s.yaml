@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: watchhive
+  labels:
+    app: watchhive
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: watchhive
+  template:
+    metadata:
+      labels:
+        app: watchhive
+    spec:
+      containers:
+        - name: watchhive
+          image: aruncm7/watchhive:latest
+          ports:
+            - containerPort: 7000
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-user
+            - name: DB_PASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-db
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres-host
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres-port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: watchhive-service
+spec:
+  selector:
+    app: watchhive
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 7000
+      targetPort: 7000
+      nodePort: 30001

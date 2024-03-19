@@ -67,6 +67,7 @@ func (helper *helper) GenerateTokenAdmin(admin models.AdminDetailsResponse) (str
 		},
 	}
 	cfg, _ := cfg.LoadConfig()
+
 	accesToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accesTokenClaims)
 	accessTokenString, err := accesToken.SignedString([]byte(cfg.AdminAccessKey))
 	if err != nil {
@@ -137,7 +138,7 @@ func (h *helper) TwilioSetup(username string, password string) {
 }
 
 func (h *helper) TwilioSendOTP(phone string, serviceID string) (string, error) {
-	fmt.Println("ghhkkk", phone)
+
 	to := "+91" + phone
 	params := &twilioApi.CreateVerificationParams{}
 	params.SetTo(to)
@@ -267,10 +268,6 @@ func (h *helper) ValidateDate(dateString string) bool {
 	// dateLayout := "02-01-2006"
 
 	_, err := time.Parse(dateLayout, dateString)
-
-	// if err != nil {
-	// 	return false
-	// }
 
 	return err == nil
 }

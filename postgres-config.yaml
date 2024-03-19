@@ -1,0 +1,13 @@
+
+apiVersion: v1
+
+kind: ConfigMap
+
+metadata:
+  name: postgres-config
+data:
+  postgres-password: "${DB_PASSWORD}"
+  postgres-host: "${DB_HOST}"
+  postgres-db: "${DB_NAME}"
+  postgres-user: "${DB_USER}"
+  postgres-port: "${DB_PORT}"
