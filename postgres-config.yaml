@@ -6,8 +6,9 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  postgres-password: "${DB_PASSWORD}"
-  postgres-host: "${DB_HOST}"
-  postgres-db: "${DB_NAME}"
-  postgres-user: "${DB_USER}"
-  postgres-port: "${DB_PORT}"
+  postgres-password: "12345"
+  postgres-host: "postgres"
+  postgres-db: "watchhive"
+  postgres-user: "postgres"
+  postgres-port: "5432"
+  

@@ -2,7 +2,6 @@ version: "3.8"
 services:
   postgres:
     image: postgres
-  
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -13,10 +12,7 @@ services:
       - mydb
     volumes:
       - database-postgres:/var/lib/postgresql/data
-
-
  
-
   watchhivego:
     image: watchhive
     build: .
@@ -40,3 +36,4 @@ volumes:
 networks:
   mydb:
     driver: bridge
+      
