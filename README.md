@@ -10,10 +10,12 @@ WatchHive E-Commerce Backend Rest API is a feature-rich backend solution for E-c
 - **Database**: Leverages PostgreSQL for efficient and relational data storage.
 - **AWS Integration**: Integrates with AWS S3 for cloud-based storage solutions.
 - **E-Commerce Features**: Implements a wide range of features commonly found in e-commerce applications, including cart management,  order management, wallet, offers, and coupon management.
+- **Code Quality**: Includes unit tests to maintain code quality and implements Continuous Integration/Continuous Deployment (CI/CD) with GitHub Actions.
 
 ## Deployment
 
-The application is hosted on AWS EC2 and is served using Nginx, ensuring reliability and scalability.
+- The application is hosted on AWS EC2 and is served using Nginx, ensuring reliability and scalability.
+- **Containerization**: The project is containerized using Docker, and successful deployment and scaling are tested on Kubernetes.
 
 ## API Documentation
 
@@ -45,6 +47,45 @@ To run the project locally, you can follow these steps:
 - [Swagger API Documentation](https://swagger.io/)
 - [Twilio](https://www.twilio.com/)
 - [Razorpay](https://razorpay.com/)
+
+
+
+## Using `go-gin-clean-arch` project
+
+To use `go-gin-clean-arch` project, follow these steps:
+
+```bash
+# Navigate into the project
+cd ./go-gin-clean-arch
+
+# Install dependencies
+make deps
+
+# Generate wire_gen.go for dependency injection
+# Please make sure you exported the env for GOPATH
+make wire
+
+# Run the project in Development Mode
+make run
+```
+
+Additional commands:
+
+
+```bash
+➔ make help
+build                          Compile the code, build Executable File
+run                            Start application
+test                           Run tests
+test-coverage                  Run tests and generate coverage file
+deps                           Install dependencies
+deps-cleancache                Clear cache in Go module
+wire                           Generate wire_gen.go
+swag                           Generate swagger docs
+mock                           Generate Mock Files using mockgen
+help                           Display this help screen
+``
+
 
 # Environment Variables
 
