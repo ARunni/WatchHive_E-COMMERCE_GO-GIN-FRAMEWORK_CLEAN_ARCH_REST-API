@@ -126,4 +126,7 @@ Before running the project, you need to set the following environment variables 
 - `RazorPay_key_id`: Razor pay key ID
 - `RazorPay_key_secret`: Razor pay secret key  
 
+
+
+
 Make sure to provide the appropriate values for these environment variables to configure the project correctly.
