@@ -84,7 +84,7 @@ wire                           Generate wire_gen.go
 swag                           Generate swagger docs
 mock                           Generate Mock Files using mockgen
 help                           Display this help screen
-``
+```
 
 
 # Environment Variables
