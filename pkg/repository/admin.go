@@ -207,6 +207,15 @@ func (ar *adminRepository) DashboardTotalRevenueDetails() (models.DashBoardReven
 	return revenueDetails, nil
 }
 
+func (ad *adminRepository) IsAdmin(mailId string) (bool, error) {
+	var admin bool
+	err := ad.DB.Raw("select is_admin  from users where email = ?", mailId).Scan(&admin).Error
+	if err != nil {
+		return false, errors.New(errmsg.ErrGetDB)
+	}
+	return admin, nil
+}
+
 //sales report
 
 func (ar *adminRepository) FilteredSalesReport(startTime time.Time, endTime time.Time) (models.SalesReport, error) {
@@ -335,13 +344,4 @@ func (ad *adminRepository) SalesByDay(yearInt int, monthInt int, dayInt int) ([]
 	}
 
 	return orderDetails, nil
-}
-
-func (ad *adminRepository) IsAdmin(mailId string) (bool, error) {
-	var admin bool
-	err := ad.DB.Raw("select is_admin  from users where email = ?", mailId).Scan(&admin).Error
-	if err != nil {
-		return false, errors.New(errmsg.ErrGetDB)
-	}
-	return admin, nil
 }
