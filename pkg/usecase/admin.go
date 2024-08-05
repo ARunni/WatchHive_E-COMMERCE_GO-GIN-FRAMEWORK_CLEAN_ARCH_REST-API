@@ -115,7 +115,7 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 }
 func (ad *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
 	if page < 0 {
-		return []models.UserDetailsAtAdmin{}, errors.New("page number"+errmsg.ErrDataNegative)
+		return []models.UserDetailsAtAdmin{}, errors.New("page number" + errmsg.ErrDataNegative)
 	}
 
 	userDetails, err := ad.adminRepository.GetUsers(page)
@@ -182,29 +182,29 @@ func (au *adminUseCase) ExecuteSalesReportByDate(startDate, endDate string) (mod
 
 	parsedStartDate, err := time.Parse("02-01-2006", startDate)
 	if err != nil {
-		err := errors.New(errmsg.ErrFormat+":date")
+		err := errors.New(errmsg.ErrFormat + ":date")
 		return models.SalesReport{}, err
 	}
 
 	isValid := !parsedStartDate.IsZero()
 	if !isValid {
-		err := errors.New(errmsg.ErrFormat+":date")
+		err := errors.New(errmsg.ErrFormat + ":date")
 		return models.SalesReport{}, err
 	}
 	parsedEndDate, err := time.Parse("02-01-2006", endDate)
 	if err != nil {
-		err := errors.New(errmsg.ErrFormat+":date")
+		err := errors.New(errmsg.ErrFormat + ":date")
 		return models.SalesReport{}, err
 	}
 
 	isValid = !parsedEndDate.IsZero()
 	if !isValid {
-		err := errors.New(errmsg.ErrFormat+":date")
+		err := errors.New(errmsg.ErrFormat + ":date")
 		return models.SalesReport{}, err
 	}
 
 	if parsedStartDate.After(parsedEndDate) {
-		err := errors.New(errmsg.ErrFormat+" start date is after end date")
+		err := errors.New(errmsg.ErrFormat + " start date is after end date")
 
 		return models.SalesReport{}, err
 	}
@@ -218,11 +218,11 @@ func (au *adminUseCase) ExecuteSalesReportByDate(startDate, endDate string) (mod
 func (ad *adminUseCase) SalesByDate(dayInt int, monthInt int, yearInt int) ([]models.OrderDetailsAdmin, error) {
 
 	if dayInt == 0 && monthInt == 0 && yearInt == 0 {
-		return []models.OrderDetailsAdmin{}, errors.New(errmsg.ErrFieldEmpty+ "day, month, and year")
+		return []models.OrderDetailsAdmin{}, errors.New(errmsg.ErrFieldEmpty + "day, month, and year")
 	}
 
 	if dayInt < 0 || monthInt < 0 || yearInt < 0 {
-		return []models.OrderDetailsAdmin{}, errors.New(errmsg.ErrFormat+ "day, month, and year")
+		return []models.OrderDetailsAdmin{}, errors.New(errmsg.ErrFormat + "day, month, and year")
 	}
 
 	if yearInt >= 2020 {

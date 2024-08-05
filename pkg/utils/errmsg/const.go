@@ -139,3 +139,4 @@ const MsgIdGetErr = "Error retrieving ID"
 const MsgCouponAddFailed = "Adding coupon is failed "
 const MsgEditCouponFailed = "Editing coupon is failed "
 const MsgEditCouponSuccess = "Editing coupon is Success "
+
