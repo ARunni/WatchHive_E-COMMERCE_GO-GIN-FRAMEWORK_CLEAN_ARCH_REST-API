@@ -24,6 +24,7 @@ type Helper interface {
 	ValidateDatatype(data, intOrString string) (bool, error)
 
 	AddImageToAwsS3(file *multipart.FileHeader) (string, error)
+	// GetImageMimeType(filename string) string
 
 	GetTimeFromPeriod(timePeriod string) (time.Time, time.Time)
 	ValidateDate(dateString string) bool

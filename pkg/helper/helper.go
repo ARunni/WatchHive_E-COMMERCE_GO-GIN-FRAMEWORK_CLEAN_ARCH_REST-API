@@ -7,6 +7,7 @@ import (
 	"WatchHive/pkg/utils/models"
 	"reflect"
 	"strconv"
+	"strings"
 	"unicode"
 
 	"errors"
@@ -209,7 +210,7 @@ func (h *helper) AddImageToAwsS3(file *multipart.FileHeader) (string, error) {
 		return "", openErr
 	}
 	defer f.Close()
-
+	mimeType := GetImageMimeType(file.Filename)
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(h.cfg.AWSRegion),
 		Credentials: credentials.NewStaticCredentials(
@@ -224,18 +225,19 @@ func (h *helper) AddImageToAwsS3(file *multipart.FileHeader) (string, error) {
 	}
 	uploader := s3manager.NewUploader(sess)
 	bucketName := "watch-hive"
-
+	key := fmt.Sprintf("%s/%s", "test", file.Filename)
 	_, err = uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(bucketName),
-		Key:    aws.String(file.Filename),
-		Body:   f,
+		Bucket:      aws.String(bucketName),
+		Key:         aws.String(key),
+		Body:        f,
+		ContentType: aws.String(mimeType),
 	})
 
 	if err != nil {
 		return "", err
 	}
 
-	url := fmt.Sprintf("https://%s.s3.amazonaws.com/%s", bucketName, file.Filename)
+	url := fmt.Sprintf("https://%s.s3.amazonaws.com/%s", bucketName, key)
 	return url, nil
 }
 
@@ -326,4 +328,23 @@ func (h *helper) ConvertToExel(sales []models.OrderDetailsAdmin) (*excelize.File
 	}
 
 	return file, nil
+}
+
+func GetImageMimeType(filename string) string {
+	extension := strings.ToLower(strings.Split(filename, ".")[len(strings.Split(filename, "."))-1])
+
+	imageMimeTypes := map[string]string{
+		"jpg":  "image/jpeg",
+		"jpeg": "image/jpeg",
+		"png":  "image/png",
+		"gif":  "image/gif",
+		"bmp":  "image/bmp",
+		"webp": "image/webp",
+	}
+
+	if mimeType, ok := imageMimeTypes[extension]; ok {
+		return mimeType
+	}
+
+	return "application/octet-stream"
 }
